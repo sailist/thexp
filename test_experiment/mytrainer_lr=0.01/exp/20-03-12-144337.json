@@ -1,0 +1,15 @@
+{
+  "start_time": "20-03-12-144331",
+  "snap": {
+    "__main__": {
+      "fn": "C:\\ProgramData\\Anaconda3\\lib\\site-packages\\pytest.py",
+      "hash": "454980f61f97da0e",
+      "snap": "./test_experiment\\mytrainer_lr=0.01\\code\\pytest.py-__main__-0"
+    }
+  },
+  "args": [
+    "C:\\ProgramData\\Anaconda3\\lib\\site-packages\\pytest.py"
+  ],
+  "files": {},
+  "end_time": "20-03-12-144337"
+}
