@@ -18,17 +18,19 @@
     to purchase a commercial license.
 """
 
-from thexp.frame.params import attr
+from thexp.frame.drawer import Reporter
 
-dic = attr()
+reporter = Reporter("./experiment")
 
+for i in range(100):
+    reporter.add_scalar(i**2,i,"tw")
+    reporter.add_scalar(i**3,i,"twa")
 
-dic.b.d = "asd"
-dic.a = "asd"
+reporter.savefig()
+reporter.savearr()
 
-print(dic.items())
+for i in range(100):
+    reporter.add_scalar(i ** 2, i, "tw")
+    reporter.add_scalar(i ** 3, i, "twa")
 
-# print(dic["b"])
-# print("g" in dic)
-print(dic.hash())
-# c5e72bde733e687ce89c9798f825e04c
+reporter.report()

@@ -18,17 +18,27 @@
     to purchase a commercial license.
 """
 
-from thexp.frame.params import attr
+class Chart:
+    def __init__(self):
+        self.options = {}
 
-dic = attr()
+    def _check_name(self, name):
+        i = 0
+        while name in self.options:
+            name = '{}-{}'.format(name,i)
+        return name
+class Curve(Chart):
 
+    def add_series(self,values,steps,name=None):
+        name = self._check_name(name)
+        self.options[name] = {
+            'y':values,
+            'x':steps,
+        }
 
-dic.b.d = "asd"
-dic.a = "asd"
+class Bar(Chart):
+    pass
 
-print(dic.items())
+class Parallel:
+    pass
 
-# print(dic["b"])
-# print("g" in dic)
-print(dic.hash())
-# c5e72bde733e687ce89c9798f825e04c

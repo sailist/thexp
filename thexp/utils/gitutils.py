@@ -17,10 +17,15 @@
              
     to purchase a commercial license.
 """
+import json
 import os
 import sys
+from uuid import uuid4
 
 from git import Git, Repo
+
+from .generel_util import curent_date
+from ..globals import _GITKEY, _OSENVI
 
 hgit = Git()
 
@@ -187,6 +192,11 @@ class branch:
         # self.repo.head.reset(index=True, working_tree=True)
 
 
+uuid = None
+projname = None
+expsdir = None
+projkey = None
+
 section_name = 'thexp'
 thexp_branch = 'experiment'
 
@@ -194,9 +204,20 @@ thexp_branch = 'experiment'
 def load_repo():
     path = git_root()
     if path is None:
-        print("fatal: not a git repository (or any of the parent directories)")
-        print("-----------------------")
-        path = input("type root path to init this project, (default: {})".format(os.getcwd()))
+        if _OSENVI.ignore_repo not in os.environ:
+            print("fatal: not a git repository (or any of the parent directories)")
+            print("-----------------------")
+            path = input("type root path to init this project, \n(default: {}, type '!' to ignore".format(os.getcwd()))
+        else:
+            print("Variable 'repo' will be a None object. "
+                  "Any operation that need this repo may cause Exception.")
+            return None
+
+        if '!' in path:
+            print("Variable 'repo' will be a None object. "
+                  "Any operation that need this repo may cause Exception.")
+            return None
+
         res = Repo.init(path)
         res.index.add("*")
         res.index.commit("initial commit")
@@ -211,16 +232,28 @@ def renormpath(path):
 
 
 def _check_git_config(repo):
+    global uuid, expsdir, projname, projkey
     writer = repo.config_writer()
     if not writer.has_section(section_name):
         writer.add_section(section_name)
 
-    if writer.get_value(section_name, "expsdir", "") == '':
-        writer.add_value(section_name, "expsdir",
-                         renormpath(os.path.join(repo.working_dir, '.thexp/experiments')).replace("\\", '/'))
+    expsdir = writer.get_value(section_name, _GITKEY.expsdir, "")
+    if expsdir == '':
+        expsdir = renormpath(os.path.join(repo.working_dir, '.thexp/experiments'))
+        writer.add_value(section_name, _GITKEY.expsdir,
+                         expsdir)
 
-    if writer.get_value(section_name, "projname", "") == '':
-        writer.add_value(section_name, "projname", renormpath(os.path.basename(repo.working_dir)))
+    projname = writer.get_value(section_name, _GITKEY.projname, "")
+    if projname == '':
+        projname = renormpath(os.path.basename(repo.working_dir))
+        writer.add_value(section_name, _GITKEY.projname, projname)
+
+    uuid = writer.get_value(section_name, _GITKEY.uuid, "")
+    if uuid == '':
+        uuid = uuid4().hex[:2]
+        writer.add_value(section_name, _GITKEY.uuid, uuid)
+
+    projkey = '{}.{}'.format(projname, uuid)
 
     ignorefn = os.path.join(repo.working_dir, ".gitignore")
     if not os.path.exists(ignorefn):
@@ -237,31 +270,71 @@ def _check_git_config(repo):
             with open(ignorefn, 'a', encoding='utf-8') as w:
                 w.write("\n.thexp/\n")
 
+    regist_repo(repo)
     writer.write()
     writer.release()
 
 
-from .generel_util import curent_date
+def regist_repo(repo):
+    from .generel_util import home_dir
+    from ..globals import _FNAME
+    rp = os.path.join(home_dir(), _FNAME.repo)
+    if not os.path.exists(rp):
+        res = {}
+    else:
+        with open(rp, encoding='utf-8') as r:
+            res = json.load(r)
+    lis = res.setdefault(projkey, dict())
 
-import json
+    lis['repopath'] = repo.working_dir
+
+    with open(rp, 'w', encoding='utf-8') as w:
+        json.dump(res, w, indent=2)
+
+
+def regist_exps(name, path):
+    from .generel_util import home_dir
+    from ..globals import _FNAME
+    rp = os.path.join(home_dir(), _FNAME.repo)
+    if not os.path.exists(rp):
+        res = {}
+    else:
+        with open(rp, encoding='utf-8') as r:
+            res = json.load(r)
+
+    lis = res[projkey].setdefault('exps', dict())
+    lis[name] = path
+
+    with open(rp, 'w', encoding='utf-8') as w:
+        json.dump(res, w, indent=2)
+
 
 commit = None
 commit_time = None
 
 repo = load_repo()
+
+
 def check_commit_exp():
-    global commit,commit_time
+    global commit, commit_time
     if commit is None:
         with branch(repo, thexp_branch):
             repo.index.add("*")
-            commit = repo.index.commit(json.dumps(commit_info,indent=2))
+            commit = repo.index.commit(json.dumps(commit_info, indent=2))
             commit_time = curent_date()
 
+
+def locate_cls(cls, dir=None):
+    import inspect
+    if dir is None:
+        dir = repo.working_dir
+    rel = os.path.relpath(inspect.getfile(cls), dir)
+    return ".".join([*os.path.split(os.path.splitext(rel)[0]), cls.__name__])
+
+
 commit_info = dict(
-        date=curent_date(),
-        args=sys.argv,
-        environ="jupyter" if "jupyter_core" in sys.modules else "python",
-        version=sys.version,
+    date=curent_date(),
+    args=sys.argv,
+    environ="jupyter" if "jupyter_core" in sys.modules else "python",
+    version=sys.version,
 )
-
-

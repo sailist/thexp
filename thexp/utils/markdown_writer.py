@@ -199,6 +199,6 @@ class Markdown():
     def to_str(self):
         return str(self)
 
-    def to_file(self,fn,mode="w"):
-        with open(fn,mode,encoding="utf-8") as w:
+    def to_file(self, fn, mode="w"):
+        with open(fn, mode, encoding="utf-8") as w:
             w.write(self.to_str())

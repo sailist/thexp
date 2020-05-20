@@ -63,3 +63,11 @@ for j in range(5):
         # print(m)
         am.update(m)
     print(am)
+
+from thexp import Meter
+m = Meter()
+print(m.k)
+
+m.all_loss = m.all_loss + 5
+m.all_loss = m.all_loss + 3
+print(m.all_loss)

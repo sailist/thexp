@@ -35,6 +35,7 @@ def fix_seed(seed=10):
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.enabled = True
 
+
 def get_state():
     return {
         "numpy": np.random.get_state(),
@@ -42,6 +43,7 @@ def get_state():
         "torch.cuda": torch.cuda.get_rng_state() if torch.cuda.is_available() else None,
         "random": random.getstate(),
     }
+
 
 def set_state(state_dict):
     random.setstate(state_dict["random"])
@@ -56,6 +58,3 @@ def set_state(state_dict):
         torch.backends.cudnn.benchmark = False
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.enabled = True
-
-
-

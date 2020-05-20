@@ -18,23 +18,23 @@
     to purchase a commercial license.
 """
 import collections
+import os
 import shutil
 import sys
 import time
 
 import numpy as np
 
-import os
+
 def get_consolo_width():
-    return shutil.get_terminal_size().columns-1
+    return shutil.get_terminal_size().columns - 1
+
 
 def support_multiline():
-    if "jupyter_core" in sys.modules or shutil.get_terminal_size((0,0)).columns == 0 or "PYCHARM_HOSTED" in os.environ:
+    if "jupyter_core" in sys.modules or shutil.get_terminal_size((0, 0)).columns == 0 or "PYCHARM_HOSTED" in os.environ:
         return True
     else:
         return False
-
-
 
 
 class ScreenStr():
@@ -54,6 +54,7 @@ class ScreenStr():
     debug = False
     last_width = 0
     multi_mode = support_multiline()
+
     def __init__(self, content="", leftoffset=0) -> None:
         self.content = content
         ScreenStr.left = leftoffset
@@ -349,9 +350,3 @@ class Progbar(object):
 
     def add(self, n, values=None):
         self.update(self._seen_so_far + n, values)
-
-
-if __name__ == '__main__':
-    for i in range(100):
-        print("\r" + str(ScreenStr(str([i for i in range(30)]), leftoffset=10)), end="")
-        time.sleep(0.2)

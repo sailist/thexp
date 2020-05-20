@@ -20,8 +20,9 @@
 from collections import OrderedDict
 from typing import Any
 
-import numpy as np
-import torch
+from ..utils.lazy import torch,np
+
+
 
 from ..base_classes.trickitems import AvgItem, NoneItem
 
@@ -49,17 +50,23 @@ class Meter:
         self._format_dict = dict()
         self._convert_type = []
 
-    def int(self, item):
+    def int(self, item:str):
         self._format_dict[item] = lambda x: "{:.0f}".format(x)
 
-    def float(self, item, acc=4):
+    def float(self, item:str, acc=4):
+        """
+        设置浮点数精度，默认为小数点后四位
+        :param item:
+        :param acc:
+        :return:
+        """
         self._format_dict[item] = lambda x: "{{:.{}f}}".format(acc).format(x)
 
-    def percent(self, item, acc=2):
+    def percent(self, item:str, acc=2):
         self._format_dict[item] = lambda x: "{{:.{}%}}".format(acc).format(x)
 
-    def tensorfloat(self, item, acc=4):
-        def func(x: torch.Tensor):
+    def tensorfloat(self, item:str, acc=4):
+        def func(x: torch().Tensor):
             if len(x.shape) == 0:
                 return "{{:.{}f}}".format(acc).format(x)
             else:
@@ -67,7 +74,7 @@ class Meter:
 
         self._format_dict[item] = func
 
-    def str_in_line(self, item):
+    def str_in_line(self, item:str):
         def func(x):
             l = str(x).split("\n")
             if len(l) > 1:
@@ -83,7 +90,7 @@ class Meter:
     def _convert(self, val):
         if type(val) in {int, float, bool, str}:
             return val
-        # elif isinstance(val, torch.Tensor):
+        # elif isinstance(val, torch().Tensor):
         #     if len(val.shape) == 1 and val.shape[0] == 1:
         #         return val[0]
         for tp, func in self._convert_type:
@@ -102,7 +109,7 @@ class Meter:
                 self.int(name)
             elif isinstance(value, float) and name not in self._format_dict:
                 self.float(name)
-            elif isinstance(value, torch.Tensor) and name not in self._format_dict:
+            elif isinstance(value, torch().Tensor) and name not in self._format_dict:
                 if len(value.shape) == 0 or (sum(value.shape) == 1):
                     self.tensorfloat(name)
                 else:
@@ -129,7 +136,7 @@ class Meter:
 
     def array_items(self):
         for k, v in self._param_dict.items():
-            if isinstance(v, (int, float, torch.Tensor, np.ndarray)):
+            if isinstance(v, (int, float, torch().Tensor, np().ndarray)):
                 yield k, v
 
     def numeral_items(self):
@@ -137,12 +144,12 @@ class Meter:
         for k, v in self._param_dict.items():
             if isinstance(v, (int, float)):
                 yield k, v
-            elif isinstance(v, torch.Tensor):
+            elif isinstance(v, torch().Tensor):
                 try:
                     yield k, v.detach().cpu().item()
                 except:
                     continue
-            elif isinstance(v, np.ndarray):
+            elif isinstance(v, np().ndarray):
                 try:
                     yield k, v.item()
                 except:
@@ -193,7 +200,7 @@ class AvgMeter(Meter):
                 if name not in self._param_dict:
                     self._param_dict[name] = AvgItem()
                 self._param_dict[name].update(value)
-            elif isinstance(value, torch.Tensor):
+            elif isinstance(value, torch().Tensor):
                 value = value.detach().cpu().numpy()
                 if len(value.shape) == 0 or sum(value.shape) == 1:
                     if name not in self._param_dict:
@@ -222,7 +229,7 @@ class AvgMeter(Meter):
 
     def array_items(self):
         for k, v in self._param_dict.items():
-            if isinstance(v, (int, float, torch.Tensor, np.ndarray)):
+            if isinstance(v, (int, float, torch().Tensor, np().ndarray)):
                 yield k, v
             elif isinstance(v, AvgItem):
                 yield k, v.avg
@@ -232,12 +239,12 @@ class AvgMeter(Meter):
         for k, v in self._param_dict.items():
             if isinstance(v, (int, float)):
                 yield k, v
-            elif isinstance(v, torch.Tensor):
+            elif isinstance(v, torch().Tensor):
                 try:
                     yield k, v.detach().cpu().item()
                 except:
                     continue
-            elif isinstance(v, np.ndarray):
+            elif isinstance(v, np().ndarray):
                 try:
                     yield k, v.item()
                 except:

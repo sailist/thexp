@@ -18,17 +18,18 @@
     to purchase a commercial license.
 """
 
-from thexp.frame.params import attr
-
-dic = attr()
-
-
-dic.b.d = "asd"
-dic.a = "asd"
-
-print(dic.items())
-
-# print(dic["b"])
-# print("g" in dic)
-print(dic.hash())
-# c5e72bde733e687ce89c9798f825e04c
+# from thexp.frame.params import attr
+#
+# __import__('s.trainer')
+# dic = attr()
+#
+#
+# dic.a = "asd"
+# dic.b.c = "asd"
+#
+# print(dic.items())
+#
+# # print(dic["b"])
+# # print("g" in dic)
+# print(dic.hash())
+# # c5e72bde733e687ce89c9798f825e04c

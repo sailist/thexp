@@ -21,9 +21,8 @@
 from collections import OrderedDict
 from itertools import cycle, chain
 
-from torch.utils.data import DataLoader
-from ..utils.date.dataloader import DataLoader as thDataLoader
-import torch
+
+from ..utils.lazy import torch
 
 
 
@@ -55,6 +54,8 @@ class DataBundler:
         self.iter_mode = "chain"
 
     def set_batch_size(self,batch_size):
+        from torch.utils.data import DataLoader
+        from ..utils.date.dataloader import DataLoader as thDataLoader
         for _,(loader,_) in self.dataloaders.items():
             if isinstance(loader,thDataLoader):
                 loader.set_batch_size(batch_size)
@@ -62,6 +63,7 @@ class DataBundler:
                 loader.batch_sampler.batch_size = batch_size
 
     def _append(self, loader, func, name):
+        from torch.utils.data import DataLoader
         assert isinstance(loader, (DataLoader,DataBundler))
         if name is None:
             unname = "unnamed"
@@ -98,7 +100,13 @@ class DataBundler:
             res[name] = len(loader)
         return res
 
-    def cycle(self, loader: DataLoader, name=None):
+    def cycle(self, loader, name=None):
+        """
+
+        :param loader: Dataloader object
+        :param name:
+        :return:
+        """
         """一般在zip中保证数据量少的数据集不会成为拖累"""
         self._append(loader, cycle, name)
         return self
@@ -134,7 +142,7 @@ class DataBundler:
         return next(iter(self))
 
     def choice_sample(self)->tuple:
-        xs,ys = next(iter(self)) # type:(torch.Tensor,torch.Tensor)
+        xs,ys = next(iter(self)) # type:(torch().Tensor,torch().Tensor)
         return (xs[0],ys[0])
 
     def zip_mode(self):

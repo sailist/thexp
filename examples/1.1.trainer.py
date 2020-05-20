@@ -29,8 +29,13 @@ trainer = myTrainer(Params())
 for i in range(50):
     trainer.logger.info(i)
 
-for i in range(20):
-    trainer.writter.add_scalar("test",random.random(),i)
+# for i in range(500):
+#     for j in 'qwertyuiopasdfgh':
+#         trainer.writer.add_scalar(j, random.random(), i)
 
-# trainer.saver
-# trainer.rnd
+for i in range(20):
+    trainer.writer.add_scalar('test', random.random(), i)
+
+trainer.writer.add_hparams({"a":0.1,'b':3},{"acc":0.5,'loss':1})
+trainer.writer.add_hparams({"a":0.2,'b':5},{"acc":0.1,'loss':4})
+trainer.writer.add_hparams({"a":0.3,'b':2},{"acc":0.3,'loss':3})

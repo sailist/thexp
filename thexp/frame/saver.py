@@ -21,7 +21,7 @@ import json
 import os
 import re
 
-import torch
+from ..utils.lazy import torch
 
 from ..utils.generel_util import listdir_by_time
 from collections import namedtuple
@@ -109,7 +109,7 @@ class Saver:
         """
         fn = self._build_model_name(epoch)
         json_fn = "{}.json".format(fn)
-        torch.save(state_dict, fn)
+        torch().save(state_dict, fn)
 
         if extra_info is None:
             extra_info = dict()
@@ -132,7 +132,7 @@ class Saver:
         fn = self._build_checkpoint_name(epoch, replacement, lasting)
 
         json_fn = "{}.json".format(fn)
-        torch.save(state_dict, fn)
+        torch().save(state_dict, fn)
         if extra_info is None:
             extra_info = dict()
         extra_info["fn"] = fn
@@ -167,12 +167,12 @@ class Saver:
     def load_state_dict(self, fn):
         """
         :param fn: rel path or abs path
-        :return:  None or torch.load() result
+        :return:  None or torch().load() result
         """
         path = self._guess_abs_path(fn)
 
         if os.path.exists(path):
-            ckpt = torch.load(fn)
+            ckpt = torch().load(fn)
         else:
             ckpt = None
         info_path = "{}.json".format(path)

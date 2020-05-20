@@ -21,21 +21,23 @@ import pprint
 import time
 import warnings
 from collections import OrderedDict
-from thexp.utils.generel_util import curent_date
+
 from thexp import Meter
+from thexp.utils.generel_util import curent_date
+
 
 def format_second(sec):
     hour = min = 0
     unit = "s"
 
-    sec,ms = divmod(sec,1)
+    sec, ms = divmod(sec, 1)
     if sec > 60:
-        min,sec = divmod(sec,60)
+        min, sec = divmod(sec, 60)
         if min > 60:
-            hour,min = divmod(min,60)
-            fmt = "{}h{}m{}s".format(hour,min,int(sec))
+            hour, min = divmod(min, 60)
+            fmt = "{}h{}m{}s".format(hour, min, int(sec))
         else:
-            fmt = "{}m{}s".format(min,int(sec))
+            fmt = "{}m{}s".format(min, int(sec))
     else:
         fmt = "{}s".format(int(sec))
     return fmt
@@ -65,9 +67,9 @@ class TimeIt:
 
     def start(self):
         self.clear()
-        self.mark("start",True)
+        self.mark("start", True)
 
-    def mark(self, key,add_now=False):
+    def mark(self, key, add_now=False):
         if self.ends:
             warnings.warn("called end method, please use start to restart timeit")
             return
@@ -77,13 +79,13 @@ class TimeIt:
         if add_now:
             self.times[key] = curent_date("%H:%M:%S")
         else:
-            self.times.setdefault(key,0)
+            self.times.setdefault(key, 0)
             self.times[key] += offset
-        self.times.setdefault("use",0)
+        self.times.setdefault("use", 0)
         self.times["use"] += offset
 
     def end(self):
-        self.mark("end",True)
+        self.mark("end", True)
         self.ends = True
 
     def meter(self):
@@ -102,18 +104,4 @@ class TimeIt:
         return self.times[item]
 
 
-
 timeit = TimeIt()
-
-
-if __name__ == '__main__':
-    import time
-    timeit.start()
-    for i in range(10):
-        time.sleep(0.2)
-        timeit.mark("A")
-        time.sleep(0.3)
-        timeit.mark("B")
-        print(timeit.meter())
-    timeit.end()
-    print(timeit)

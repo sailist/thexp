@@ -18,17 +18,11 @@
     to purchase a commercial license.
 """
 
-from thexp.frame.params import attr
+from thexp.frame.viewer import *
+summary = SummaryViewer()
+repo = summary.repos[0]
+exps = summary.get_exps(repo,True)
+exp = exps[0]
+test = exp.test_viewers[0]
 
-dic = attr()
-
-
-dic.b.d = "asd"
-dic.a = "asd"
-
-print(dic.items())
-
-# print(dic["b"])
-# print("g" in dic)
-print(dic.hash())
-# c5e72bde733e687ce89c9798f825e04c
+br = test.board_reader

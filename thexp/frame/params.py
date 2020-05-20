@@ -17,14 +17,16 @@
              
     to purchase a commercial license.
 """
-from collections.abc import Iterable
+import copy
 import pprint as pp
 import warnings
 from collections import OrderedDict
+from collections.abc import Iterable
 from typing import Any
 
 import fire
-import torch
+
+from ..utils.lazy import torch
 
 
 class attr(OrderedDict):
@@ -72,6 +74,22 @@ class attr(OrderedDict):
             res[k] = v
         return res
 
+    def __copy__(self):
+        return attr(
+            **{k: copy.copy(v) for k, v in self.items()}
+        )
+
+    def hash(self) -> str:
+        from ..utils.generel_util import hash
+        return hash(self)
+
+    def jsonify(self):
+        """
+        获取可被json化的dict，其中包含的任意
+        :return:
+        """
+
+
 
 class BoundCheckError(BaseException):
     pass
@@ -103,13 +121,15 @@ class BaseParams:
         if name.startswith("_"):
             super().__setattr__(name, value)
         else:
-            self.check(name, value)
+            res = self._check(name, value)
+            if res is not None and not res:
+                raise BoundCheckError("param '{}' checked failed.".format(name))
             self._param_dict[name] = value
 
     def __getattr__(self, item):
-        if item not in self._param_dict:
-            raise AttributeError(item)
-        return self._param_dict[item]
+        # if item not in self._param_dict:
+        #     raise AttributeError(item)
+        return self._param_dict.__getattr__(item)
 
     def __repr__(self):
         return "{}".format(self.__class__.__name__) + pp.pformat([(k, v) for k, v in self._param_dict.items()])
@@ -124,12 +144,15 @@ class BaseParams:
         key = str(key)
         self.__delattr__(key)
 
-    def check(self, name, value):
+    def _check(self, name, value):
         if name in self._bound:
             self._bound[name](value)
 
     def arange(self, k, default, left=float("-inf"), right=float("inf")):
         """
+        约束 key 的选择范围（连续）
+
+        如果有多段连续，请使用 lambda_bound() 方法
         :param k: 要约束的键
         :param default: 默认值
         :param left:
@@ -146,11 +169,11 @@ class BaseParams:
 
     def choice(self, k, *choices):
         """
+        约束 key 的选择范围（离散）
         :param k: 要约束的键
         :param choices: 要选择的常量，第一个将作为默认值
         :return:
         """
-
         def check(x):
             if x not in choices:
                 raise BoundCheckError("param '{}' is enum of {}".format(k, choices))
@@ -158,12 +181,27 @@ class BaseParams:
         self._bound[k] = check
         self[k] = choices[0]
 
-    def grid_search(self,k,iterable:Iterable):
+    def lambda_bound(self, k, default, check_lmd):
+        """
+        约束 key 符合 check_lmd 的要求
+        :param k:
+        :param default:
+        :param check_lmd: 一个函数，接受一个参数，为 key 接受新值时的 value
+            该函数若返回None，则表明异常会在检查过程中抛出，若返回值为任意可以判断真值的类型，则根据真值类型判断
+                为假则抛出 BoundCheckError
+        :return:
+        """
+        self._bound[k] = check_lmd
+        self[k] = default
+
+    def grid_search(self, k, iterable: Iterable):
+        snap = copy.copy(self._param_dict)
         for v in iterable:
+            for sk, sv in snap.items():
+                self[sk] = sv
             self[k] = v
             yield self
 
-    # TODO  获取试验目录是否应该在Params类中获取？思考一下
     def from_args(self):
         def func(**kwargs):
             for k, v in kwargs.items():
@@ -185,65 +223,33 @@ class BaseParams:
         for k in self._param_dict:
             yield k
 
-    # @deprecated
-    def _can_in_dir_name(self, obj):
-        for i in [int, float, str, bool]:
-            if isinstance(obj, i):
-                return True
-        if isinstance(obj, torch.Tensor):
-            if len(obj.shape) == 0:
-                return True
-        return False
-
-    def build_exp_name(self, *names, prefix="", sep="_", ignore_mode="add"):
-        prefix = prefix.strip()
-        res = []
-        if len(prefix) != 0:
-            res.append(prefix)
-        if ignore_mode == "add":
-            for name in names:
-                if hasattr(self, name):
-                    obj = getattr(self, name)
-                    if self._can_in_dir_name(obj):
-                        res.append("{}={}".format(name, obj))
-                else:
-                    res.append(name)
-
-        elif ignore_mode == "del":
-            for name in names:
-                if hasattr(self, name):
-                    obj = getattr(self, name)
-                    if self._can_in_dir_name(obj):
-                        res.append("{}={}".format(name, obj))
-        else:
-            assert False
-
-        self._exp_name = sep.join(res)
-        return self._exp_name
-
-    def get_exp_name(self):
-        assert self._exp_name is not None, "run build_exp_name() before get_exp_name()"
-        return self._exp_name
-
-    def update(self,items):
+    def update(self, items):
         """
         :param items:
         :return:
         """
-        for k,v in items.items():
+        for k, v in items.items():
             self._param_dict[k] = v
 
+    def hash(self):
+        return self._param_dict.hash()
+
+    def __eq__(self, other):
+        if isinstance(other, BaseParams):
+            return self.hash() == other.hash()
+        return False
 
 
 class Params(BaseParams):
     Attr = attr
+
     def __init__(self):
         super().__init__()
         self.epoch = 10
         self.eidx = 1
         self.idx = 0
         self.global_step = 0
-        self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
+        self.device = "cuda:0" if torch().cuda.is_available() else "cpu"
         self.dataset = None
         self.architecture = None
         self.optim = None

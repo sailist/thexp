@@ -21,13 +21,15 @@
 import os
 import warnings
 from functools import wraps
-from ..utils.timeit import format_second
+
 from .meter import AvgMeter
 from .meter import Meter
 from .params import Params
 from .trainer import BaseTrainer
 from ..base_classes.trickitems import NoneItem, AvgItem
+from ..globals import _ML
 from ..utils.timeit import TimeIt
+from ..utils.timeit import format_second
 
 
 class BaseCallback():
@@ -185,8 +187,6 @@ class TrainCallback(BaseCallback):
         pass
 
 
-
-
 class EvalCallback(TrainCallback):
     """决定在训练过程中，几个epoch eval一次，几个epoch  test一次"""
 
@@ -221,7 +221,6 @@ class LoggerCallback(TrainCallback):
         trainer.logger.info("Exp Params", params)
         self.start = 0
 
-
     def on_train_begin(self, trainer: BaseTrainer, func, params: Params, *args, **kwargs):
         self.start = params.eidx
         self.traintime = TimeIt()
@@ -246,7 +245,7 @@ class LoggerCallback(TrainCallback):
         self.traintime.mark("epoch")
         self.epochtime.end()
 
-        avg = self.traintime["use"]/(params.eidx-self.start+1)
+        avg = self.traintime["use"] / (params.eidx - self.start + 1)
         last = (params.epoch - params.eidx) * avg
 
         tm = Meter()
@@ -265,7 +264,7 @@ class LoggerCallback(TrainCallback):
             if self.avg:
                 self.meter.update(meter)
                 meter = self.meter
-        trainer.logger.inline("{}/{}".format(params.idx+1, len(trainer.train_dataloader)), meter, fix=1)
+        trainer.logger.inline("{}/{}".format(params.idx + 1, len(trainer.train_dataloader)), meter, fix=1)
 
     def on_first_exception(self, trainer: BaseTrainer, func, params: Params, e: BaseException, *args, **kwargs):
         trainer.logger.error("{} raised".format(e.__class__.__name__))
@@ -399,14 +398,14 @@ class BoardCallback(TrainCallback):
             if isinstance(names, str):
                 val = self._find_value(meter, names)
                 if val is not None:
-                    trainer.writter.add_scalar(tag, val, step)
+                    trainer.writer.add_scalar(tag, val, step)
             else:
                 scalar_dict = {}
                 for k, v in iter2pair(names):
                     val = self._find_value(meter, k)
                     if val is not None:
                         scalar_dict[v] = val
-                trainer.writter.add_scalars(tag, scalar_dict, step)
+                trainer.writer.add_scalars(tag, scalar_dict, step)
 
     def on_eval_end(self, trainer: BaseTrainer, func, params: Params, meter: Meter, *args, **kwargs):
         self.update(trainer, meter, params, "eval")
@@ -450,28 +449,43 @@ class CUDAErrorHold(TrainCallback):
                     return True
 
 
-class AutoReport(TrainCallback):
+class Recorder(TrainCallback):
+
+    def __init__(self) -> None:
+        super().__init__()
+        from collections import defaultdict
+        self._ignore_dict = defaultdict(set)
 
     def on_hooked(self, trainer: BaseTrainer, params: Params):
         self.start = 0
+        trainer.experiment.add_tag("record", 'writter')
 
-    def key_name(self,mode,key):
-        return "_auto_{}_{}".format(mode,key)
+    def ignore_key(self, mode, key):
+        self._ignore_dict[mode].add(key)
+
+    def _key_name(self, mode, key):
+        return "auto_{}_{}".format(mode, key)
 
     def on_test_end(self, trainer: BaseTrainer, func, params: Params, meter: Meter, *args, **kwargs):
-        if isinstance(meter,Meter):
+        if isinstance(meter, Meter):
             for k, v in meter.numeral_items():
-                trainer.writter.add_scalar(self.key_name("test",k),params.eidx,v)
+                if k in self._ignore_dict[_ML.test]:
+                    continue
+                trainer.writer.add_scalar(self._key_name("test", k), v, params.eidx)
 
     def on_train_begin(self, trainer: BaseTrainer, func, params: Params, *args, **kwargs):
         self.start = params.eidx
 
     def on_eval_end(self, trainer: BaseTrainer, func, params: Params, meter: Meter, *args, **kwargs):
         if isinstance(meter, Meter):
-            for k,v in meter.numeral_items():
-                trainer.writter.add_scalar(self.key_name("evel",k),params.eidx,v)
+            for k, v in meter.numeral_items():
+                if k in self._ignore_dict[_ML.eval]:
+                    continue
+                trainer.writer.add_scalar(self._key_name("evel", k), v, params.eidx)
 
     def on_train_epoch_end(self, trainer: BaseTrainer, func, params: Params, meter: AvgMeter, *args, **kwargs):
         if isinstance(meter, Meter):
             for k, v in meter.numeral_items():
-                trainer.writter.add_scalar(self.key_name("train",k),params.eidx,v)
+                if k in self._ignore_dict[_ML.train]:
+                    continue
+                trainer.writer.add_scalar(self._key_name("train", k), v, params.eidx)

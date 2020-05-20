@@ -106,6 +106,7 @@ class Logger:
         self.handle(logstr, level=Logger.V_INFO, fix=fix)
 
     def raw(self, *values, inline=False, fix=0, level=0, append=False):
+        """不输出日期前缀"""
         logstr, fix = self.format(*values, inline=inline, fix=fix, raw=True, append=append)
         self.handle(logstr, level=level)
 
@@ -171,21 +172,21 @@ class Logger:
         """添加一个输出到文件的管道"""
         if dir in self.pipe_key:
             self.info("Add pipe {}, but already exists".format(dir))
-            return False
+            return None
 
         os.makedirs(dir, exist_ok=True)
 
         i = 0
         cur_date = curent_date(fmt="%y%m%d%H%M%S")
-        fni = os.path.join(dir, "o.{}.{}.log".format(cur_date, i))
+        fni = os.path.join(dir, "l.{}.{}.log".format(cur_date, i))
         while os.path.exists(fni):
             i += 1
-            fni = os.path.join(dir, "o.{}.{}.log".format(cur_date, i))
+            fni = os.path.join(dir, "l.{}.{}.log".format(cur_date, i))
 
         self.print("add output channel on {}".format(fni))
         self.out_channel.append(fni)
         self.pipe_key.add(dir)
-        return True
+        return fni
 
     def add_log_listener(self, func):
         self.listener.append(func)

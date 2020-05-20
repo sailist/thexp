@@ -18,7 +18,4 @@
     to purchase a commercial license.
 """
 
-from torch import *
-from torch import nn
-import torch.nn.functional as F
 from . import optim

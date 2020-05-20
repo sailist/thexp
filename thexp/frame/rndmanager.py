@@ -60,6 +60,9 @@ class RndManager:
 
         self._save_rnd_state(name)
 
+    def list(self):
+        return [os.path.join(self.save_dir,f) for f in os.listdir(self.save_dir) if f.endswith('rnd')]
+
     def _save_rnd_state(self, name, replacement=False):
         if not os.path.exists(self.save_dir):
             os.makedirs(self.save_dir)

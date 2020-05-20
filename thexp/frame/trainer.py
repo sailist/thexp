@@ -20,22 +20,21 @@
 import bisect
 import pprint as pp
 import warnings
+from functools import lru_cache
 from functools import wraps
 from typing import Any
-from functools import lru_cache
-import numpy as np
-import torch
-from torch.optim.optimizer import Optimizer
-from torch.utils.data.dataloader import DataLoader
+
 from .databundler import DataBundler
-
-
 from .meter import AvgMeter
 from .params import Params
-from .plotter import Reporter
-
 from .saver import Saver
 from ..base_classes.metaclasses import Merge
+from ..globals import _BUILTIN_PLUGIN
+from ..utils.lazy import torch, np
+
+
+def build_exp_name(trainer_name):
+    return trainer_name.lower().replace("trainer", "Exp")
 
 
 class BaseTrainer(metaclass=Merge):
@@ -49,7 +48,7 @@ class BaseTrainer(metaclass=Merge):
     def __new__(cls, *args, **kwargs):
         self = super().__new__(cls)
         if cls.__exp_name__ is None:
-            cls.__exp_name__ = cls.__name__.lower().replace("trainer", "Exp")
+            cls.__exp_name__ = build_exp_name(cls.__name__)
 
         def wrapper(func, _call_set: list):
             @wraps(func)
@@ -102,48 +101,8 @@ class BaseTrainer(metaclass=Merge):
         self.train_toggle = False
         if params is not None:
             self.params = params
-            self.device = torch.device(params.device)
+            self.device = torch().device(params.device)
         self.initial()
-
-    @classmethod
-    def from_params(cls, params: Params = None):
-        return cls(params)
-
-    def callbacks(self, params: Params):
-        pass
-
-    def datasets(self, params: Params):
-        pass
-
-    def models(self, params: Params):
-        pass
-
-
-    @property
-    @lru_cache()
-    def writter(self):
-        from torch.utils.tensorboard import SummaryWriter
-        return SummaryWriter(self.experiment.makedir("board"), filename_suffix=".bd")
-
-    @property
-    @lru_cache()
-    def logger(self):
-        from .logger import Logger
-        logger = Logger()
-        logger.add_log_dir(self.experiment.test_dir)
-        return logger
-
-    @property
-    @lru_cache()
-    def saver(self):
-        return Saver(self.experiment.makedir("modules"))
-
-    @property
-    @lru_cache()
-    def rnd(self):
-        from .rndmanager import RndManager
-        return RndManager(self.experiment.make_exp_dir("rnd"))
-
 
     def initial(self):
         """
@@ -157,14 +116,39 @@ class BaseTrainer(metaclass=Merge):
         :return:
         """
         from .experiment import Experiment
+        from ..utils.gitutils import locate_cls
         pre = self.__class__.__module__.split('.')[-1]
-        self.experiment = Experiment("{}.{}".format(pre,self.__exp_name__))
+        self.experiment = Experiment("{}.{}".format(self.__exp_name__, pre))
+        # self.params TODO
+        # self.experiment.makedir('params')
+        self.experiment.regist_plugin(_BUILTIN_PLUGIN.trainer, {
+            'param_hash': self.params.hash(),
+            'path': __file__,
+            'loaction': locate_cls(self.__class__),
+            'module': self.__class__.__module__,
+            'class': self.__class__.__name__
+        })
         self.experiment.start()
 
         # self.reporter = Reporter(self.experiment.makedir("plot"))
         self.models(self.params)
         self.datasets(self.params)
         self.callbacks(self.params)
+
+    def _regist_databundler(self, key, val):
+        from torch.utils.data.dataloader import DataLoader
+        assert isinstance(val, (DataBundler, DataLoader))
+        if isinstance(val, DataLoader):
+            val = DataBundler().add(val)
+        self._databundler_dict[key] = val
+
+    def regist_databundler(self, train=None, eval=None, test=None):
+        if train is not None:
+            self._regist_databundler("train", train)
+        if eval is not None:
+            self._regist_databundler("eval", eval)
+        if test is not None:
+            self._regist_databundler("tests", test)
 
     def train(self):
         params = self.params
@@ -223,19 +207,60 @@ class BaseTrainer(metaclass=Merge):
             return None
         return self.test_eval_logic(loader, self.params)
 
-    def _regist_databundler(self, key, val):
-        assert isinstance(val, (DataBundler, DataLoader))
-        if isinstance(val, DataLoader):
-            val = DataBundler().add(val)
-        self._databundler_dict[key] = val
+    @property
+    @lru_cache()
+    def writer(self):
+        from torch.utils.tensorboard import SummaryWriter
+        from ..globals import _PLUGIN_WRITER
+        d = self.experiment.makedir(_PLUGIN_WRITER.dir_name)
+        kwargs = {
+            _PLUGIN_WRITER.log_dir: d,
+            _PLUGIN_WRITER.filename_suffix: '.bd'
+        }
+        self.experiment.regist_plugin(_BUILTIN_PLUGIN.writer, kwargs)
 
-    def regist_databundler(self, train=None, eval=None, test=None):
-        if train is not None:
-            self._regist_databundler("train", train)
-        if eval is not None:
-            self._regist_databundler("eval", eval)
-        if test is not None:
-            self._regist_databundler("tests", test)
+        res = SummaryWriter(**kwargs)
+
+        def close():
+            res.flush()
+            res.close()
+
+        self.experiment.regist_exit_hook(close)
+        return res
+
+    @property
+    @lru_cache()
+    def logger(self):
+        from .logger import Logger
+        logger = Logger()
+        fn = logger.add_log_dir(self.experiment.test_dir)
+        self.experiment.regist_plugin(_BUILTIN_PLUGIN.logger, dict(
+            log_dir=self.experiment.test_dir,
+            fn=fn,
+        ))
+        return logger
+
+    @property
+    @lru_cache()
+    def saver(self):
+        d = self.experiment.makedir("modules")
+        kwargs = dict(
+            max_to_keep=3,
+            ckpt_dir=d
+        )
+        self.experiment.regist_plugin(_BUILTIN_PLUGIN.saver, kwargs)
+        return Saver(**kwargs)
+
+    @property
+    @lru_cache()
+    def rnd(self):
+        from .rndmanager import RndManager
+        d = self.experiment.make_exp_dir("rnd")
+        kwargs = dict(
+            save_dir=d,
+        )
+        self.experiment.regist_plugin(_BUILTIN_PLUGIN.rnd, kwargs)
+        return RndManager(**kwargs)
 
     @property
     def model_dict(self):
@@ -256,6 +281,10 @@ class BaseTrainer(metaclass=Merge):
     @property
     def test_dataloader(self) -> DataBundler:
         return self._databundler_dict.get("tests", None)
+
+    @classmethod
+    def from_params(cls, params: Params = None):
+        return cls(params)
 
     def regist_checkpoint(self, key, func):
         self._checkpoint_plug[key] = func
@@ -498,20 +527,21 @@ class BaseTrainer(metaclass=Merge):
 
     def __setattr__(self, name: str, value: Any) -> None:
         super().__setattr__(name, value)
-        if isinstance(value, torch.device):
+        from torch.optim.optimizer import Optimizer
+        if isinstance(value, torch().device):
             pass
-        elif isinstance(value, torch.nn.Module):
+        elif isinstance(value, torch().nn.Module):
             self._model_dict[name] = value
         elif isinstance(value, Optimizer):
             self._optim_dict[name] = value
-        elif isinstance(value, (torch.Tensor, np.ndarray)):
+        elif isinstance(value, (torch().Tensor, np().ndarray)):
             self._vector_dict[name] = value
         elif hasattr(value, "state_dict"):
             self._other_state_dict[name] = value
 
     # need to reimplement
 
-    def train_batch(self, eidx, idx, global_step, batch_data, params: Params, device: torch.device):
+    def train_batch(self, eidx, idx, global_step, batch_data, params: Params, device: torch().device):
         raise NotImplementedError()
 
     def test_eval_logic(self, dataloader, param: Params):
@@ -519,6 +549,15 @@ class BaseTrainer(metaclass=Merge):
 
     def predict(self, xs):
         raise NotImplementedError()
+
+    def callbacks(self, params: Params):
+        pass
+
+    def datasets(self, params: Params):
+        pass
+
+    def models(self, params: Params):
+        pass
 
 
 class Trainer(BaseTrainer):

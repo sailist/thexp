@@ -18,7 +18,12 @@
     to purchase a commercial license.
 """
 
-__VERSION__ = "1.2.5.4"
+__VERSION__ = "1.3.0.1"
+
+# __all__ = ['DataBundler','Experiment','glob']
+# def __getattr__(name):
+
+
 
 from .frame.databundler import DataBundler
 from .frame.experiment import Experiment,glob
@@ -30,6 +35,5 @@ from .frame.saver import Saver
 from .frame.trainer import Trainer
 
 from .frame import callbacks
-from .utils import torch
 
 
