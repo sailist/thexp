@@ -17,22 +17,21 @@
              
     to purchase a commercial license.
 """
+import atexit
 import json
 import os
 import re
 import sys
 import warnings
-from typing import Any
+from collections import namedtuple
 from pprint import pformat
-
-
+from typing import Any
 
 from ..globals import _CONFIGL, _GITKEY, _FNAME
 
 
 def gitutils():
     from thexp.utils import gitutils
-    gitutils.check_commit_exp()
     return gitutils
 
 
@@ -47,6 +46,7 @@ test_dir_pt = re.compile("[0-9]{4}\.[a-z0-9]{7}")
 
 
 class Globals:
+    LEVEL = _CONFIGL
     def __init__(self):
         self._git_config = ExpConfig(_CONFIGL.repository)
         self._configs = [
@@ -79,8 +79,8 @@ class Globals:
             self._configs[1][key] = value
         elif level == _CONFIGL.repository:
             self._configs[2][key] = value
-
-        assert False, 'level name error'
+        else:
+            assert False, 'level name error {}'.format(level)
 
     def items(self):
         return {
@@ -102,6 +102,8 @@ class Globals:
 # 每个repo都存在多个实验，每个实验做一次算一次试验
 # 目录层级为 {实验名.repoid}/{试验名}/{...}
 
+exception = namedtuple('exception_status', ['exc_type', 'exc_value', 'exc_tb'])
+
 class Experiment:
     """
     用于目录管理和常量配置管理
@@ -109,23 +111,29 @@ class Experiment:
     user_level = _CONFIGL.user
     exp_level = _CONFIGL.exp
     repo_level = _CONFIGL.repository
+    count = 0
 
     def __init__(self, exp_name):
         from git import Repo
+        from ..utils.gitutils import ExpRepo
 
         self._exp_name = exp_name
         self._exp_dir = None
         self._start_time = None
-        self._end_state = None
+        self._end_state = False  # 是否试验已结束
         self._test_dir = None
         self._project_dir = None
         self.git_config = ExpConfig(_CONFIGL.repository)
-        self.git_repo = gitutils().repo  # type:Repo
+        self.exp_repo = ExpRepo.singleton()
+        self.git_repo = self.exp_repo.repo  # type:Repo
         self._tags = {}
+        self._hashs = []
         self._config = glob
         self._hold_dirs = []
-        self._time_fmt = "%y-%m-%d-%H%M%S"
+        self._time_fmt = "%Y-%m-%d %H:%M:%S"
         self._plugins = {}
+        self._exc_dict = None # type:exception
+        self._initial()
 
     def add_config(self, key, value, level=_CONFIGL.exp):
         """
@@ -145,8 +153,7 @@ class Experiment:
 
     @property
     def commit(self):
-        gitutils().check_commit_exp()
-        return gitutils().commit
+        return self.exp_repo.commit
 
     @property
     def test_hash(self):
@@ -159,7 +166,7 @@ class Experiment:
     def commit_hash(self):
         if self.commit is None:
             return ""
-        return gitutils().commit.hexsha
+        return self.commit.hexsha
 
     @property
     def project_name(self):
@@ -171,29 +178,49 @@ class Experiment:
 
     @property
     def project_dir(self):
-        if self._project_dir is not None:
-            return self._project_dir
-        self._project_dir = os.path.join(self.root_dir, '{}.{}'.format(self.project_name,gitutils().uuid))
-        os.makedirs(self._project_dir, exist_ok=True)
+        if self._project_dir is None:
+            self._project_dir = os.path.join(self.root_dir, '{}.{}'.format(self.project_name, self.exp_repo.uuid))
+            os.makedirs(self._project_dir, exist_ok=True)
+
         return self._project_dir
 
     @property
     def exp_dir(self):
-        if self._exp_dir is not None:
-            return self._exp_dir
-        self._exp_dir = os.path.join(self.project_dir, self._exp_name)
-        os.makedirs(self._exp_dir, exist_ok=True)
+        if self._exp_dir is None:
+            self._exp_dir = os.path.join(self.project_dir, self._exp_name)
+            os.makedirs(self._exp_dir, exist_ok=True)
         return self._exp_dir
 
     @property
     def test_dir(self):
-        if self._test_dir is not None:
-            return self._test_dir
-        fs = os.listdir(self.exp_dir)
+        """
+        获取当前 exp 目录下的 test_dir
+        命名方式： 通过 序号.hash 的方式命名每一次实验
+        会进行一系列判断保证在硬盘中的任何位置不会出现同名试验
+        其中，hash 保证在不同时间运行的试验文件名不同，序号保证在同一进程运行的多次试验文件名不同
+        {:04d}.{hash}
 
-        i = len([i for i in fs if re.search(test_dir_pt, i) is not None]) + 1
-        self._test_dir = os.path.join(self.exp_dir, "{:04d}.{}".format(i, self.test_hash))
-        os.makedirs(self._test_dir, exist_ok=True)
+        Returns: 一个全局唯一的test_dir，(绝对路径)
+
+        Notes:
+            命名时还会确保存储路径下不会存在相同的序号（在生成时如果有相同序号则一直+1），方法为
+            第一次获取试验目录时记录生成的序号，之后所有的序号都在此基础上生成，但如果 exp 目录变更，则
+        """
+        if self._test_dir is None:
+            fs = os.listdir(self.exp_dir)
+
+            if Experiment.count != 0: # 如果
+                i = self.count + 1
+            else:
+                i = len([f for f in fs if re.search(test_dir_pt, f) is not None]) + 1
+
+            cf_set = {f.split('.')[0] for f in fs} # 首位元素永远存在，不需要判断其他文件
+            while "{:04d}".format(i) in cf_set:
+                i += 1
+
+            self._test_dir = os.path.join(self.exp_dir, "{:04d}.{}".format(i, self.test_hash))
+            os.makedirs(self._test_dir, exist_ok=True)
+            Experiment.count = i
 
         return self._test_dir
 
@@ -201,30 +228,55 @@ class Experiment:
     def test_info_fn(self):
         return os.path.join(self.test_dir, _FNAME.info)
 
+    @property
+    def plugins(self):
+        return self._plugins
+
     def makedir(self, name):
+        """
+        创建 test 级别的目录
+        :param name: 目录名
+        :return:  返回创建目录的绝对路径
+        """
         d = os.path.join(self.test_dir, name)
         os.makedirs(d, exist_ok=True)
         self._hold_dirs.append(name)
         return d
 
     def make_exp_dir(self, name):
+        """创建 exp 级别的目录"""
         d = os.path.join(self.exp_dir, name)
         os.makedirs(d, exist_ok=True)
         return d
 
-    def start(self):
+    def _initial(self):
+        """初始化，会在实例被创建完成后调用"""
         if self._start_time is None:
             self._start_time = curent_date(self._time_fmt)
             sys.excepthook = self.exc_end
-            gitutils().regist_exps(self._exp_name,self.exp_dir)
+            atexit.register(self.end)
+
+            gitutils().regist_exps(self.exp_repo, self._exp_name, self.exp_dir)
+            self.exp_repo.check_commit()  # 在regist_exp 后运行，因为该方法可能导致 repo.json 文件修改
             self._write()
         else:
             warnings.warn("start the same experiment twice is not suggested.")
 
     def _write(self, **extra):
+        """将试验状态写入试验目录中的 info.json """
+        if self._end_state:
+            return
         res = dict(
-            repo=gitutils().repo.working_dir,
+            repo=self.git_repo.working_dir,
             argv=sys.argv,
+            exp_name=self._exp_name,
+            exp_dir=self.exp_dir,
+            test_name=os.path.basename(self.test_dir),
+            test_dir=self.test_dir,
+            root_dir=self.root_dir,
+            project_name=self.project_name,
+            project_iname=os.path.basename(self.project_dir),
+            project_dir=self.project_dir,
             commit_hash=self.commit_hash,
             short_hash=self.test_hash,
             dirs=self._hold_dirs,
@@ -239,16 +291,33 @@ class Experiment:
 
     def end(self, end_code=0, **extra):
         """
-        :param end_code:
+        手动结束试验时调用该方法可以传入其他信息写入文件，
+        该方法同时还通过 atexit 注册了退出钩子，如果不调用该方法，则在程序正常退出前会自动调用该方法写入结束文件。
+        通过pycharm等IDE结束时，由于其结束机制不是通过抛出 KeyboardInterrupt 异常停止的，所以该方法存在没有正常调
+        用的情况，此时文件中不会记录结束用时和退出状态码，也可以做为实验失败的判断条件。
+
+        注意，结束状态仅会调用一次，无论是正常结束（对应方法end()）还是异常结束（对应方法exc_end()），
+        在调用后的任何对实验的操作均不会写入到文件中
+        :param end_code: 退出状态码，表明程序是否正常结束，以免引起数据混乱
         :param extra:
         :return:
         """
         self._write(
             end_time=curent_date(self._time_fmt),
             end_code=end_code,
+            **extra
         )
+        self._end_state = True
 
     def exc_end(self, exc_type, exc_val, exc_tb):
+        """
+        该方法注册了异常钩子，无需手动调用，在出现异常且没有处理导致程序退出的情况时，会通过该方法记录程序失败原因，
+        包括异常类型和提示，同时会将异常栈内容输出到试验目录下的 Exception 文件中
+        :param exc_type:  异常传入类型
+        :param exc_val:  异常传入示例
+        :param exc_tb:  traceback
+        :return:
+        """
         import traceback
         with open(os.path.join(self.test_dir, _FNAME.Exception), 'w', encoding='utf-8') as w:
             w.write("".join(traceback.format_exception(exc_type, exc_val, exc_tb)))
@@ -256,9 +325,15 @@ class Experiment:
             end_code=1,
             exc_type=traceback.format_exception_only(exc_type, exc_val)[-1].strip()
         )
+        self._exc_dict = exception(exc_tb, exc_val, exc_tb)
+        self._end_state = True
         traceback.print_exception(exc_type, exc_val, exc_tb)
 
     def config_items(self):
+        """
+        三个等级的配置文件的内容
+        :return:
+        """
         return self._config.items()
 
     def add_tag(self, name, *plugins):
@@ -271,13 +346,35 @@ class Experiment:
         self._tags[name] = plugins
         self._write()
 
-    def regist_plugin(self, key, value=""):
+    def regist_plugin(self, key, value=None):
+        """
+        注册试验中使用的插件。
+        :param key: 插件名
+        :param value: 若为空，则为空字典
+        :return:
+        """
+        if value is None:
+            value = {}
         self._plugins[key] = value
         self._write()
 
     def regist_exit_hook(self, func):
+        """
+        提供给用户的额外注册退出钩子，传入的参数有两个，
+        第一个参数为该 Experiment 的实例对象
+        第二个参数为一个 exception_status 实例，当程序的退出是因为某异常引起时，该参数会被传入
+            exception_status 是一个 namedtuple('exception_status', ['exc_type', 'exc_value', 'exc_tb'])
+            可以通过 Python 内置的 traceback 库来处理，如
+
+            import traceback
+            traceback.print_exception(exc_type, exc_val, exc_tb)
+        :param func: 退出前调用的钩子，
+        :return:
+        """
         import atexit
-        atexit.register(func)
+        def exp_func():
+            func(self,self._exc_dict)
+        atexit.register(exp_func)
 
 
 class ExpConfig:
@@ -298,8 +395,9 @@ class ExpConfig:
 
     @property
     def repo(self):
+        from ..utils.gitutils import ExpRepo
         if self.config_level == _CONFIGL.repository:
-            return gitutils().repo
+            return ExpRepo().repo
         return self._repo
 
     @property
@@ -333,7 +431,7 @@ class ExpConfig:
         elif self._config_level == _CONFIGL.repository:
             value = gitutils().git_config_syntax(value)
             writer = self._repo.config_writer()
-            writer.add_config(gitutils().section_name, key, value)
+            writer.add_config(_GITKEY.section_name, key, value)
             writer.write()
             writer.release()
         elif self._config_level == _CONFIGL.exp:
@@ -349,7 +447,7 @@ class ExpConfig:
             if self.repo is None:
                 raise AttributeError(key)
             reader = self.repo.config_reader()
-            res = reader.get_value(gitutils().section_name, key, None)
+            res = reader.get_value(_GITKEY.section_name, key, None)
             if res is None:
                 raise AttributeError(key)
             return res
@@ -365,9 +463,9 @@ class ExpConfig:
             if self.repo is None:
                 return {}
             reader = self.repo.config_reader()
-            # reader.items(section_name)
+
             reader.get_value(_GITKEY.thexp, _GITKEY.projname)
-            return reader.items(gitutils().section_name)
+            return reader.items(_GITKEY.section_name)
         elif self._config_level == _CONFIGL.exp:
             return self.repo.items()
 
@@ -383,7 +481,7 @@ class ExpConfig:
             return json.load(r)
 
     def __repr__(self) -> str:
-        return "ExpConfig(level={}\nvalues={})".format(self._config_level,pformat(self.items()))
+        return "ExpConfig(level={}\nvalues={})".format(self._config_level, pformat(self.items()))
 
 
 glob = Globals()

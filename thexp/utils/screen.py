@@ -16,6 +16,8 @@
             sailist@outlook.com
              
     to purchase a commercial license.
+
+    该部分提供一些用于向标准输出进行输出的方法
 """
 import collections
 import os
@@ -41,7 +43,8 @@ class ScreenStr():
     """
     该方法用于长期输出在同一行（如batch级别的loss输出）时，控制屏幕输出位于同一行，支持中英文混合
     该方法效率比较低，需要经过一次调用系统命令，两次对文本的编码解码和（最多）三次嵌套异常处理，
-    因此可能适用场景也就限于炼丹了吧（笑
+
+    TODO 滚动是否要添加，是否有好的可视性比较高的滚动函数
     """
     t = 0
     dt = 0.7
@@ -113,7 +116,7 @@ class ScreenStr():
         b = h / k
         period = 2 * (a + b)
         return 0
-        # TODO
+        # TODO 下面这一计算方法会报错，待解决
         """
         
 File "/home/yanghaozhe/.local/lib/python3.5/site-packages/thexp/utils/screen.py", line 173, in _screen_str
@@ -196,9 +199,10 @@ ZeroDivisionError: float modulo
 
 
 class Progbar(object):
-    """Displays a progress bar.
+    """从 keras 中扒下来的进度条显示类
 
-    # Arguments
+    Displays a progress bar.
+    Arguments
         target: Total number of steps expected, None if unknown.
         width: Progress bar width on screen.
         verbose: Verbosity mode, 0 (silent), 1 (verbose), 2 (semi-verbose)
@@ -230,9 +234,10 @@ class Progbar(object):
         self._last_update = 0
 
     def update(self, current, values=None):
-        """Updates the progress bar.
+        """
+        Updates the progress bar.
 
-        # Arguments
+        Arguments
             current: Index of current step.
             values: List of tuples:
                 `(name, value_for_last_step)`.

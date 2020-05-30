@@ -18,107 +18,15 @@
     to purchase a commercial license.
 """
 import os
-import pprint as pp
-from collections import namedtuple,defaultdict
 
-from tensorboard.backend.event_processing import event_accumulator
-
+from ..base_classes.defaults import draw_dict
 from ..utils.generel_util import curent_date
-
-Scalars = namedtuple('ScalarEvent', ['wall_times', 'values', 'steps'])
-
-
-class BoardReader():
-    """
-    ScalarEvent = namedtuple('ScalarEvent', ['wall_time', 'step', 'value'])
-    CompressedHistogramEvent = namedtuple('CompressedHistogramEvent',
-                                          ['wall_time', 'step',
-                                           'compressed_histogram_values'])
-    HistogramEvent = namedtuple('HistogramEvent',
-                                ['wall_time', 'step', 'histogram_value'])
-    HistogramValue = namedtuple('HistogramValue', ['min', 'max', 'num', 'sum',
-                                                   'sum_squares', 'bucket_limit',
-                                                   'bucket'])
-    ImageEvent = namedtuple('ImageEvent', ['wall_time', 'step',
-                                           'encoded_image_string', 'width',
-                                           'height'])
-    AudioEvent = namedtuple('AudioEvent', ['wall_time', 'step',
-                                           'encoded_audio_string', 'content_type',
-                                           'sample_rate', 'length_frames'])
-    TensorEvent = namedtuple('TensorEvent', ['wall_time', 'step', 'tensor_proto'])
-    """
-
-    def __init__(self, file):
-        self.ea = event_accumulator.EventAccumulator(file,
-                                                     size_guidance={  # see below regarding this argument
-                                                         event_accumulator.COMPRESSED_HISTOGRAMS: 500,
-                                                         event_accumulator.IMAGES: 4,
-                                                         event_accumulator.AUDIO: 4,
-                                                         event_accumulator.SCALARS: 0,
-                                                         event_accumulator.HISTOGRAMS: 1,
-                                                     })
-        self.ea.Reload()
-
-    def get_scalars(self, tag):
-        wall_times, steps, values = list(zip(*self.ea.Scalars(tag)))  # 'wall_time', 'step', 'value'
-        return Scalars(wall_times, values, steps)
-
-    @property
-    def scalars_tags(self):
-        return self.tags['scalars']
-
-    @property
-    def tags(self):
-        return self.ea.Tags()
-
-    # def get_histograms(self, tag):
-    #     return self.ea.Histograms(tag)
-    #
-    # def get_audio(self, tag):
-    #     return self.ea.Audio(tag)
-    #
-    # def get_images(self, tag):
-    #     return self.ea.Images(tag)
-    #
-    # def get_compressed_histograms(self, tag):
-    #     return self.ea.CompressedHistograms(tag)
-    #
-    # def get_tensor(self, tag):
-    #     return self.ea.Tensors(tag)
-
-    def summary(self):
-        pp.pprint(self.ea.Tags())
-
-
-class Comparer:
-    def __init__(self, *bds: BoardReader):
-        """ 还应该接受params..."""
-        self.bds = bds
-        self.tag_dict = defaultdict(list)
-        for bd in self.bds:
-            for stag in bd.scalars_tags:
-                self.tag_dict[stag].append(bd)
-
-    def paraller(self):
-        pass
-
-    def statistics(self):
-        """统计传入bd的最大值、最小值、均值、方差之类的数据"""
-        pass
-
-
-
-
-
-def draw_dict():
-    res = dict()
-
-    res["x"] = []
-    res['y'] = []
-    return res
 
 
 class Reporter():
+    """
+    记录并生成 markdown 格式的报告
+    """
     def __init__(self, pltf_dir, exts=None):
 
         self.base_dir = pltf_dir
@@ -131,17 +39,16 @@ class Reporter():
 
     @property
     def savedir(self):
-        if self.cur_dir is not None:
-            return self.cur_dir
-        i = 1
-        fn = os.path.join(self.base_dir, "{:04}".format(i))
-        while os.path.exists(fn):
-            i += 1
+        if self.cur_dir is None:
+            i = 1
             fn = os.path.join(self.base_dir, "{:04}".format(i))
-        os.makedirs(fn, exist_ok=True)
+            while os.path.exists(fn):
+                i += 1
+                fn = os.path.join(self.base_dir, "{:04}".format(i))
+            os.makedirs(fn, exist_ok=True)
+            self.cur_dir = fn
 
-        self.cur_dir = fn
-        return fn
+        return self.cur_dir
 
     def as_numpy(self, var):
         import torch, numpy as np
@@ -183,7 +90,7 @@ class Reporter():
 
     @property
     def picklefile(self):
-        return "charts.pkl"
+        return "analyser.pkl"
 
     @property
     def reportfile(self):

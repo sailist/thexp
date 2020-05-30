@@ -18,23 +18,22 @@
     to purchase a commercial license.
 """
 import bisect
+import os
 import pprint as pp
 import warnings
 from functools import lru_cache
 from functools import wraps
-from typing import Any
+from typing import Any, Union
+
+from torch.utils.data.dataloader import DataLoader
 
 from .databundler import DataBundler
-from .meter import AvgMeter
+from .meter import AvgMeter, Meter
 from .params import Params
 from .saver import Saver
 from ..base_classes.metaclasses import Merge
-from ..globals import _BUILTIN_PLUGIN
+from ..globals import _BUILTIN_PLUGIN, _FNAME
 from ..utils.lazy import torch, np
-
-
-def build_exp_name(trainer_name):
-    return trainer_name.lower().replace("trainer", "Exp")
 
 
 class BaseTrainer(metaclass=Merge):
@@ -48,11 +47,22 @@ class BaseTrainer(metaclass=Merge):
     def __new__(cls, *args, **kwargs):
         self = super().__new__(cls)
         if cls.__exp_name__ is None:
-            cls.__exp_name__ = build_exp_name(cls.__name__)
+            cls.__exp_name__ = cls.__name__.lower().replace("trainer", "Exp")
 
         def wrapper(func, _call_set: list):
+            """
+            对每个 Trainer 的 _call_backs 类变量中定义的函数尝试绑定回调
+            Args:
+                func:
+                _call_set:
+
+            Returns:
+
+            """
+
             @wraps(func)
             def _newfunc(*args, **kwargs):
+                """执行前回调 on_begin() 、执行后回调 on_end()、执行异常则回调 on_exception() """
                 for callback in _call_set:
                     if callback.enable:
                         callback.on_begin(self, func, self.params, *args, **kwargs)
@@ -106,29 +116,26 @@ class BaseTrainer(metaclass=Merge):
 
     def initial(self):
         """
-        will call:
-            self.initial_trainer(self.params)
-            self.initial_models(self.params)
-            self.initial_datasets(self.params)
-            self.initial_callback()
-
-        :param exps_dir:
-        :return:
         """
+        import inspect
         from .experiment import Experiment
-        from ..utils.gitutils import locate_cls
+        # from ..utils.gitutils import locate_cls
         pre = self.__class__.__module__.split('.')[-1]
         self.experiment = Experiment("{}.{}".format(self.__exp_name__, pre))
-        # self.params TODO
-        # self.experiment.makedir('params')
-        self.experiment.regist_plugin(_BUILTIN_PLUGIN.trainer, {
+
+        import json
+        self.params.to_json(os.path.join(self.experiment.test_dir, _FNAME.params))
+
+        self.experiment.regist_plugin(_BUILTIN_PLUGIN.params, {
             'param_hash': self.params.hash(),
-            'path': __file__,
-            'loaction': locate_cls(self.__class__),
+        })
+
+        self.experiment.regist_plugin(_BUILTIN_PLUGIN.trainer, {
+            'path': inspect.getfile(self.__class__),
+            # 'loaction': locate_cls(self.__class__),
             'module': self.__class__.__module__,
             'class': self.__class__.__name__
         })
-        self.experiment.start()
 
         # self.reporter = Reporter(self.experiment.makedir("plot"))
         self.models(self.params)
@@ -136,13 +143,25 @@ class BaseTrainer(metaclass=Merge):
         self.callbacks(self.params)
 
     def _regist_databundler(self, key, val):
-        from torch.utils.data.dataloader import DataLoader
         assert isinstance(val, (DataBundler, DataLoader))
         if isinstance(val, DataLoader):
             val = DataBundler().add(val)
         self._databundler_dict[key] = val
 
-    def regist_databundler(self, train=None, eval=None, test=None):
+    def regist_databundler(self,
+                           train: Union[DataBundler, DataLoader] = None,
+                           eval: Union[DataBundler, DataLoader] = None,
+                           test: Union[DataBundler, DataLoader] = None):
+        """
+        注册 DataLoader
+        Args:
+            train:
+            eval:
+            test:
+
+        Returns:
+
+        """
         if train is not None:
             self._regist_databundler("train", train)
         if eval is not None:
@@ -158,7 +177,6 @@ class BaseTrainer(metaclass=Merge):
             if self.train_toggle:
                 self.train_toggle = False
                 break
-        self.experiment.end()
 
     def train_epoch(self, eidx, params):
         avg = AvgMeter()
@@ -176,9 +194,23 @@ class BaseTrainer(metaclass=Merge):
 
         return avg
 
-    def train_step(self, steps):
+    def train_step(self, steps) -> Union[AvgMeter, Meter]:
+        """
+        训练特定的步数
+        Args:
+            steps:
+
+        Returns:
+            训练过程中的 AvgMeter
+            若 steps = 1 则只返回 Meter
+
+        """
         param = self.params
         i = 0
+        if steps == 1:
+            for idx, data in enumerate(self.train_dataloader):
+                return self.train_batch(0, idx, i, data, param, self.device)
+
         avg = AvgMeter()
         while steps > 0:
             avg = AvgMeter()
@@ -190,10 +222,21 @@ class BaseTrainer(metaclass=Merge):
                     return avg
         return avg
 
-    def feed_batchdata(self, batch_data):
-        self.train_batch(0, 0, 0, batch_data, self.params, self.device)
+    def feed_batchdata(self, batch_data=None) -> Meter:
+        """
+        只训练一个 batch，用于测试或者用于干什么...
+        Args:
+            batch_data:
+
+        Returns:
+            Meter
+        """
+        if batch_data is None:
+            return self.train_step(1)
+        return self.train_batch(0, 0, 0, batch_data, self.params, self.device)
 
     def test(self):
+        """test via test_dataloader"""
         loader = self.test_dataloader
         if loader is None:
             self.logger.info("Have no test dataset, ignored test.")
@@ -201,6 +244,7 @@ class BaseTrainer(metaclass=Merge):
         return self.test_eval_logic(loader, self.params)
 
     def eval(self):
+        """eval via eval_dataloader"""
         loader = self.eval_dataloader
         if loader is None:
             self.logger.info("Have no eval dataset, ignored eval.")
@@ -221,7 +265,7 @@ class BaseTrainer(metaclass=Merge):
 
         res = SummaryWriter(**kwargs)
 
-        def close():
+        def close(*args):
             res.flush()
             res.close()
 
@@ -287,21 +331,57 @@ class BaseTrainer(metaclass=Merge):
         return cls(params)
 
     def regist_checkpoint(self, key, func):
+        """
+        注册需要被 checkpoint 类型的字典保存的
+        Args:
+            key:
+            func:
+
+        Returns:
+
+        """
         self._checkpoint_plug[key] = func
 
     def save_keypoint(self, extra_info=None, replacement=False):
+        """
+        保存 keypoint，会保存所有可存储格式
+        Args:
+            extra_info:  额外的信息，将以 json 格式被保存在和模型文件名相同，但后缀名为 json 的文件中
+            replacement: 若遇到相同文件名，是否进行替换
+
+        Returns:
+
+        """
         state_dict = self.checkpoint_dict()
         fn = self.saver.save_keypoint(state_dict["_eidx"], state_dict, extra_info, replacement)
         self.logger.info("save keypoint in {}".format(fn))
         return fn
 
     def save_checkpoint(self, extra_info=None, replacement=False):
+        """
+        保存 checkpoint，会保存所有可存储格式
+        Args:
+            extra_info:  额外的信息，将以 json 格式被保存在和模型文件名相同，但后缀名为 json 的文件中
+            replacement: 若遇到相同文件名，是否进行替换
+
+        Returns:
+            保存的 checkpoint 的文件名
+        """
         state_dict = self.checkpoint_dict()
         fn = self.saver.save_checkpoint(state_dict["_eidx"], state_dict, extra_info, replacement)
         self.logger.info("save checkpoint in {}".format(fn))
         return fn
 
-    def save_model(self, extra_info=None):
+    def save_model(self, extra_info: dict = None) -> str:
+        """
+        保存 model，只会保存所有 torch.nn.Module 类型的 state_dict
+        Args:
+            extra_info: 额外的信息，将以 json 格式被保存在和模型文件名相同，但后缀名为 json 的文件中
+
+        Returns:
+            所保存模型的文件名
+
+        """
         state_dict = self.model_state_dict()
         fn = self.saver.save_model(self.params.eidx, state_dict, extra_info)
         self.logger.info("save model in {}".format(fn))
@@ -309,7 +389,7 @@ class BaseTrainer(metaclass=Merge):
 
     def add_callback(self, callback):
         """
-        添加一个回调函数
+        添加一个回调函数，注意，不能添加重复的 callback，这不推荐，也没有必要。
         :type callable,str
         :param callback:
         :return:
@@ -331,14 +411,19 @@ class BaseTrainer(metaclass=Merge):
         return True
 
     def reload_callback(self, callback):
+        """重新加载某 callback"""
         self.remove_callback(callback.__class__)
         return self.add_callback(callback)
 
     def remove_callback(self, callback):
         """
+        移除已加载的 callback
+        Args:
+            callback: 可以是回调类名、实例、或回调类类型
 
-        :param callback: str / class / callback instance
-        :return:
+        Returns:
+            是否移除成功，若返回False，则表明没有找到对应的 callback
+            若返回 True，则表明该 callback 已被完好移除
         """
         msg = None
         from .callbacks import BaseCallback
@@ -366,11 +451,6 @@ class BaseTrainer(metaclass=Merge):
 
     '''module和optim的一部分方法集成'''
 
-    def load_latast_checkpoint(self):
-        ckpt, info = self.saver.load_latest_checkpoint()
-        self.load_checkpoint_dict(ckpt)
-        self.logger.raw(pp.pformat(info))
-
     def load_checkpoint(self, fn):
         ckpt, info = self.saver.load_state_dict(fn)
         self.load_checkpoint_dict(ckpt)
@@ -390,7 +470,7 @@ class BaseTrainer(metaclass=Merge):
         self.load_optim_state_dict(state_dict["optim"])
         self.load_other_state_dict(state_dict["other"])
         self.load_vector_dict(state_dict["vector"])
-        self.load_plug_state_dict(state_dict['plug'])
+        self.load_extra_state_dict(state_dict['plug'])
 
     def load_model_state_dict(self, state_dict, strict=True):
         self.logger.inline("loading model: ", append=True)
@@ -444,26 +524,45 @@ class BaseTrainer(metaclass=Merge):
                     warnings.warn("{} not found in state_dict".format(k))
         self.logger.newline()
 
-    def load_plug_state_dict(self, state_dict, strict=False):
-        self.logger.inline("loading plugs: ", append=True)
-        for k in self._checkpoint_plug:
-            self.logger.raw(k)
-            if k in state_dict:
-                try:
-                    self._checkpoint_plug[k](self, state_dict[k], strict)
-                except:
-                    if strict:
-                        raise KeyError("{} not match this load function".format(k))
-                    else:
-                        warnings.warn("{} not match this load function".format(k))
-            else:
-                if strict:
-                    raise KeyError(k)
-                else:
-                    warnings.warn("{} not found in state_dict".format(k))
-        self.logger.newline()
+    def extra_state_dict(self) -> dict:
+        """
+        nn.Module, Optimizer, numpy.ndarray, torch.Tensor, 以及其他包含 state_dict 接口的对象在保存checkpoint时候
+        无需手动添加，会自动被存储，而除了这些之外，有其他需要在 checkpoint 中被保存的内容，可以通过该接口实现
+        Returns:
+
+        Notes:
+            该方法和 load_extra_state_dict() 一一对应，两者需要同时实现
+        """
+        return {}
+
+    def load_extra_state_dict(self, state_dict, strict=False):
+        """
+        nn.Module, Optimizer, numpy.ndarray, torch.Tensor, 以及其他包含 state_dict 接口的对象在保存checkpoint时候
+        无需手动添加，会自动被存储，而除了这些之外，有其他需要在 checkpoint 中被保存的内容，可以通过该接口实现
+        Returns:
+
+        Args:
+            state_dict:
+            strict:
+
+        Returns:
+
+        Notes:
+            该方法和 extra_state_dict() 一一对应，两者需要同时实现
+        """
+        pass
 
     def load_state_dict(self, strict=True, **kwargs):
+        """
+        传入键值对，对 model / optim / other / checkpoint_plug 分别进行检查尝试，若能匹配则调用相应的加载方法
+        Args:
+            strict:  是否严格匹配，针对 model 和 checkpoint_plug ，当存在无法匹配的键时，
+            若该值为 True，则抛出异常，否则仅报一次警告
+            **kwargs:  键值对
+
+        Returns:
+
+        """
         for k, v in kwargs.items():
             if k in self._model_dict:
                 self._model_dict[k].load_state_dict(v, strict)
@@ -490,7 +589,7 @@ class BaseTrainer(metaclass=Merge):
             optim=self.optim_state_dict(),
             other=self.other_state_dict(),
             vector=self.vector_state_dict(),
-            plug=self.plug_state_dict(),
+            plug=self.extra_state_dict(),
             eidx=self.params.eidx,
             idx=self.params.idx,
             global_step=self.params.global_step,
@@ -498,19 +597,20 @@ class BaseTrainer(metaclass=Merge):
         return val
 
     def model_state_dict(self):
+        """所有继承自 nn.module 的类的 state_dict """
         return {k: v.state_dict() for k, v in self._model_dict.items()}
 
     def optim_state_dict(self):
+        """所有继承自 Optimizer 的类的 state_dict"""
         return {k: v.state_dict() for k, v in self._optim_dict.items()}
 
     def other_state_dict(self):
+        """所有 实现了 state_dict / load_state_dict 接口的"""
         return {k: v.state_dict() for k, v in self._other_state_dict.items()}
 
     def vector_state_dict(self):
+        """所有 torch.Tensor 或 numpy.ndarray"""
         return {k: v for k, v in self._vector_dict.items()}
-
-    def plug_state_dict(self):
-        return {k: getattr(self, k, None) for k in self._checkpoint_plug}
 
     def change_mode(self, train=True):
         for k, v in self._model_dict.items():
@@ -536,10 +636,8 @@ class BaseTrainer(metaclass=Merge):
             self._optim_dict[name] = value
         elif isinstance(value, (torch().Tensor, np().ndarray)):
             self._vector_dict[name] = value
-        elif hasattr(value, "state_dict"):
+        elif callable(getattr(value, "state_dict",None)) and callable(getattr(value, "load_state_dict",None)):
             self._other_state_dict[name] = value
-
-    # need to reimplement
 
     def train_batch(self, eidx, idx, global_step, batch_data, params: Params, device: torch().device):
         raise NotImplementedError()
@@ -551,22 +649,34 @@ class BaseTrainer(metaclass=Merge):
         raise NotImplementedError()
 
     def callbacks(self, params: Params):
+        """初始化回调函数"""
         pass
 
     def datasets(self, params: Params):
+        """初始化数据集"""
         pass
 
     def models(self, params: Params):
+        """初始化模型"""
         pass
 
 
 class Trainer(BaseTrainer):
 
     def callbacks(self, params: Params):
-        super().callbacks(params)
+        pass
 
     def datasets(self, params: Params):
-        super().datasets(params)
+        pass
 
     def models(self, params: Params):
-        super().models(params)
+        pass
+
+    def train_batch(self, eidx, idx, global_step, batch_data, params: Params, device: torch().device):
+        pass
+
+    def extra_state_dict(self) -> dict:
+        return super().extra_state_dict()
+
+    def load_extra_state_dict(self, state_dict, strict=False):
+        super().load_extra_state_dict(state_dict, strict)

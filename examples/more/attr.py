@@ -18,7 +18,7 @@
     to purchase a commercial license.
 """
 
-from thexp.frame.params import attr
+from thexp.base_classes.attr import attr
 
 dic = attr()
 

@@ -25,7 +25,7 @@ print(__VERSION__)
 
 from thexp import Saver
 
-saver = Saver("./sav")
+saver = Saver("./sav",max_to_keep=3)
 for i in range(10):
     saver.save_keypoint(i,{"a":i},{"b":i})
 for i in range(10):

@@ -19,6 +19,7 @@
 """
 from collections import OrderedDict
 from typing import Any
+from numbers import Number
 
 from ..utils.lazy import torch,np
 
@@ -53,28 +54,31 @@ class Meter:
     def int(self, item:str):
         self._format_dict[item] = lambda x: "{:.0f}".format(x)
 
-    def float(self, item:str, acc=4):
+    def float(self, key:str, acc=4):
         """
         设置浮点数精度，默认为小数点后四位
-        :param item:
-        :param acc:
-        :return:
+        Args:
+            key:
+            acc:
+
+        Returns:
+
         """
-        self._format_dict[item] = lambda x: "{{:.{}f}}".format(acc).format(x)
+        self._format_dict[key] = lambda x: "{{:.{}f}}".format(acc).format(x)
 
-    def percent(self, item:str, acc=2):
-        self._format_dict[item] = lambda x: "{{:.{}%}}".format(acc).format(x)
+    def percent(self, key:str, acc=2):
+        self._format_dict[key] = lambda x: "{{:.{}%}}".format(acc).format(x)
 
-    def tensorfloat(self, item:str, acc=4):
+    def tensorfloat(self, key:str, acc=4):
         def func(x: torch().Tensor):
             if len(x.shape) == 0:
                 return "{{:.{}f}}".format(acc).format(x)
             else:
                 return "{{:.{}f}}".format(acc).format(x.item())
 
-        self._format_dict[item] = func
+        self._format_dict[key] = func
 
-    def str_in_line(self, item:str):
+    def str_in_line(self, key:str):
         def func(x):
             l = str(x).split("\n")
             if len(l) > 1:
@@ -82,7 +86,7 @@ class Meter:
             else:
                 return l[0]
 
-        self._format_dict[item] = func
+        self._format_dict[key] = func
 
     def add_format_type(self, type, func):
         self._convert_type.append((type, func))
@@ -135,8 +139,9 @@ class Meter:
             yield k, v
 
     def array_items(self):
+        """任何数字类型的对象"""
         for k, v in self._param_dict.items():
-            if isinstance(v, (int, float, torch().Tensor, np().ndarray)):
+            if isinstance(v, (Number, torch().Tensor, np().ndarray)):
                 yield k, v
 
     def numeral_items(self):
@@ -159,6 +164,7 @@ class Meter:
         return iter(self._param_dict)
 
     def serialize(self):
+        """格式化字典"""
         log_dict = OrderedDict()
         for k, v in self._param_dict.items():
             if k in self._format_dict:

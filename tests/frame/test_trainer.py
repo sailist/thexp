@@ -18,9 +18,6 @@
     to purchase a commercial license.
 """
 
-
-from thexp import Trainer
-
 import torch.nn as nn
 class MyModel(nn.Module):
     def __init__(self):
@@ -47,7 +44,7 @@ class MyTrainer(Trainer):
         from torch.optim import SGD
         from torchvision import transforms
         from torchvision.datasets import FakeData
-        from thexp.utils.date.dataloader import DataLoader
+        from thexp.torch.data import DataLoader
 
         self.model = MyModel()
         self.optim = SGD(self.model.parameters(), lr=params.lr)

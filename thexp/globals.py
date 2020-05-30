@@ -16,17 +16,21 @@
             sailist@outlook.com
              
     to purchase a commercial license.
+
+    这一部分定义了一些全局字符串，防止出现命名错误的情况
 """
 
 
 class _REPOJ:
     repopath = 'repopath'
     exps = 'exps'
+    exp_root = 'exp_root'
 
 
 class _INFOJ:
     repo = 'repo'
     argv = 'argv'
+    test_name = 'test_name'
     commit_hash = 'commit_hash'
     short_hash = 'short_hash'
     dirs = 'dirs'
@@ -51,12 +55,17 @@ class _GITKEY:
     projname = 'projname'
     expsdir = 'expsdir'
     uuid = 'uuid'
+    section_name = 'thexp'
+    thexp_branch = 'experiment'
 
 
 class _FNAME:
     Exception = 'Exception'
     info = 'info.json'
     repo = 'repo.json'
+    params = 'params.json'
+    hide = '.hide'
+    fav = '.fav'
 
 
 class _ML:
@@ -68,6 +77,7 @@ class _ML:
 
 class _BUILTIN_PLUGIN:
     trainer = 'trainer'
+    params = 'params'
     writer = 'writer'
     logger = 'logger'
     saver = 'saver'
@@ -87,3 +97,9 @@ class _INDENT:
     tab = '  '
     ttab = '    '
     tttab = '      '
+
+
+class _DLEVEL:
+    proj = 'proj'
+    exp = 'exp'
+    test = 'test'

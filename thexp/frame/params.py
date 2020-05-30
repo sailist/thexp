@@ -18,85 +18,19 @@
     to purchase a commercial license.
 """
 import copy
+import json
+import os
 import pprint as pp
 import warnings
-from collections import OrderedDict
+from collections import defaultdict
+
+import fire
 from collections.abc import Iterable
 from typing import Any
 
-import fire
-
+from ..base_classes.attr import attr
+from ..base_classes.errors import BoundCheckError, NewParamWarning
 from ..utils.lazy import torch
-
-
-class attr(OrderedDict):
-    def __getattr__(self, item):
-        if item not in self or self[item] is None:
-            self[item] = attr()
-        return self[item]
-
-    def __setattr__(self, name: str, value: Any) -> None:
-        if isinstance(value, dict):
-            value = attr.from_dict(value)
-        self[name] = value
-
-    def __getitem__(self, k):
-        k = str(k)
-        ks = k.split(".")
-        if len(ks) == 1:
-            return super().__getitem__(ks[0])
-
-        cur = self
-        for tk in ks:
-            cur = cur.__getitem__(tk)
-        return cur
-
-    def __setitem__(self, k, v):
-        if isinstance(v, dict):
-            v = attr.from_dict(v)
-
-        k = str(k)
-        ks = k.split(".")
-        if len(ks) == 1:
-            super().__setitem__(ks[0], v)
-        else:
-            cur = self
-            for tk in ks[:-1]:
-                cur = cur.__getattr__(tk)
-            cur[ks[-1]] = v
-
-    @staticmethod
-    def from_dict(dic: dict):
-        res = attr()
-        for k, v in dic.items():
-            if isinstance(v, dict):
-                v = attr.from_dict(v)
-            res[k] = v
-        return res
-
-    def __copy__(self):
-        return attr(
-            **{k: copy.copy(v) for k, v in self.items()}
-        )
-
-    def hash(self) -> str:
-        from ..utils.generel_util import hash
-        return hash(self)
-
-    def jsonify(self):
-        """
-        获取可被json化的dict，其中包含的任意
-        :return:
-        """
-
-
-
-class BoundCheckError(BaseException):
-    pass
-
-
-class NewParamWarning(Warning):
-    pass
 
 
 class BaseParams:
@@ -106,6 +40,7 @@ class BaseParams:
         self._param_dict = attr()
         self._exp_name = None
         self._bound = {}
+        self._bind = defaultdict(list)
 
     def __getitem__(self, item):
         return self.__getattr__(item)
@@ -125,6 +60,10 @@ class BaseParams:
             if res is not None and not res:
                 raise BoundCheckError("param '{}' checked failed.".format(name))
             self._param_dict[name] = value
+            if name in self._bind:
+                for _v, _bind_k, _bind_v in self._bind[name]:
+                    if _v == value:
+                        self.__setattr__(_bind_k, _bind_v)
 
     def __getattr__(self, item):
         # if item not in self._param_dict:
@@ -151,13 +90,15 @@ class BaseParams:
     def arange(self, k, default, left=float("-inf"), right=float("inf")):
         """
         约束 key 的选择范围（连续）
-
         如果有多段连续，请使用 lambda_bound() 方法
-        :param k: 要约束的键
-        :param default: 默认值
-        :param left:
-        :param right:
-        :return:
+        Args:
+            k: 要约束的键
+            default: 默认值
+            left:
+            right:
+
+        Returns:
+
         """
 
         def check(x):
@@ -170,10 +111,15 @@ class BaseParams:
     def choice(self, k, *choices):
         """
         约束 key 的选择范围（离散）
-        :param k: 要约束的键
-        :param choices: 要选择的常量，第一个将作为默认值
-        :return:
+
+        Args:
+            k: 要约束的键
+            *choices: 要选择的常量，第一个将作为默认值
+
+        Returns:
+
         """
+
         def check(x):
             if x not in choices:
                 raise BoundCheckError("param '{}' is enum of {}".format(k, choices))
@@ -181,28 +127,52 @@ class BaseParams:
         self._bound[k] = check
         self[k] = choices[0]
 
+    def bind(self, k, v, bind_k, bind_v):
+        """
+        k 变化到 v 后，让相应的 bind_k 的值变化到 bind_v
+        """
+        self._bind[k].append((v, bind_k, bind_v))
+
     def lambda_bound(self, k, default, check_lmd):
         """
         约束 key 符合 check_lmd 的要求
-        :param k:
-        :param default:
-        :param check_lmd: 一个函数，接受一个参数，为 key 接受新值时的 value
+        Args:
+            k:
+            default:
+            check_lmd: 一个函数，接受一个参数，为 key 接受新值时的 value
             该函数若返回None，则表明异常会在检查过程中抛出，若返回值为任意可以判断真值的类型，则根据真值类型判断
                 为假则抛出 BoundCheckError
-        :return:
+
+        Returns:
+
         """
         self._bound[k] = check_lmd
         self[k] = default
 
-    def grid_search(self, k, iterable: Iterable):
-        snap = copy.copy(self._param_dict)
+    def grid_search(self, key, iterable: Iterable):
+        """
+
+        Args:
+            key:
+            iterable:
+
+        Returns:
+
+        """
+        snapshot = copy.copy(self._param_dict)
         for v in iterable:
-            for sk, sv in snap.items():
+            for sk, sv in snapshot.items():
                 self[sk] = sv
-            self[k] = v
+            self[key] = v
             yield self
 
     def from_args(self):
+        """
+        从命令行参数中设置参数值
+        Returns:
+
+        """
+
         def func(**kwargs):
             for k, v in kwargs.items():
                 try:
@@ -215,6 +185,35 @@ class BaseParams:
                 self[k] = v
 
         fire.Fire(func)
+        return self
+
+    def from_json(self, fn):
+        """
+        从 json 中获取参数值
+        Args:
+            fn:
+
+        Returns:
+
+        """
+        if os.path.exists(fn):
+            with open(fn, encoding='utf-8') as r:
+                res = json.load(r)
+                for k, v in res.items():
+                    self[k] = v
+        return self
+
+    def to_json(self, fn: str):
+        """
+        以json格式保存文件，注意，该方法保存的json内容基于 attr 的jsonify() 方法，不可序列化的格式无法被保存
+        Args:
+            fn:
+
+        Returns:
+
+        """
+        with open(fn, 'w', encoding='utf-8') as w:
+            json.dump(self.inner_dict.jsonify(), w, indent=2)
 
     def items(self):
         return self._param_dict.items()
@@ -223,16 +222,31 @@ class BaseParams:
         for k in self._param_dict:
             yield k
 
-    def update(self, items):
+    def update(self, dic: dict):
         """
-        :param items:
-        :return:
+
+        Args:
+            dic:
+
+        Returns:
+
         """
-        for k, v in items.items():
+        for k, v in dic.items():
             self._param_dict[k] = v
 
-    def hash(self):
+    def hash(self) -> str:
+        """
+        返回对参数的定义顺序及其相应值的一个hash，理论上，两个Param 对象的hash方法返回的参数相同，
+        则两者具有相同的参数和参数值
+
+        Returns:
+
+        """
         return self._param_dict.hash()
+
+    @property
+    def inner_dict(self) -> attr:
+        return self._param_dict
 
     def __eq__(self, other):
         if isinstance(other, BaseParams):
@@ -253,6 +267,7 @@ class Params(BaseParams):
         self.dataset = None
         self.architecture = None
         self.optim = None
+        self.ignore_set = set()
 
 
 if __name__ == '__main__':

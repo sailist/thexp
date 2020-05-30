@@ -29,6 +29,21 @@ exp = Experiment("expname")
 print(exp.make_exp_dir("explevel"))
 print(exp.makedir("testlevel"))
 
+from thexp import Params
+
+params = Params()
+exp.regist_plugin("params",dict(
+    _param_hash = params.hash(),
+    data = params.inner_dict.jsonify()
+))
+
+from thexp import Logger
+
+logger = Logger()
+fn = logger.add_log_dir(exp.makedir('logger'))
+exp.regist_plugin('logger',dict(
+    fn = fn,
+))
 
 
 
@@ -38,7 +53,6 @@ try:
 except:
     pass
 
-exp.start()
 exp.end()
 
 

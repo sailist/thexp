@@ -16,5 +16,6 @@
             sailist@outlook.com
              
     to purchase a commercial license.
+    提供命令行参数控制
 """
 

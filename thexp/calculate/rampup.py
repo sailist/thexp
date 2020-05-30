@@ -17,7 +17,7 @@
              
     to purchase a commercial license.
 """
-# TODO
+# TODO 更多、更易于使用的 热身和冷身 函数
 
 import numpy as np
 

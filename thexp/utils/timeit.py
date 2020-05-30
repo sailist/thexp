@@ -22,11 +22,18 @@ import time
 import warnings
 from collections import OrderedDict
 
-from thexp import Meter
 from thexp.utils.generel_util import curent_date
 
 
-def format_second(sec):
+def format_second(sec: int) -> str:
+    """
+    将 秒（整数） 格式化为 {}h{}m{}s，其中，等于0 的部份会被隐藏
+    Args:
+        sec:
+
+    Returns:
+
+    """
     hour = min = 0
     unit = "s"
 
@@ -44,6 +51,11 @@ def format_second(sec):
 
 
 class TimeIt:
+    """
+    用于计算各部分用时，关键方法在 start() / mark() / end() 上
+
+    """
+
     def __init__(self):
         self.last_update = None
         self.ends = False
@@ -89,6 +101,8 @@ class TimeIt:
         self.ends = True
 
     def meter(self):
+        from thexp import Meter
+
         meter = Meter()
         for key, offset in self.times.items():
             meter[key] = offset

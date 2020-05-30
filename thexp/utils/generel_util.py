@@ -21,7 +21,7 @@ import hashlib
 import os
 import sys
 from datetime import datetime
-
+from ..globals import _GITKEY
 
 def listdir_by_time(dir_path):
     dir_list = os.listdir(dir_path)
@@ -43,7 +43,9 @@ def _create_home_dir(path):
     os.makedirs(path)
     import json
     with open("config.json", "w") as w:
-        json.dump({}, w, indent=2)
+        json.dump({
+            _GITKEY.expsdir:os.path.join(path,'experiments')
+        }, w, indent=2)
 
 
 def home_dir():
@@ -166,3 +168,20 @@ def hash(value) -> str:
         for v in value:
             hl.update(hash(v).encode(encoding='utf-8'))
     return hl.hexdigest()
+
+
+def deep_chain(item):
+    from collections.abc import Iterable
+    if isinstance(item,Iterable):
+        for i in item:
+            if isinstance(i,Iterable):
+                for ii in deep_chain(i):
+                    yield ii
+            else:
+                yield i
+    else:
+        yield item
+
+
+def renormpath(path):
+    return os.path.normcase(path).replace("\\", '/')

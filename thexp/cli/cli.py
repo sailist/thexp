@@ -23,61 +23,79 @@
 doc = """
 Usage:
  thexp init
- thexp config -l
- thexp config --global <name> <value> 
- thexp config --global -u <name>
- thexp config --global -l
- thexp config --local <name> <value>
- thexp config --local -u <name>
- thexp config --local -l
- thexp config --global -e
- thexp config --local -e
+ thexp board [--host=<host>] [--port=<port>]
+ thexp find <test_name>
+ thexp find -t <test_name>
+ thexp find -e <exp_name>
+ thexp find -p <proj_name>
+ thexp reset <test_name>
+ thexp archive <test_name>
 """
+
 # 检测是否init，没有报错 fatal: unable to read config file '.git/config': No such file or directory
 from docopt import docopt
-from thexp.frame.experiment import globs
+from typing import List
 from thexp import __VERSION__
-import os
-def init():
-    init_dir = os.path.join(os.getcwd(),".thexp")
-    os.makedirs(init_dir,exist_ok=True)
-    globs.update("local","project_dir",os.path.abspath(os.getcwd()))
-    if globs.local_fn != None:
-        print("ok.")
+from thexp.analyser.expviewer import SummaryViewer,ExpViewer,ProjViewer,TestViewer
+from thexp.globals import _DLEVEL
+from thexp.analyser.web.server import run
+from thexp.analyser.web.util import get_ip
 
-def update(mode,name,val):
-    globs.update(mode,name,val)
-
-def unset(mode,name):
-    globs.unset(mode,name)
-
-def list(globa=False,local=False):
-    globs.list_config(globa,local)
-
+print(__VERSION__)
 arguments = docopt(doc, version=__VERSION__)
 
-if arguments["init"]:
-    init()
-elif arguments["config"]:
-    if arguments["--global"]:
-        if arguments["-l"]:
-            list(globa=True)
-        elif arguments["<name>"]:
-            if arguments["-u"]:
-                globs.unset("global",arguments["<name>"])
-            else:
-                globs.update("global",arguments["<name>"],arguments["<value>"])
-    elif arguments["--local"]:
-        if arguments["-l"]:
-            list(local=True)
-        elif arguments["<name>"]:
-            if arguments["-u"]:
-                globs.unset("local", arguments["<name>"])
-            else:
-                globs.update("local", arguments["<name>"], arguments["<value>"])
-    elif arguments["-l"]:
-        list(True,True)
+viewer = SummaryViewer()
+
+if arguments['init']:
+    # TODO 提供一个比较好的初始化交互
+    pass
+
+elif arguments['board']:
+    host = arguments.get('<host>', None)
+    if host is None:
+        host = get_ip()
+        if host.startswith('192'):
+            host = '127.0.0.1'
+    port = arguments.get('<port>', '5555')
+    run(host=host, port=port)
+elif arguments['find']:
+
+    if arguments['-e']:
+        exp_name = arguments['<exp_name']
+        ev = viewer.find(exp_name, level=_DLEVEL.exp) # type:List[ExpViewer]
+    elif arguments['-p']:
+        proj_name = arguments['<proj_name>']
+        pv = viewer.find(proj_name, level=_DLEVEL.proj) # type:List[ProjViewer]
+    else:
+        test_name = arguments['<test_name>']
+        tv = viewer.find(test_name, level=_DLEVEL.test) # type:List[TestViewer]
+
+elif arguments['reset']:
+    from thexp.utils.gitutils import reset
+
+    test_name = arguments['<test_name>']
+    tv = viewer.find(test_name, level=_DLEVEL.test)
+    if len(tv) == 0:
+        print("can't find test {}".format(test_name))
+        exit(1)
+    tv = tv[0]
+    exp = reset(tv)
+    print('reset from {} to {}'.format(exp.plugins['reset']['from'], exp.plugins['reset']['to']))
+
+
+elif arguments['archive']:
+    from thexp.utils.gitutils import archive
+
+    test_name = arguments['<test_name>']
+    tv = viewer.find(test_name, level=_DLEVEL.test)
+    if len(tv) == 0:
+        print("can't find test {}".format(test_name))
+        exit(1)
+    tv = tv[0]
+    exp = archive(tv)
+    print('archive {} to {}'.format(test_name, exp.plugins['archive']['file']))
 else:
     print(arguments)
+    print(arguments.items())
 
 exit(0)

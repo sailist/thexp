@@ -2,92 +2,172 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="232f6e19-5cb1-41b7-8b12-9b1150540616" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/attr.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/standard/info.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/standard/repo.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/standard/ui.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/standard/前端设计.ai" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/.ipynb_checkpoints/Untitled-checkpoint.ipynb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/.ipynb_checkpoints/Untitled1-checkpoint.ipynb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/.ipynb_checkpoints/Untitled2-checkpoint.ipynb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/Untitled1.ipynb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/kk/exp/20-05-15-182713.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/more/hpparamexp.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/charts/data.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/frame/reader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/frame/viewer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/globals.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-addtricks/arch/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-addtricks/arch/cnn13.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-addtricks/arch/simple.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-addtricks/datasets.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-addtricks/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-addtricks/tricks/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-addtricks/tricks/ema.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splitdataset/datasets.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splitdataset/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splitmodel/arch/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splitmodel/arch/cnn13.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splitmodel/arch/simple.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splitmodel/datasets.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splitmodel/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splittrainer/arch/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splittrainer/arch/cnn13.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splittrainer/arch/simple.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splittrainer/config.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splittrainer/datasets.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splittrainer/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splittrainer/trainer/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splittrainer/trainer/mnisttrainer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splittrainer/tricks/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splittrainer/tricks/ema.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MANIFEST.in" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/repo.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thexp/analyser/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thexp/analyser/charts.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thexp/analyser/compare.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thexp/analyser/expviewer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thexp/analyser/reader.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thexp/analyser/web/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thexp/analyser/web/events.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thexp/analyser/web/response.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thexp/analyser/web/server.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thexp/analyser/web/web_parser.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thexp/base_classes/attr.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/thexp/torch/vision/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../thexp-demo/.idea/thexp-test3.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../thexp-demo/.idea/thexp-test3.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../thexp-demo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../thexp-demo/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../thexp-demo/onefile.py" beforeDir="false" afterPath="$PROJECT_DIR$/../thexp-demo/simple/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/thexp.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/thexp.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/1.1.trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/1.1.trainer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/1.trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex_trainer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/10.databundler.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex_databundler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/attr.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/build.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/.vuepress/config.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/api/trainer.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/standard/info.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/standard/repo.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/standard/ui.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/standard/前端设计.ai" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/tutorial/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/tutorial/one.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/.ipynb_checkpoints/Untitled-checkpoint.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/.ipynb_checkpoints/Untitled1-checkpoint.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/.ipynb_checkpoints/Untitled2-checkpoint.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/1.1.trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/1.trainer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/examples/2.meters.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/2.meters.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/9.reporter.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex_reporter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/Untitled.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/examples/Untitled.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/3.logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/3.logger.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/4.rnd_seed.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/4.rnd_seed.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/5.saver.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/5.saver.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/6.global_config.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/6.global_config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/7.exp.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/7.exp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/8.params.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/8.params.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/Untitled.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/Untitled1.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex_databundler.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex_databundler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex_reporter.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex_reporter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ex_trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex_trainer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/kk/exp/20-05-15-182713.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/examples/more/attr.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/attr.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/board/events.out.tfevents.1583987094.DESKTOP-VBH8L9D.15408.0.bd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/board/events.out.tfevents.1583987139.DESKTOP-VBH8L9D.15936.0.bd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/board/events.out.tfevents.1583995024.DESKTOP-VBH8L9D.624.0.bd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/board/events.out.tfevents.1583995082.DESKTOP-VBH8L9D.6068.0.bd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/board/events.out.tfevents.1583995411.DESKTOP-VBH8L9D.10008.0.bd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/board/events.out.tfevents.1583995440.DESKTOP-VBH8L9D.8432.0.bd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/code/pytest.py-__main__-0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/exp/20-03-12-122505.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/exp/20-03-12-122544.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/exp/20-03-12-143709.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/exp/20-03-12-143807.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/exp/20-03-12-144337.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/exp/20-03-12-144403.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/modules/keep.0000004.ckpt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/modules/keep.0000004.ckpt.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/modules/keep.0000006.ckpt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/modules/keep.0000006.ckpt.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/modules/keep.0000008.ckpt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/modules/keep.0000008.ckpt.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/modules/keep.0000010.ckpt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/modules/keep.0000010.ckpt.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/modules/keep.1000004.ckpt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/modules/keep.1000004.ckpt.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/modules/keep.2000004.ckpt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/modules/keep.2000004.ckpt.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/modules/keep.3000004.ckpt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/modules/keep.3000004.ckpt.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/modules/keep.4000004.ckpt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/modules/keep.4000004.ckpt.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/modules/keep.5000004.ckpt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_experiment/mytrainer_lr=0.01/modules/keep.5000004.ckpt.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-templete/arch/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-templete/arch/cnn13.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-templete/arch/mlp.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-templete/dataloader/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-templete/datasets/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-templete/main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-templete/trainers/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-templete/trainers/_trainer_name_.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/more/avg_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/avg_item.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/more/global_var.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/global_var.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/more/hook.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/hook.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/more/hpparamexp.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/hpparamexp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/more/iter2obj.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/iter2obj.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/more/markdownwrite.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/markdownwrite.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/more/mem.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/mem.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/more/none_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/none_item.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/more/rampup.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/rampup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/more/screen_str.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/screen_str.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/more/ssl.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/ssl.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/more/timeit.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/timeit.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/base_classes/list.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gitpush.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/gitpush.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/publish.cmd" beforeDir="false" afterPath="$PROJECT_DIR$/publish.cmd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/base_classes/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/base_classes/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/base_classes/test_meta_classes.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/base_classes/test_meta_classes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/base_classes/test_tree.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/base_classes/test_tree.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/base_classes/test_trick_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/base_classes/test_trick_item.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/calculate/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/calculate/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/calculate/test_acc.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/calculate/test_acc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/frame/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/frame/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/frame/callbacks.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/frame/callbacks.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/frame/test_meter.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/frame/test_meter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/frame/test_saver.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/frame/test_saver.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/frame/test_trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/frame/test_trainer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/utils/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/utils/test_random.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/utils/test_random.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/thexp/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/frame/analyser.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/temp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/base_classes/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/base_classes/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/base_classes/metaclasses.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/base_classes/metaclasses.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/base_classes/tree.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/base_classes/tree.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/base_classes/trickitems.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/base_classes/trickitems.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/calculate/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/calculate/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/calculate/accuracy.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/calculate/accuracy.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/calculate/memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/calculate/memory.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/calculate/rampup.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/calculate/rampup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/calculate/tensor.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/calculate/tensor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/charts/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/analyser/web/deplugs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/charts/data.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/analyser/summary.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/cli/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/cli/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/cli/cli.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/cli/cli.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/frame/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/thexp/frame/callbacks.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/callbacks.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/thexp/frame/databundler.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/databundler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/frame/drawer.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/drawer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/thexp/frame/experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/experiment.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/thexp/frame/logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/logger.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/thexp/frame/meter.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/meter.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/thexp/frame/params.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/params.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/frame/plotter.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/drawer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/frame/reader.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/thexp/frame/rndmanager.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/rndmanager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/thexp/frame/saver.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/saver.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/thexp/frame/trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/trainer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/frame/viewer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/future/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/future/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/future/randaugment.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/future/randaugment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/future/randaugument.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/future/randaugument.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/globals.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/globals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/quick/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/analyser/web/util.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/quick/data.py" beforeDir="false" afterPath="$PROJECT_DIR$/web.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/utils/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/utils/date/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/base_classes/defaults.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/utils/date/collate.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/torch/data/collate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/utils/date/dataloader.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/torch/data/dataloader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/utils/date/dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/torch/data/dataset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/utils/date/ndtransforms.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/future/nddatasets/ndtransforms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/utils/date/pttransforms.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/future/nddatasets/pttransforms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/utils/date/sampler.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/base_classes/errors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/utils/debug/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/future/nddatasets/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/thexp/utils/deco.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/utils/deco.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/utils/file.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/charts/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/thexp/utils/generel_util.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/utils/generel_util.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/thexp/utils/gitutils.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/utils/gitutils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/utils/import_torch.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/utils/lazy.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/utils/lazy.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/utils/lazy.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/thexp/utils/markdown_writer.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/utils/markdown_writer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/utils/pickledb.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/utils/nddatasets/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/torch/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/utils/nddatasets/cifar.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/future/nddatasets/cifar.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/utils/optim.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/utils/optim.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/thexp/utils/random.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/utils/random.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/thexp/utils/screen.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/utils/screen.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/thexp/utils/timeit.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/utils/timeit.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/utils/torch/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/utils/torch/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/utils/torch/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/utils/torch/optim/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/torch/optim/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/utils/torch/optim/lr_schedule.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/torch/optim/lr_schedule.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/utils/visualization/VisioEmbedding.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/torch/vision/BatchEmbedding.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/utils/visualization/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/torch/data/__init__.py" afterDir="false" />
     </list>
     <list id="b3718b25-7204-4605-af22-7efa5eb0e45c" name="imporove" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -110,6 +190,7 @@
   <component name="ProjectId" id="1YwFtE6jVWfNJIh3j4U9W3RFz60" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
+    <property name="ChangesTree.GroupingKeys" value="directory&#10;repository" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="true" />
     <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
@@ -117,23 +198,24 @@
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../thexp-demo" />
     <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="E:\Python\iLearn\thexp" />
-      <recent name="E:\Python\iLearn\thexp\examples" />
-      <recent name="E:\Python\iLearn\thexp-test" />
-      <recent name="E:\Python\iLearn\thexp\thexp\utils" />
-      <recent name="E:\Python\iLearn\thexp\thexp\future" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="E:\Python\iLearn\thexp\examples" />
-      <recent name="E:\Python\iLearn\thexp\docs\standard" />
-      <recent name="E:\Python\iLearn\thexp\thexp\cli" />
-      <recent name="E:\Python\iLearn\thexp\thexp" />
-      <recent name="E:\Python\iLearn\thexp\thexp\calculate" />
+      <recent name="E:\Python\iLearn\thexp-test3\simple" />
+      <recent name="E:\Python\iLearn\thexp\thexp\torch" />
+      <recent name="E:\Python\iLearn\thexp\thexp\future\nddatasets" />
+      <recent name="E:\Python\iLearn\thexp\thexp\future" />
+      <recent name="E:\Python\iLearn\thexp\thexp\analyser" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Python\iLearn\thexp-test3" />
+      <recent name="E:\Python\iLearn\thexp-test3\simple-splitmodel\architecture" />
+      <recent name="E:\Python\iLearn\thexp-test3\simple-split" />
+      <recent name="E:\Python\iLearn\thexp\thexp\analyser\web\dist" />
+      <recent name="E:\Python\iLearn\thexp" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -148,51 +230,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.1.1.trainer">
-    <configuration name="1.1.trainer" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="thexp" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/examples" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/examples/1.1.trainer.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="1.trainer" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="thexp" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/examples" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="E:\Python\iLearn\thexp\examples\ex_trainer.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Python.webtemp">
     <configuration name="8.params" type="PythonConfigurationType" factoryName="Python">
       <module name="thexp" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -215,7 +253,73 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="attr (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="thexp-test3" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../thexp-test3/simple-splittrainer" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../thexp-test3/simple-splittrainer/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="thexp-test3" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../thexp-test3/simple-splitdataset" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../thexp-test3/simple-splitdataset/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="onefile" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="thexp-test3" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../thexp-test3" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="E:\Python\iLearn\thexp-test3\simple\main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="runweb" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="thexp" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -228,7 +332,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/attr.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/runweb.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -237,7 +341,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="ex_trainer" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="webtemp" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="thexp" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -245,34 +349,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/examples" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/examples/ex_trainer.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="temp" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="thexp" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/examples" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/examples/temp.py" />
+      <option name="SCRIPT_NAME" value="E:\Python\iLearn\thexp\web.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -283,19 +365,19 @@
     </configuration>
     <list>
       <item itemvalue="Python.8.params" />
-      <item itemvalue="Python.1.trainer" />
-      <item itemvalue="Python.attr (1)" />
-      <item itemvalue="Python.ex_trainer" />
-      <item itemvalue="Python.temp" />
-      <item itemvalue="Python.1.1.trainer" />
+      <item itemvalue="Python.runweb" />
+      <item itemvalue="Python.onefile" />
+      <item itemvalue="Python.main" />
+      <item itemvalue="Python.main (1)" />
+      <item itemvalue="Python.webtemp" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.1.1.trainer" />
-        <item itemvalue="Python.ex_trainer" />
-        <item itemvalue="Python.temp" />
-        <item itemvalue="Python.attr (1)" />
-        <item itemvalue="Python.1.trainer" />
+        <item itemvalue="Python.webtemp" />
+        <item itemvalue="Python.main (1)" />
+        <item itemvalue="Python.main" />
+        <item itemvalue="Python.onefile" />
+        <item itemvalue="Python.runweb" />
       </list>
     </recent_temporary>
   </component>
@@ -376,7 +458,18 @@
       <workItem from="1589715008799" duration="8875000" />
       <workItem from="1589759480286" duration="13996000" />
       <workItem from="1589843672396" duration="5013000" />
-      <workItem from="1589935460006" duration="2414000" />
+      <workItem from="1589935460006" duration="5552000" />
+      <workItem from="1590055598293" duration="12428000" />
+      <workItem from="1590105485635" duration="26727000" />
+      <workItem from="1590192313852" duration="22696000" />
+      <workItem from="1590226391049" duration="597000" />
+      <workItem from="1590277414492" duration="15675000" />
+      <workItem from="1590361175510" duration="15535000" />
+      <workItem from="1590448922740" duration="25070000" />
+      <workItem from="1590535030002" duration="36698000" />
+      <workItem from="1590623430823" duration="36481000" />
+      <workItem from="1590710157364" duration="27082000" />
+      <workItem from="1590794640101" duration="21601000" />
     </task>
     <task id="LOCAL-00001" summary="change">
       <created>1589534271920</created>
@@ -413,7 +506,21 @@
       <option name="project" value="LOCAL" />
       <updated>1589939036175</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="change">
+      <created>1589941390040</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1589941390040</updated>
+    </task>
+    <task id="LOCAL-00007" summary="change">
+      <created>1589941403520</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1589941403520</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -446,7 +553,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/thexp/frame/params.py</url>
-          <line>164</line>
+          <line>105</line>
           <option name="timeStamp" value="18" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -460,83 +567,180 @@
           <option name="timeStamp" value="26" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/thexp/frame/experiment.py</url>
-          <line>254</line>
-          <option name="timeStamp" value="29" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/examples/more/hook.py</url>
           <line>34</line>
           <option name="timeStamp" value="30" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/thexp/frame/experiment.py</url>
-          <line>369</line>
+          <line>467</line>
           <option name="timeStamp" value="31" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/thexp/frame/viewer.py</url>
-          <line>180</line>
-          <option name="timeStamp" value="35" />
+          <url>file://$PROJECT_DIR$/thexp/analyser/expviewer.py</url>
+          <line>298</line>
+          <option name="timeStamp" value="40" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/thexp/frame/drawer.py</url>
-          <line>59</line>
-          <option name="timeStamp" value="37" />
+          <url>file://$PROJECT_DIR$/thexp/utils/gitutils.py</url>
+          <line>295</line>
+          <option name="timeStamp" value="53" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/thexp/frame/callbacks.py</url>
-          <line>490</line>
-          <option name="timeStamp" value="38" />
+          <url>file://$PROJECT_DIR$/thexp/utils/gitutils.py</url>
+          <line>406</line>
+          <option name="timeStamp" value="60" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/thexp/analyser/expviewer.py</url>
+          <line>138</line>
+          <option name="timeStamp" value="62" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/thexp/analyser/expviewer.py</url>
+          <line>271</line>
+          <option name="timeStamp" value="63" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/thexp/analyser/web/deplugs.py</url>
+          <line>49</line>
+          <option name="timeStamp" value="70" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/thexp/analyser/web/response.py</url>
+          <line>144</line>
+          <option name="timeStamp" value="71" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/thexp/frame/trainer.py</url>
+          <line>126</line>
+          <option name="timeStamp" value="80" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/thexp/frame/params.py</url>
+          <line>214</line>
+          <option name="timeStamp" value="83" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/thexp/cli/cli.py</url>
+          <line>55</line>
+          <option name="timeStamp" value="84" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/thexp/frame/experiment.py</url>
+          <line>75</line>
+          <option name="timeStamp" value="85" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/thexp/utils/gitutils.py</url>
+          <line>258</line>
+          <option name="timeStamp" value="87" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/thexp/utils/gitutils.py</url>
+          <line>86</line>
+          <option name="timeStamp" value="88" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/thexp/utils/gitutils.py</url>
+          <line>194</line>
+          <option name="timeStamp" value="89" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/.PyCharm2019.2/system/remote_sources/-677275561/-1406446990/thexp/frame/trainer.py</url>
+          <line>128</line>
+          <option name="timeStamp" value="93" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/.PyCharm2019.2/system/remote_sources/-677275561/-1406446990/thexp/frame/trainer.py</url>
+          <line>123</line>
+          <option name="timeStamp" value="94" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/.PyCharm2019.2/system/remote_sources/-677275561/-1406446990/thexp/frame/experiment.py</url>
+          <line>126</line>
+          <option name="timeStamp" value="95" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/.PyCharm2019.2/system/remote_sources/-677275561/-1406446990/thexp/utils/gitutils.py</url>
+          <line>249</line>
+          <option name="timeStamp" value="96" />
         </line-breakpoint>
       </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="self.project_name" language="Python" />
-        <watch expression="writer.get_value('thexp','projname')" language="Python" />
-        <watch expression="self._repo" language="Python" />
-        <watch expression="self.json_info" language="Python" />
+        <watch expression="pve.hash" language="Python" />
+        <watch expression="pve.exp_root" language="Python" />
+        <watch expression="v[_REPOJ.repopath]" language="Python" />
+        <watch expression="self.repo_info[self.proj_name]['exps']" language="Python" />
+        <watch expression="self._exp_dir" language="Python" />
+        <watch expression="tv.plugins.keys()" language="Python" />
+        <watch expression="_OSENVI.ignore_repo" language="Python" />
+        <watch expression="os.environ['ignore_repo']" language="Python" />
+        <watch expression="with open(fn): pass" language="Python" />
+        <watch expression="Git().execute(&quot;git rev-parse --git-dir&quot;)" language="Python" />
       </configuration>
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/thexp$ttt.coverage" NAME="ttt Coverage Results" MODIFIED="1589505131835" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/more" />
-    <SUITE FILE_PATH="coverage/thexp$7_expview.coverage" NAME="7.expview Coverage Results" MODIFIED="1589524700270" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
+    <SUITE FILE_PATH="coverage/thexp$reset.coverage" NAME="reset Coverage Results" MODIFIED="1590573092989" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../thexp-test3" />
     <SUITE FILE_PATH="coverage/thexp$3_logger.coverage" NAME="3.logger Coverage Results" MODIFIED="1589509296950" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
-    <SUITE FILE_PATH="coverage/thexp$attr__1_.coverage" NAME="attr (1) Coverage Results" MODIFIED="1589721241492" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/thexp$mem.coverage" NAME="mem Coverage Results" MODIFIED="1587047997860" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/more" />
-    <SUITE FILE_PATH="coverage/thexp$trainer.coverage" NAME="trainer Coverage Results" MODIFIED="1586085233727" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/thexp/frame" />
+    <SUITE FILE_PATH="coverage/thexp$attr__1_.coverage" NAME="attr (1) Coverage Results" MODIFIED="1590501051578" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/thexp$onefile.coverage" NAME="onefile Coverage Results" MODIFIED="1590759544723" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../thexp-test3" />
     <SUITE FILE_PATH="coverage/thexp$9_reporter.coverage" NAME="9.reporter Coverage Results" MODIFIED="1587004764869" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
-    <SUITE FILE_PATH="coverage/thexp$memory.coverage" NAME="memory Coverage Results" MODIFIED="1586953694595" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/thexp/calculate" />
     <SUITE FILE_PATH="coverage/thexp$markdown_writer__1_.coverage" NAME="markdown_writer (1) Coverage Results" MODIFIED="1587002971749" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/thexp/future" />
     <SUITE FILE_PATH="coverage/thexp$none_item.coverage" NAME="none_item Coverage Results" MODIFIED="1583973291705" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/more" />
-    <SUITE FILE_PATH="coverage/thexp$cli.coverage" NAME="cli Coverage Results" MODIFIED="1583909955029" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/thexp/cli" />
-    <SUITE FILE_PATH="coverage/thexp$8_params.coverage" NAME="8.params Coverage Results" MODIFIED="1589506804558" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
-    <SUITE FILE_PATH="coverage/thexp$6_global_config.coverage" NAME="6.global_config Coverage Results" MODIFIED="1589528491009" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
-    <SUITE FILE_PATH="coverage/thexp$hook.coverage" NAME="hook Coverage Results" MODIFIED="1589514886367" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/more" />
-    <SUITE FILE_PATH="coverage/thexp$1_1_trainer.coverage" NAME="1.1.trainer Coverage Results" MODIFIED="1589786569007" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
-    <SUITE FILE_PATH="coverage/thexp$plotter.coverage" NAME="plotter Coverage Results" MODIFIED="1587004548062" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/thexp/frame" />
+    <SUITE FILE_PATH="coverage/thexp$7_exp.coverage" NAME="7.exp Coverage Results" MODIFIED="1590714983342" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../thexp-test3" />
     <SUITE FILE_PATH="coverage/thexp$timeit.coverage" NAME="timeit Coverage Results" MODIFIED="1586085147242" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/thexp/utils" />
+    <SUITE FILE_PATH="coverage/thexp$ex_trainer__2_.coverage" NAME="ex_trainer (2) Coverage Results" MODIFIED="1590542382505" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../thexp-test2" />
+    <SUITE FILE_PATH="coverage/thexp$reverts__1_.coverage" NAME="reverts (1) Coverage Results" MODIFIED="1590574414370" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../thexp-test3" />
     <SUITE FILE_PATH="coverage/thexp$markdown_writer.coverage" NAME="markdown_writer Coverage Results" MODIFIED="1587002656840" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/thexp/utils" />
     <SUITE FILE_PATH="coverage/thexp$rampup.coverage" NAME="rampup Coverage Results" MODIFIED="1587216993947" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/more" />
-    <SUITE FILE_PATH="coverage/thexp$10_databundler.coverage" NAME="10.databundler Coverage Results" MODIFIED="1588742213809" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
-    <SUITE FILE_PATH="coverage/thexp$temp__1_.coverage" NAME="temp (1) Coverage Results" MODIFIED="1588735163862" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/more" />
-    <SUITE FILE_PATH="coverage/thexp$attr.coverage" NAME="attr Coverage Results" MODIFIED="1589596640292" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/more" />
-    <SUITE FILE_PATH="coverage/thexp$timeit__1_.coverage" NAME="timeit (1) Coverage Results" MODIFIED="1586085309261" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/more" />
-    <SUITE FILE_PATH="coverage/thexp$tmp.coverage" NAME="tmp Coverage Results" MODIFIED="1588903123760" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/more" />
+    <SUITE FILE_PATH="coverage/thexp$ex_trainer__1_.coverage" NAME="ex_trainer (1) Coverage Results" MODIFIED="1590501047903" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../thexp-test" />
+    <SUITE FILE_PATH="coverage/thexp$attr.coverage" NAME="attr Coverage Results" MODIFIED="1590588258133" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/thexp$avg_item.coverage" NAME="avg_item Coverage Results" MODIFIED="1583995674748" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/more" />
-    <SUITE FILE_PATH="coverage/thexp$screen_str.coverage" NAME="screen_str Coverage Results" MODIFIED="1586857551042" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/more" />
+    <SUITE FILE_PATH="coverage/thexp$ex_databundler.coverage" NAME="ex_databundler Coverage Results" MODIFIED="1590676003556" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
     <SUITE FILE_PATH="coverage/thexp$1_2_trainer.coverage" NAME="1.2.trainer Coverage Results" MODIFIED="1589551589991" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
-    <SUITE FILE_PATH="coverage/thexp$temp.coverage" NAME="temp Coverage Results" MODIFIED="1589772953308" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
+    <SUITE FILE_PATH="coverage/thexp$temp.coverage" NAME="temp Coverage Results" MODIFIED="1590735137876" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
     <SUITE FILE_PATH="coverage/thexp$5_saver.coverage" NAME="5.saver Coverage Results" MODIFIED="1589511688374" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
     <SUITE FILE_PATH="coverage/thexp$1_trainer.coverage" NAME="1.trainer Coverage Results" MODIFIED="1589720583332" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
-    <SUITE FILE_PATH="coverage/thexp$ex_trainer.coverage" NAME="ex_trainer Coverage Results" MODIFIED="1589785449499" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
+    <SUITE FILE_PATH="coverage/thexp$ex_trainer.coverage" NAME="ex_trainer Coverage Results" MODIFIED="1590731136814" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../thexp-test3" />
     <SUITE FILE_PATH="coverage/thexp$gitutils.coverage" NAME="gitutils Coverage Results" MODIFIED="1589527015591" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/thexp/utils" />
     <SUITE FILE_PATH="coverage/thexp$global_var.coverage" NAME="global_var Coverage Results" MODIFIED="1587084603245" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/more" />
     <SUITE FILE_PATH="coverage/thexp$7_expview__1_.coverage" NAME="7.expview (1) Coverage Results" MODIFIED="1589082055409" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../thexp-test" />
-    <SUITE FILE_PATH="coverage/thexp$1_1_trainer__1_.coverage" NAME="1.1.trainer (1) Coverage Results" MODIFIED="1589331959414" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
     <SUITE FILE_PATH="coverage/thexp$4_rnd_seed.coverage" NAME="4.rnd_seed Coverage Results" MODIFIED="1589511344851" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
+    <SUITE FILE_PATH="coverage/thexp$runweb.coverage" NAME="runweb Coverage Results" MODIFIED="1590759403311" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/thexp$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1590821410812" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../thexp-test3/simple-splittrainer" />
+    <SUITE FILE_PATH="coverage/thexp$webtemp.coverage" NAME="webtemp Coverage Results" MODIFIED="1590837834263" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/thexp$ttt.coverage" NAME="ttt Coverage Results" MODIFIED="1589505131835" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/more" />
+    <SUITE FILE_PATH="coverage/thexp$7_expview.coverage" NAME="7.expview Coverage Results" MODIFIED="1589524700270" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
+    <SUITE FILE_PATH="coverage/thexp$util.coverage" NAME="util Coverage Results" MODIFIED="1590540500158" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:/ProgramData/Anaconda3/Lib/site-packages/git" />
+    <SUITE FILE_PATH="coverage/thexp$mem.coverage" NAME="mem Coverage Results" MODIFIED="1587047997860" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/more" />
+    <SUITE FILE_PATH="coverage/thexp$trainer.coverage" NAME="trainer Coverage Results" MODIFIED="1586085233727" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/thexp/frame" />
+    <SUITE FILE_PATH="coverage/thexp$memory.coverage" NAME="memory Coverage Results" MODIFIED="1586953694595" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/thexp/calculate" />
+    <SUITE FILE_PATH="coverage/thexp$cli.coverage" NAME="cli Coverage Results" MODIFIED="1583909955029" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/thexp/cli" />
+    <SUITE FILE_PATH="coverage/thexp$list.coverage" NAME="list Coverage Results" MODIFIED="1590107298823" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/thexp/base_classes" />
+    <SUITE FILE_PATH="coverage/thexp$reverts.coverage" NAME="reverts Coverage Results" MODIFIED="1590542664136" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../thexp-test2" />
+    <SUITE FILE_PATH="coverage/thexp$6_global_config.coverage" NAME="6.global_config Coverage Results" MODIFIED="1589528491009" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
+    <SUITE FILE_PATH="coverage/thexp$8_params.coverage" NAME="8.params Coverage Results" MODIFIED="1590809733510" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
+    <SUITE FILE_PATH="coverage/thexp$hook.coverage" NAME="hook Coverage Results" MODIFIED="1589514886367" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/more" />
+    <SUITE FILE_PATH="coverage/thexp$1_1_trainer.coverage" NAME="1.1.trainer Coverage Results" MODIFIED="1589786569007" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
+    <SUITE FILE_PATH="coverage/thexp$plotter.coverage" NAME="plotter Coverage Results" MODIFIED="1587004548062" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/thexp/frame" />
+    <SUITE FILE_PATH="coverage/thexp$10_databundler.coverage" NAME="10.databundler Coverage Results" MODIFIED="1588742213809" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
+    <SUITE FILE_PATH="coverage/thexp$temp__1_.coverage" NAME="temp (1) Coverage Results" MODIFIED="1590499323527" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/thexp$main.coverage" NAME="main Coverage Results" MODIFIED="1590819014308" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../thexp-test3/simple-splitdataset" />
+    <SUITE FILE_PATH="coverage/thexp$timeit__1_.coverage" NAME="timeit (1) Coverage Results" MODIFIED="1586085309261" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/more" />
+    <SUITE FILE_PATH="coverage/thexp$tmp.coverage" NAME="tmp Coverage Results" MODIFIED="1588903123760" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/more" />
+    <SUITE FILE_PATH="coverage/thexp$screen_str.coverage" NAME="screen_str Coverage Results" MODIFIED="1586857551042" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/more" />
+    <SUITE FILE_PATH="coverage/thexp$1_1_trainer__1_.coverage" NAME="1.1.trainer (1) Coverage Results" MODIFIED="1589331959414" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
     <SUITE FILE_PATH="coverage/thexp$2_meters.coverage" NAME="2.meters Coverage Results" MODIFIED="1589598864795" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
     <SUITE FILE_PATH="coverage/thexp$iter2obj.coverage" NAME="iter2obj Coverage Results" MODIFIED="1584168042456" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples/more" />
   </component>

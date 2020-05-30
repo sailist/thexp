@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData">
+  <component name="PublishConfigData" autoUpload="Always" serverName="ILearn">
     <serverData>
       <paths name="ILearn">
         <serverdata>
           <mappings>
             <mapping deploy="/jupyter_data/thexp" local="$PROJECT_DIR$" web="/" />
-            <mapping deploy="" local="" />
+            <mapping deploy="/jupyter_data/thexp-test3" local="$PROJECT_DIR$/../thexp-test3" web="" />
           </mappings>
         </serverdata>
       </paths>
@@ -26,5 +26,6 @@
         </serverdata>
       </paths>
     </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
   </component>
 </project>

@@ -16,6 +16,8 @@
             sailist@outlook.com
              
     to purchase a commercial license.
+
+    提供一些提供了奇葩 feature 的类
 """
 from typing import Any
 

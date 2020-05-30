@@ -1,0 +1,10 @@
+{
+  "thexp.ce": {
+    "repopath": "E:\\Python\\iLearn\\thexp",
+    "exp_root": "e:/python/ilearn/thexp/.thexp/experiments",
+    "exps": [
+      "DemoExp.__main__",
+      "DemoExp2.__main__"
+    ]
+  }
+}

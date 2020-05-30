@@ -20,7 +20,7 @@
 import os
 from collections import namedtuple
 from datetime import datetime
-from typing import Any
+from typing import Any, Callable
 
 from ..utils.generel_util import curent_date
 from ..utils.screen import ScreenStr
@@ -100,7 +100,7 @@ class Logger:
         logstr, fix = self.format(*values, inline=True, fix=fix, append=append)
         self.handle(logstr, fix=fix)
 
-    def info(self, *values, ):
+    def info(self, *values):
         """以行为单位输出 前缀 和 LogMeter"""
         logstr, fix = self.format(*values, inline=False)
         self.handle(logstr, level=Logger.V_INFO, fix=fix)
@@ -111,18 +111,22 @@ class Logger:
         self.handle(logstr, level=level)
 
     def debug(self, *values):
+        """debug 级别的 info"""
         logstr, fix = self.format("DEBUG", *values, inline=False)
         self.handle(logstr, level=Logger.V_DEBUG, fix=fix)
 
     def warn(self, *values):
+        """warn 级别的 info"""
         logstr, fix = self.format("WARN", *values, inline=False)
         self.handle(logstr, level=Logger.V_WARN, fix=fix)
 
     def error(self, *values):
+        """error 级别的 info"""
         logstr, fix = self.format("ERROR", *values, inline=False)
         self.handle(logstr, level=Logger.V_ERROR, fix=fix)
 
     def fatal(self, *values):
+        """fatal 级别的 info"""
         logstr, fix = self.format("FATAL", *values, inline=False)
         self.handle(logstr, level=Logger.V_FATAL, fix=fix)
 
@@ -165,7 +169,8 @@ class Logger:
         if self.stdout:
             print(*args, end=end, flush=True)
 
-    def trig_stdout(self, val):
+    def toggle_stdout(self, val):
+        """控制 logger 是否向标准输出流输出"""
         self.stdout = val
 
     def add_log_dir(self, dir):
@@ -188,9 +193,17 @@ class Logger:
         self.pipe_key.add(dir)
         return fni
 
-    def add_log_listener(self, func):
+    def add_log_listener(self, func: Callable[[str, str, int], Any]):
+        """
+        添加输出回调
+        Args:
+            func:  func(logstr, end='\n', level)
+        Returns:
+
+        """
         self.listener.append(func)
 
     @staticmethod
     def set_verbose(verbose=0):
+        """设置日志的输出级别"""
         Logger.VERBOSE = verbose

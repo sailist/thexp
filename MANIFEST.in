@@ -1,0 +1,1 @@
+recursive-include thexp/analyser/web/dist *.js *.css *.woff *.ttf *.png *.ico *.html

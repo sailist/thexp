@@ -11,7 +11,7 @@ setup(
     license='Apache License 2.0',
     include_package_data = True,
     install_requires = [
-      "torch","fire","tensorboard","watchdog","docopt"
+      "torch","fire","tensorboard","docopt","gitpython",'flask','matplotlib'
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',

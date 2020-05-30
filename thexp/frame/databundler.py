@@ -55,7 +55,7 @@ class DataBundler:
 
     def set_batch_size(self,batch_size):
         from torch.utils.data import DataLoader
-        from ..utils.date.dataloader import DataLoader as thDataLoader
+        from thexp.torch.data import DataLoader as thDataLoader
         for _,(loader,_) in self.dataloaders.items():
             if isinstance(loader,thDataLoader):
                 loader.set_batch_size(batch_size)

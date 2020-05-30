@@ -42,17 +42,17 @@ from thexp.frame import Meter, Params, Trainer
 
 
 class MyTrainer(Trainer):
-    __exp_name__ = "DemoExp"
+    __exp_name__ = "DemoExp2"
 
     def callbacks(self, params: Params):
         from thexp import callbacks
         callbacks.LoggerCallback().hook(self)
-        callbacks.Recorder().hook(self)
+        callbacks.AutoRecord().hook(self)
 
     def datasets(self, params: Params):
         from torchvision import transforms
         from torchvision.datasets import FakeData
-        from thexp.utils.date.dataloader import DataLoader
+        from thexp.torch.data import DataLoader
 
         dataset = FakeData(size=32 * 10, image_size=(28, 28), transform=transforms.ToTensor())
         train_loader = eval_loader = test_loader = DataLoader(dataset, shuffle=True, batch_size=32, drop_last=True)
@@ -93,4 +93,11 @@ for p in params.grid_search("optim.lr", [0.1, 0.001, 0.0001]):
     trainer = MyTrainer(params)
     trainer.train()
 
+
+MyTrainer.__exp_name__ = "DemoExp"
+for p in params.grid_search("optim.lr", [0.1, 0.001, 0.0001]):
+    trainer = MyTrainer(params)
+    trainer.train()
+
 # params.lr = 0.01
+

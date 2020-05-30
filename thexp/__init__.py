@@ -18,7 +18,7 @@
     to purchase a commercial license.
 """
 
-__VERSION__ = "1.3.0.1"
+__VERSION__ = "1.4"
 
 # __all__ = ['DataBundler','Experiment','glob']
 # def __getattr__(name):

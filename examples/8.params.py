@@ -44,11 +44,27 @@ print(params)
 
 from thexp import Params
 params = Params()
-params.choice("dataset","cifar10","cifar100","svhn")
+params.choice("dataset","mnist","cifar10","cifar100","svhn")
 params.arange("thresh",5,0,20)
 print(params)
 
-for g in params.grid_search("thresh",range(0,20)):
-    for g in g.grid_search("dataset",['cifar10','cifar100','svhn']):
-        print(g.dataset,g.thresh)
+# for g in params.grid_search("thresh",range(0,20)):
+#     for g in g.grid_search("dataset",['cifar10','cifar100','svhn']):
+#         print(g.dataset,g.thresh)
 
+
+params.bind('dataset','mnist','arch','simplenet')
+params.bind('dataset','cifar10','arch','cnn13')
+params.bind('arch','simplenet','arch_param',dict(feature=128))
+params.bind('arch','cnn13','arch_param',dict(feature=256))
+params.dataset = 'cifar10'
+print(params.arch)
+print(params.arch_param)
+params.dataset = 'mnist'
+print(params.arch)
+print(params.arch_param)
+
+
+
+params.to_json('params.json')
+params.from_json('params.json')

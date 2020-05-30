@@ -20,14 +20,14 @@
 import json
 import os
 import re
-
-from ..utils.lazy import torch
+from collections import namedtuple
+from typing import List
 
 from ..utils.generel_util import listdir_by_time
-from collections import namedtuple
+from ..utils.lazy import torch
 
+ckpt_tuple = namedtuple("Checkpoint", ["checkpoint", 'info'])
 
-ckpt_tuple = namedtuple("Checkpoint",["checkpoint",'info'])
 
 # TOOD save 有多种，load只需要一个就可以了，就是直接通过路径load
 
@@ -43,7 +43,7 @@ class Saver:
         self.max_to_keep = max_to_keep
         os.makedirs(ckpt_dir, exist_ok=True)
 
-    def _build_checkpoint_name(self, epoch=0, replacement: bool=False, lasting=False):
+    def _build_checkpoint_name(self, epoch=0, replacement: bool = False, lasting=False):
         i = 0
 
         def build_fn():
@@ -75,21 +75,22 @@ class Saver:
             self.check_remove(fs[-1])
             fs.pop()
 
-    def find_checkpoints(self):
+    def find_checkpoints(self) -> List[str]:
         """
         find all checkpoint saved in the save dir.
-        :return:
+        Returns:
         """
+
         fs = listdir_by_time(self.ckpt_dir)  # 按创建时间排序
         fs = [os.path.join(self.ckpt_dir, i) for i in fs if re.search(Saver.re_fn, i) is not None]
         return fs
 
-    def find_models(self):
+    def find_models(self) -> List[str]:
         fs = listdir_by_time(self.ckpt_dir)  # 按创建时间排序
         fs = [i for i in fs if i.endswith(".pth")]
         return fs
 
-    def find_keypoints(self):
+    def find_keypoints(self) -> List[str]:
         """
         find all "keeped" checkpoint saved in the save dir.
         :return:
@@ -98,7 +99,7 @@ class Saver:
         fs = [os.path.join(self.ckpt_dir, i) for i in fs if re.search(Saver.re_keep_fn, i) is not None]
         return fs
 
-    def save_model(self, epoch:int, state_dict, extra_info: dict = None):
+    def save_model(self, epoch: int, state_dict, extra_info: dict = None) -> str:
         """
         命名格式为 model.{epoch}.pth , {epoch} 将padding到7位，默认为0
         重复保存会覆盖
@@ -119,7 +120,8 @@ class Saver:
             json.dump(extra_info, w, indent=2)
         return fn
 
-    def save_checkpoint(self, epoch, state_dict, extra_info: dict = None, replacement: bool = False, lasting=False):
+    def save_checkpoint(self, epoch, state_dict, extra_info: dict = None, replacement: bool = False,
+                        lasting=False) -> str:
         """
         命名格式为 {epoch}.ckpt ，如果replacement=True，则命名格式为 keep.{epoch}.ckpt
         :param epoch:
@@ -145,23 +147,23 @@ class Saver:
 
         return fn
 
-    def save_keypoint(self, val, state_dict, extra_info: dict = None, replacement: bool = False):
+    def save_keypoint(self, val, state_dict, extra_info: dict = None, replacement: bool = False) -> str:
         return self.save_checkpoint(val, state_dict, extra_info, replacement, True)
 
-    def _check_isint_or_str(self, val):
+    def _check_isint_or_str(self, val) -> bool:
         assert type(val) in {int, str}
         if isinstance(val, int):
             return True
         return False
 
-    def load_latest_checkpoint(self,dir=None):
+    def load_latest_checkpoint(self, dir=None):
         if dir is None:
             dir = self.ckpt_dir
 
         fs = listdir_by_time(dir)
-        fs = [os.path.join(dir,i) for i in fs if i.endswith(".ckpt")]
+        fs = [os.path.join(dir, i) for i in fs if i.endswith(".ckpt")]
         if len(fs) == 0:
-            return ckpt_tuple(None,None)
+            return ckpt_tuple(None, None)
         return self.load_state_dict(fs[-1])
 
     def load_state_dict(self, fn):
@@ -184,7 +186,7 @@ class Saver:
 
         return ckpt_tuple(ckpt, info)
 
-    def _guess_abs_path(self,fn):
+    def _guess_abs_path(self, fn):
         if os.path.basename(fn) == fn:
             path = os.path.join(self.ckpt_dir, fn)
         else:
@@ -200,10 +202,10 @@ class Saver:
                 os.remove(jfn)
 
     def clear_models(self):
-        fns = filter(lambda x:x.endswith(".pth"),
+        fns = filter(lambda x: x.endswith(".pth"),
                      listdir_by_time(self.ckpt_dir))
         for i in fns:
-            self.check_remove(os.path.join(self.ckpt_dir,i))
+            self.check_remove(os.path.join(self.ckpt_dir, i))
 
     def clear_checkpoints(self):
         for i in self.find_checkpoints():
@@ -213,13 +215,12 @@ class Saver:
         fns = filter(lambda x: x.endswith(".ckpt") and x.startswith("keep."),
                      listdir_by_time(self.ckpt_dir))
         for i in fns:
-            self.check_remove(os.path.join(self.ckpt_dir,i))
+            self.check_remove(os.path.join(self.ckpt_dir, i))
 
-    def summary(self, detail=False):
+    def summary(self):
         print("checkpoints:")
         print(" || ".join(self.find_checkpoints()))
         print("keppoints:")
         print(" || ".join(self.find_keypoints()))
         print("models:")
         print(" || ".join(self.find_models()))
-
