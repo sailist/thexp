@@ -41,7 +41,6 @@ class BaseCallback():
 
     def __new__(cls, *_, **__):
         self = super().__new__(cls)
-        self.enable = True
         self._trainer = None
 
         def ecp_wrap(func):
@@ -228,6 +227,7 @@ class LoggerCallback(TrainCallback):
         self.start = params.eidx
         self.traintime = TimeIt()
         self.traintime.start()
+        # trainer.logger.info()
         super().on_train_begin(trainer, func, params, *args, **kwargs)
 
     def on_train_end(self, trainer: 'BaseTrainer', func, params: Params, meter: Meter, *args, **kwargs):
@@ -399,6 +399,7 @@ class AutoRecord(TrainCallback):
     """
     自动记录训练过程中的所有变量到 tensorboard 中（epoch 级）
     """
+
     def __init__(self) -> None:
         super().__init__()
         from collections import defaultdict
@@ -412,7 +413,7 @@ class AutoRecord(TrainCallback):
         self._ignore_dict[mode].add(key)
 
     def _key_name(self, mode, key):
-        return "auto_{}_{}".format(mode, key)
+        return "{}_{}_".format(key, mode)
 
     def on_test_end(self, trainer: 'BaseTrainer', func, params: Params, meter: Meter, *args, **kwargs):
         if isinstance(meter, Meter):
@@ -443,6 +444,7 @@ class BoardRecord(TrainCallback):
     """
     手动选择训练过程中产生的指标进行记录
     """
+
     def __init__(self, unit="epoch", empty_mode="zero"):
         """
         :param unit: epoch or global_step

@@ -20,11 +20,12 @@
 import atexit
 import json
 import os
-import re
 import sys
 import warnings
 from collections import namedtuple
 from pprint import pformat
+
+import re
 from typing import Any
 
 from ..globals import _CONFIGL, _GITKEY, _FNAME
@@ -47,6 +48,7 @@ test_dir_pt = re.compile("[0-9]{4}\.[a-z0-9]{7}")
 
 class Globals:
     LEVEL = _CONFIGL
+
     def __init__(self):
         self._git_config = ExpConfig(_CONFIGL.repository)
         self._configs = [
@@ -104,6 +106,7 @@ class Globals:
 
 exception = namedtuple('exception_status', ['exc_type', 'exc_value', 'exc_tb'])
 
+
 class Experiment:
     """
     用于目录管理和常量配置管理
@@ -112,6 +115,7 @@ class Experiment:
     exp_level = _CONFIGL.exp
     repo_level = _CONFIGL.repository
     count = 0
+    whole_tests = []
 
     def __init__(self, exp_name):
         from git import Repo
@@ -132,7 +136,7 @@ class Experiment:
         self._hold_dirs = []
         self._time_fmt = "%Y-%m-%d %H:%M:%S"
         self._plugins = {}
-        self._exc_dict = None # type:exception
+        self._exc_dict = None  # type:exception
         self._initial()
 
     def add_config(self, key, value, level=_CONFIGL.exp):
@@ -161,6 +165,10 @@ class Experiment:
             return ""
 
         return self.commit.hexsha[:8]
+
+    @property
+    def test_name(self):
+        return os.path.basename(self.test_dir)
 
     @property
     def commit_hash(self):
@@ -209,18 +217,19 @@ class Experiment:
         if self._test_dir is None:
             fs = os.listdir(self.exp_dir)
 
-            if Experiment.count != 0: # 如果
+            if Experiment.count != 0:  # 如果
                 i = self.count + 1
             else:
                 i = len([f for f in fs if re.search(test_dir_pt, f) is not None]) + 1
 
-            cf_set = {f.split('.')[0] for f in fs} # 首位元素永远存在，不需要判断其他文件
+            cf_set = {f.split('.')[0] for f in fs}  # 首位元素永远存在，不需要判断其他文件
             while "{:04d}".format(i) in cf_set:
                 i += 1
 
             self._test_dir = os.path.join(self.exp_dir, "{:04d}.{}".format(i, self.test_hash))
             os.makedirs(self._test_dir, exist_ok=True)
             Experiment.count = i
+            Experiment.whole_tests.append(os.path.basename(self._test_dir))
 
         return self._test_dir
 
@@ -373,7 +382,8 @@ class Experiment:
         """
         import atexit
         def exp_func():
-            func(self,self._exc_dict)
+            func(self, self._exc_dict)
+
         atexit.register(exp_func)
 
 
@@ -485,3 +495,11 @@ class ExpConfig:
 
 
 glob = Globals()
+
+
+def final_report():
+    for test_name in Experiment.whole_tests:
+        print('Test:{} end.'.format(test_name))
+
+
+atexit.register(final_report)

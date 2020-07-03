@@ -18,12 +18,10 @@
     to purchase a commercial license.
 """
 from collections import OrderedDict
-from typing import Any
+from typing import Any, Iterable
 from numbers import Number
 
-from ..utils.lazy import torch,np
-
-
+from ..utils.lazy import torch, np
 
 from ..base_classes.trickitems import AvgItem, NoneItem
 
@@ -51,10 +49,10 @@ class Meter:
         self._format_dict = dict()
         self._convert_type = []
 
-    def int(self, item:str):
+    def int(self, item: str):
         self._format_dict[item] = lambda x: "{:.0f}".format(x)
 
-    def float(self, key:str, acc=4):
+    def float(self, key: str, acc=4):
         """
         设置浮点数精度，默认为小数点后四位
         Args:
@@ -66,10 +64,10 @@ class Meter:
         """
         self._format_dict[key] = lambda x: "{{:.{}f}}".format(acc).format(x)
 
-    def percent(self, key:str, acc=2):
+    def percent(self, key: str, acc=2):
         self._format_dict[key] = lambda x: "{{:.{}%}}".format(acc).format(x)
 
-    def tensorfloat(self, key:str, acc=4):
+    def tensorfloat(self, key: str, acc=4):
         def func(x: torch().Tensor):
             if len(x.shape) == 0:
                 return "{{:.{}f}}".format(acc).format(x)
@@ -78,7 +76,7 @@ class Meter:
 
         self._format_dict[key] = func
 
-    def str_in_line(self, key:str):
+    def str_in_line(self, key: str):
         def func(x):
             l = str(x).split("\n")
             if len(l) > 1:
@@ -181,9 +179,18 @@ class Meter:
 
         return " | ".join(["{}: {}".format(k, v) for k, v in log_dict.items()])
 
-    def update(self,meter):
-        for k,v in meter.items():
+    def update(self, meter):
+        for k, v in meter.items():
             self[k] = v
+        return self
+
+    def map_update(self, items: Iterable, names: Iterable):
+        from itertools import zip_longest
+        items, names = list(items), list(names)
+        assert len(items) == len(names), 'length of items and names not match'
+        for item, name in zip_longest(items, names):
+            self[name] = item
+        return self
 
 
 class AvgMeter(Meter):

@@ -23,7 +23,7 @@ import os
 import pprint as pp
 import warnings
 from collections import defaultdict
-
+from ..base_classes.params_vars import ParamsFactory, OptimParams
 import fire
 from collections.abc import Iterable
 from typing import Any
@@ -34,12 +34,11 @@ from ..utils.lazy import torch
 
 
 class BaseParams:
-    """TODO 将build_exp_name 的前缀单独放，然后参数放子目录"""
-
     def __init__(self):
         self._param_dict = attr()
         self._exp_name = None
         self._bound = {}
+        self._lock = False
         self._bind = defaultdict(list)
 
     def __getitem__(self, item):
@@ -53,25 +52,41 @@ class BaseParams:
         return item in self._param_dict
 
     def __setattr__(self, name: str, value: Any) -> None:
+        from ..base_classes.defaults import default
         if name.startswith("_"):
             super().__setattr__(name, value)
         else:
             res = self._check(name, value)
             if res is not None and not res:
                 raise BoundCheckError("param '{}' checked failed.".format(name))
-            self._param_dict[name] = value
+
+            if isinstance(value, default):  # 设置默认值
+                if name not in self._param_dict:
+                    if value.warn:
+                        warnings.warn(
+                            "'{}' is a new param,please check your spelling. It's more recommended to define in advance.".format(
+                                name))
+                    self._param_dict[name] = value.default
+            else:
+                # TODO 添加 xx_schdule / xx_optim 的对应支持，能够调用 self.create_optim() / self.create_schedule()
+                #  方法对应过去
+                self._param_dict[name] = value
             if name in self._bind:
                 for _v, _bind_k, _bind_v in self._bind[name]:
                     if _v == value:
                         self.__setattr__(_bind_k, _bind_v)
 
     def __getattr__(self, item):
-        # if item not in self._param_dict:
-        #     raise AttributeError(item)
+        if self._lock:
+            if item not in self._param_dict:
+                raise AttributeError(item)
+
         return self._param_dict.__getattr__(item)
 
     def __repr__(self):
         return "{}".format(self.__class__.__name__) + pp.pformat([(k, v) for k, v in self._param_dict.items()])
+
+    __str__ = __repr__
 
     def __delattr__(self, name: str) -> None:
         if name.startswith("_"):
@@ -107,6 +122,7 @@ class BaseParams:
 
         self._bound[k] = check
         self[k] = default
+        return default
 
     def choice(self, k, *choices):
         """
@@ -126,6 +142,7 @@ class BaseParams:
 
         self._bound[k] = check
         self[k] = choices[0]
+        return choices[0]
 
     def bind(self, k, v, bind_k, bind_v):
         """
@@ -148,6 +165,7 @@ class BaseParams:
         """
         self._bound[k] = check_lmd
         self[k] = default
+        return default
 
     def grid_search(self, key, iterable: Iterable):
         """
@@ -166,6 +184,13 @@ class BaseParams:
             self[key] = v
             yield self
 
+    def grid_range(self, count):
+        snapshot = copy.copy(self._param_dict)
+        for i in range(count):
+            for sk, sv in snapshot.items():
+                self[sk] = sv
+            yield self
+
     def from_args(self):
         """
         从命令行参数中设置参数值
@@ -180,7 +205,7 @@ class BaseParams:
                 except:
                     warnings.simplefilter('always', NewParamWarning)
                     warnings.warn(
-                        "{} is a new param,please check your spelling.\n it's more recommended to define in advance.".format(
+                        "'{}' is a new param,please check your spelling.\n it's more recommended to define in advance.".format(
                             k))
                 self[k] = v
 
@@ -244,6 +269,15 @@ class BaseParams:
         """
         return self._param_dict.hash()
 
+    def lock(self):
+        """
+        锁定当前配置，如果当前配置未 lock，那么当尝试获取未分配的参数时候，会返回一个空的字典
+        如果锁定，则在尝试获取未分配参数时，会抛出 AttributeError(key)
+        Returns:
+
+        """
+        self._lock = True
+
     @property
     def inner_dict(self) -> attr:
         return self._param_dict
@@ -252,6 +286,65 @@ class BaseParams:
         if isinstance(other, BaseParams):
             return self.hash() == other.hash()
         return False
+
+    def get(self, k, default=None):
+        """
+        获取某值，如果不存在，则返回默认值
+        Args:
+            k:
+            default:
+
+        Returns:
+
+        """
+        if k in self:
+            return self[k]
+        else:
+            return default
+
+    @staticmethod
+    def default(value: Any = None, warn=False):
+        """
+        默认值，分配值时，仅当当前key没有分配时，分配该值作为键值。否则，该值会被忽略
+
+        Examples:
+        >>> params.margin = params.default(0.5,True)
+        >>> params.margin = params.default(0.3,True)
+        >>> print(params.margin)
+
+        Args:
+            value: 要设置的值
+            warn: 当设置默认值时，抛出警告
+
+        Returns:
+            default(value, warn)
+        """
+        from ..base_classes.defaults import default
+        return default(value, warn)
+
+    def create_optim(self,
+                     name,
+                     lr=None,
+                     rho=None,
+                     eps=None,
+                     weight_decay=None,
+                     lr_decay=None,
+                     initial_accumulator_value=None,
+                     momentum=None,
+                     dampening=None,
+                     nesterov=None, **kwargs):
+        return ParamsFactory.create_optim(name, lr=lr,
+                                          rho=rho,
+                                          eps=eps,
+                                          weight_decay=weight_decay,
+                                          lr_decay=lr_decay,
+                                          initial_accumulator_value=initial_accumulator_value,
+                                          momentum=momentum,
+                                          dampening=dampening,
+                                          nesterov=nesterov, **kwargs)
+
+    def create_schedule(self, schedule_type, start, end, **kwargs):
+        return ParamsFactory
 
 
 class Params(BaseParams):
@@ -266,7 +359,7 @@ class Params(BaseParams):
         self.device = "cuda:0" if torch().cuda.is_available() else "cpu"
         self.dataset = None
         self.architecture = None
-        self.optim = None
+        self.optim = None  # type:OptimParams
         self.ignore_set = set()
 
 

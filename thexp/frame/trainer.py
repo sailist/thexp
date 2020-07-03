@@ -21,11 +21,15 @@ import bisect
 import os
 import pprint as pp
 import warnings
+
+# from ..utils.lazy import torch, np
+import numpy as np
+import torch
 from functools import lru_cache
 from functools import wraps
-from typing import Any, Union
-
 from torch.utils.data.dataloader import DataLoader
+from typing import Any, Union
+from typing import Dict
 
 from .databundler import DataBundler
 from .meter import AvgMeter, Meter
@@ -33,7 +37,6 @@ from .params import Params
 from .saver import Saver
 from ..base_classes.metaclasses import Merge
 from ..globals import _BUILTIN_PLUGIN, _FNAME
-from ..utils.lazy import torch, np
 
 
 class BaseTrainer(metaclass=Merge):
@@ -64,8 +67,7 @@ class BaseTrainer(metaclass=Merge):
             def _newfunc(*args, **kwargs):
                 """执行前回调 on_begin() 、执行后回调 on_end()、执行异常则回调 on_exception() """
                 for callback in _call_set:
-                    if callback.enable:
-                        callback.on_begin(self, func, self.params, *args, **kwargs)
+                    callback.on_begin(self, func, self.params, *args, **kwargs)
                 try:
                     _meter = func(*args, **kwargs)
                 except BaseException as e:
@@ -78,8 +80,7 @@ class BaseTrainer(metaclass=Merge):
                         raise e
 
                 for callback in _call_set:
-                    if callback.enable:
-                        callback.on_end(self, func, self.params, _meter, *args, **kwargs)
+                    callback.on_end(self, func, self.params, _meter, *args, **kwargs)
                 return _meter
 
             return _newfunc
@@ -106,12 +107,12 @@ class BaseTrainer(metaclass=Merge):
         self._other_state_dict = {}
         self._vector_dict = {}
         self._checkpoint_plug = {}
-        self._databundler_dict = {}
+        self._databundler_dict = {}  # type:Dict[str,DataBundler]
         self.train_epoch_toggle = False
         self.train_toggle = False
         if params is not None:
             self.params = params
-            self.device = torch().device(params.device)
+            self.device = torch.device(params.device)
         self.initial()
 
     def initial(self):
@@ -123,7 +124,6 @@ class BaseTrainer(metaclass=Merge):
         pre = self.__class__.__module__.split('.')[-1]
         self.experiment = Experiment("{}.{}".format(self.__exp_name__, pre))
 
-        import json
         self.params.to_json(os.path.join(self.experiment.test_dir, _FNAME.params))
 
         self.experiment.regist_plugin(_BUILTIN_PLUGIN.params, {
@@ -132,7 +132,7 @@ class BaseTrainer(metaclass=Merge):
 
         self.experiment.regist_plugin(_BUILTIN_PLUGIN.trainer, {
             'path': inspect.getfile(self.__class__),
-            # 'loaction': locate_cls(self.__class__),
+            'doc': self.__class__.__doc__,
             'module': self.__class__.__module__,
             'class': self.__class__.__name__
         })
@@ -180,11 +180,10 @@ class BaseTrainer(metaclass=Merge):
 
     def train_epoch(self, eidx, params):
         avg = AvgMeter()
+        self.change_mode(True)
         for idx, batch_data in enumerate(self.train_dataloader):
-            self.change_mode(True)
             meter = self.train_batch(eidx, idx, self.params.global_step, batch_data, params, self.device)
             avg.update(meter)
-            self.change_mode(False)
 
             params.global_step += 1
             params.idx = idx
@@ -192,6 +191,7 @@ class BaseTrainer(metaclass=Merge):
                 self.train_epoch_toggle = False
                 break
 
+        self.change_mode(False)
         return avg
 
     def train_step(self, steps) -> Union[AvgMeter, Meter]:
@@ -593,6 +593,7 @@ class BaseTrainer(metaclass=Merge):
             eidx=self.params.eidx,
             idx=self.params.idx,
             global_step=self.params.global_step,
+            test_name=self.experiment.test_name,
         )
         return val
 
@@ -622,24 +623,26 @@ class BaseTrainer(metaclass=Merge):
     def to(self, device):
         for k, v in self._model_dict.items():
             self.__setattr__(k, v.to(device))
+        for k, v in self._databundler_dict.items():
+            v.to(device)
 
     '''magic functions'''
 
     def __setattr__(self, name: str, value: Any) -> None:
         super().__setattr__(name, value)
         from torch.optim.optimizer import Optimizer
-        if isinstance(value, torch().device):
+        if isinstance(value, torch.device):
             pass
-        elif isinstance(value, torch().nn.Module):
+        elif isinstance(value, torch.nn.Module):
             self._model_dict[name] = value
         elif isinstance(value, Optimizer):
             self._optim_dict[name] = value
-        elif isinstance(value, (torch().Tensor, np().ndarray)):
+        elif isinstance(value, (torch.Tensor, np.ndarray)):
             self._vector_dict[name] = value
-        elif callable(getattr(value, "state_dict",None)) and callable(getattr(value, "load_state_dict",None)):
+        elif callable(getattr(value, "state_dict", None)) and callable(getattr(value, "load_state_dict", None)):
             self._other_state_dict[name] = value
 
-    def train_batch(self, eidx, idx, global_step, batch_data, params: Params, device: torch().device):
+    def train_batch(self, eidx, idx, global_step, batch_data, params: Params, device: torch.device):
         raise NotImplementedError()
 
     def test_eval_logic(self, dataloader, param: Params):
@@ -661,6 +664,7 @@ class BaseTrainer(metaclass=Merge):
         pass
 
 
+
 class Trainer(BaseTrainer):
 
     def callbacks(self, params: Params):
@@ -672,7 +676,7 @@ class Trainer(BaseTrainer):
     def models(self, params: Params):
         pass
 
-    def train_batch(self, eidx, idx, global_step, batch_data, params: Params, device: torch().device):
+    def train_batch(self, eidx, idx, global_step, batch_data, params: Params, device: torch.device):
         pass
 
     def extra_state_dict(self) -> dict:
@@ -680,3 +684,8 @@ class Trainer(BaseTrainer):
 
     def load_extra_state_dict(self, state_dict, strict=False):
         super().load_extra_state_dict(state_dict, strict)
+
+
+class FixTrainer(Trainer):
+    # TODO 根据其他代码的实现方式，封装一个默认的Trainer，传进去模型，数据集，损失函数就可以用
+    pass

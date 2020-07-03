@@ -17,14 +17,13 @@
              
     to purchase a commercial license.
 """
-
 from collections import OrderedDict
+
 from itertools import cycle, chain
 
-
-from ..utils.lazy import torch
-
-
+from thexp.utils.device import to_device
+# from ..utils.lazy import torch
+import torch
 
 
 class DataBundler:
@@ -53,18 +52,18 @@ class DataBundler:
         self.dataloaders = DataBundler.DataBundler()
         self.iter_mode = "chain"
 
-    def set_batch_size(self,batch_size):
+    def set_batch_size(self, batch_size):
         from torch.utils.data import DataLoader
-        from thexp.torch.data import DataLoader as thDataLoader
-        for _,(loader,_) in self.dataloaders.items():
-            if isinstance(loader,thDataLoader):
+        from thexp.torch.data.dataloader import DataLoader as thDataLoader
+        for _, (loader, _) in self.dataloaders.items():
+            if isinstance(loader, thDataLoader):
                 loader.set_batch_size(batch_size)
-            elif isinstance(loader,DataLoader):
+            elif isinstance(loader, DataLoader):
                 loader.batch_sampler.batch_size = batch_size
 
     def _append(self, loader, func, name):
         from torch.utils.data import DataLoader
-        assert isinstance(loader, (DataLoader,DataBundler))
+        assert isinstance(loader, (DataLoader, DataBundler))
         if name is None:
             unname = "unnamed"
             i = 0
@@ -128,22 +127,40 @@ class DataBundler:
 
     def __iter__(self):
         loaders = self._func_loader()
+        from thexp.utils.timeit import timeit
         if len(loaders) == 1:
-            return iter(loaders[0])
-
-        if self.iter_mode == "zip":
-            return zip(*loaders)
+            iter = loaders[0]
+            # for batch in loaders[0]:
+            #     yield batch
+            # return iter(loaders[0])
+        elif self.iter_mode == "zip":
+            iter = zip(*loaders)
         elif self.iter_mode == "chain":
-            return chain(*loaders)
+            iter = chain(*loaders)
+        else:
+            assert False
 
-        assert False
+        timeit.mark("get_data_start")
+        for batch_data in iter:
+            # from .utils import to_device
+            timeit.mark("get_data_start")
+            if self.device is not None:
+                yield to_device(batch_data, self.device)
+            else:
+                yield batch_data
+            timeit.mark("get_data_over")
 
-    def choice_batch(self)->tuple:
+    def to(self, device: torch.device):
+        assert isinstance(device, torch.device)
+        self.device = device
+        return self
+
+    def choice_batch(self) -> tuple:
         return next(iter(self))
 
-    def choice_sample(self)->tuple:
-        xs,ys = next(iter(self)) # type:(torch().Tensor,torch().Tensor)
-        return (xs[0],ys[0])
+    def choice_sample(self) -> tuple:
+        xs, ys = next(iter(self))  # type:(torch.Tensor,torch.Tensor)
+        return (xs[0], ys[0])
 
     def zip_mode(self):
         """切换为zip方式提供所有添加的数据集"""
@@ -162,11 +179,11 @@ class DataBundler:
     @staticmethod
     def create_zip_bundler(**kwargs):
         bundler = DataBundler()
-        loaders = [(len(v),v,k) for k,v in kwargs.items()]
+        loaders = [(len(v), v, k) for k, v in kwargs.items()]
         loaders.sort(reverse=True)
-        bundler.add(loaders[0][1],loaders[0][2])
-        for (_,loader,name) in loaders[1:]:
-            bundler.cycle(loader,name)
+        bundler.add(loaders[0][1], loaders[0][2])
+        for (_, loader, name) in loaders[1:]:
+            bundler.cycle(loader, name)
         return bundler
 
     @staticmethod
@@ -175,7 +192,6 @@ class DataBundler:
         for loader in args:
             bundler.add(loader)
         return bundler
-
 
     def __repr__(self):
         from pprint import pformat
