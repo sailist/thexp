@@ -68,3 +68,11 @@ print(params.arch_param)
 
 params.to_json('params.json')
 params.from_json('params.json')
+
+
+p = Params()
+p.margin = 0.5
+p.margin = p.default(0.1,True)
+p = Params()
+p.margin = p.default(0.3,True)
+print(p.margin)
