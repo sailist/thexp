@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="ILearn">
+  <component name="PublishConfigData" autoUpload="Always">
     <serverData>
-      <paths name="ILearn">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/jupyter_data/thexp" local="$PROJECT_DIR$" web="/" />
-            <mapping deploy="/jupyter_data/thexp-test3" local="$PROJECT_DIR$/../thexp-test3" web="" />
-          </mappings>
-        </serverdata>
-      </paths>
       <paths name="aliyun">
         <serverdata>
           <mappings>
@@ -17,11 +9,11 @@
           </mappings>
         </serverdata>
       </paths>
-      <paths name="sunyuqing">
+      <paths name="ilearn">
         <serverdata>
           <mappings>
-            <mapping deploy="/home/voicerec/downloads" local="$PROJECT_DIR$" web="/" />
-            <mapping local="" />
+            <mapping local="$PROJECT_DIR$/../thexp-demo" web="/" />
+            <mapping deploy="/jupyter_data/thexp" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
