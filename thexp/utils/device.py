@@ -17,17 +17,15 @@
              
     to purchase a commercial license.
 """
+from typing import Union, List, Dict, Tuple
+
+from thexp.utils.lazy import torch
 
 
-def draw_dict():
-    res = dict()
-
-    res["x"] = []
-    res['y'] = []
-    return res
-
-
-class default():
-    def __init__(self, default, warn=False):
-        self.default = default
-        self.warn = warn
+def to_device(batch: Union[List, Dict, Tuple, torch().Tensor], device: torch().device):
+    if isinstance(batch, (list, tuple)):
+        return [to_device(ele, device) for ele in batch]
+    elif isinstance(batch, dict):
+        return {k: to_device(ele, device) for k, ele in batch.items()}
+    elif isinstance(batch, torch().Tensor):
+        return batch.to(device)

@@ -20,8 +20,11 @@
 import hashlib
 import os
 import sys
+
 from datetime import datetime
+
 from ..globals import _GITKEY
+
 
 def listdir_by_time(dir_path):
     dir_list = os.listdir(dir_path)
@@ -44,7 +47,7 @@ def _create_home_dir(path):
     import json
     with open("config.json", "w") as w:
         json.dump({
-            _GITKEY.expsdir:os.path.join(path,'experiments')
+            _GITKEY.expsdir: os.path.join(path, 'experiments')
         }, w, indent=2)
 
 
@@ -85,50 +88,58 @@ def curent_date(fmt='%y-%m-%d-%H%M%S', dateobj: datetime = None):
     return datetime.now().strftime(fmt)
 
 
-def date_from_str(value, fmt='%y-%m-%d-%H%M%S'):
+def date_from_str(value, fmt='%y-%m-%d-%H%M%S') -> datetime:
     return datetime.strptime(value, fmt)
 
 
-def file_atime2date(file, fmt='%y%m%d-%H%M%S'):
+def file_atime2date(file, fmt='%y%m%d-%H%M%S') -> str:
+    """获取某文件的 atime """
     return curent_date(fmt, datetime.fromtimestamp(os.path.getatime(file)))
 
 
-def path_equal(p1, p2):
+def path_equal(p1: str, p2: str) -> bool:
+    """
+    判断两个路径是否相同  TODO（疑似在linux下不好用）
+    Args:
+        p1:
+        p2:
+
+    Returns:
+
+    """
     return os.path.normcase(p1) == os.path.normcase(p2)
 
 
-def path_in(sub, all):
+def path_in(sub: str, all: str) -> bool:
+    """
+    判断某路径是另一路径的子路径
+    Args:
+        sub:
+        all:
+
+    Returns:
+
+    """
     return os.path.normcase(sub) in os.path.normcase(all)
 
 
 def filter_filename(title, substr='-'):
-    """can't contain path"""
+    """
+    过滤非法字符
+    Args:
+        title:
+        substr:
+
+    Returns:
+
+    """
     import re
     title = re.sub('[\/:*?"<>|]', substr, title)  # 去掉非法字符
     return title
 
 
-class exithook():
-    def __init__(self):
-        self.exit_code = None
-        self.exception = None
-
-    def hook(self):
-        self._orig_exit = sys.exit
-        sys.exit = self.exit
-        sys.excepthook = self.exc_handler
-
-    def exit(self, code=0):
-        self.exit_code = code
-        self._orig_exit(code)
-
-    def exc_handler(self, exc_type, exc, *args):
-        self.exception = exc
-
-
-
-
 def iter2pair(obj):
+    """"""
     for k in obj:
         if isinstance(obj, dict):
             yield k, obj[k]
@@ -172,9 +183,9 @@ def hash(value) -> str:
 
 def deep_chain(item):
     from collections.abc import Iterable
-    if isinstance(item,Iterable):
+    if isinstance(item, Iterable):
         for i in item:
-            if isinstance(i,Iterable):
+            if isinstance(i, Iterable):
                 for ii in deep_chain(i):
                     yield ii
             else:

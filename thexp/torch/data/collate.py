@@ -18,7 +18,8 @@
     to purchase a commercial license.
 """
 import re
-
+from thexp.utils.decorators.deprecated import deprecated
+from thexp import __VERSION__
 import torch
 from torch._six import container_abcs, string_classes, int_classes
 
@@ -28,6 +29,10 @@ default_collate_err_msg_format = (
     "dicts or lists; found {}")
 
 
+@deprecated(deprecated_in='1.4.0.10', removed_in='1.5', current_version=__VERSION__,
+            details='This class allocates device during fetching batch of data, and may cause memory leak.'
+                    'Now `Trainer`/`DataBundler` in `thexp.frame` have added `to(device)` function, which can auto '
+                    'allocate device and replace this class.')
 class AutoCollate():
     def __init__(self, device):
         super().__init__()

@@ -26,7 +26,7 @@ from flask import jsonify
 
 from thexp.analyser.charts import Parallel, Curve
 from thexp.base_classes.tree import tree
-from . import deplugs
+from thexp.analyser import deplugs
 from . import web_parser
 from ..compare import Comparer
 from ..expviewer import SummaryViewer, ProjViewer, TestViewer

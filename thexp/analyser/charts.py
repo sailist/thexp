@@ -17,12 +17,12 @@
              
     to purchase a commercial license.
 """
-import bisect
 from collections import defaultdict
-from itertools import chain
 
+from itertools import chain
 from pyecharts import charts
 from pyecharts import options as opts
+from typing import List
 
 
 class Chart:
@@ -35,7 +35,7 @@ class Chart:
 
 class Curve(Chart):
 
-    def __init__(self, curve_values: dict,title="-",x_key='x', y_key='y', name_key='name') -> None:
+    def __init__(self, curve_values: dict, title="-", x_key='x', y_key='y', name_key='name') -> None:
         super().__init__()
         self.title = title
         self.curve_values = curve_values
@@ -56,7 +56,7 @@ class Curve(Chart):
             return
         for k in self.curve_values.keys():
             v = self.curve_values[k]
-            x_map = {x:y for x,y in zip(v[self.x_key],v[self.y_key])}
+            x_map = {x: y for x, y in zip(v[self.x_key], v[self.y_key])}
             new_ys = []
             for x in self.x_axis:
                 if x in x_map:
@@ -74,7 +74,11 @@ class Curve(Chart):
         for k, v in self.curve_values.items():
             c.add_xaxis([str(i) for i in self.x_axis])
             break
-        for k, v in self.curve_values.items():
+
+        max_v_dict = defaultdict(list)
+
+        for _, v in self.curve_values.items():
+            # max_v_dict[k].append([max(v[self.y_key]),min(v[self.y_key])])
             c.add_yaxis(
                 v[self.name_key],
                 v[self.y_key],
@@ -82,8 +86,14 @@ class Curve(Chart):
                 is_symbol_show=False,
             )
 
-        c.set_global_opts(title_opts=opts.TitleOpts(title=self.title),
-                          tooltip_opts=opts.TooltipOpts(is_show=True, trigger='axis'), )
+        c.set_global_opts(title_opts=opts.TitleOpts(
+            title=self.title, padding=5),
+            yaxis_opts=opts.AxisOpts(
+                min_='dataMin',
+                max_='dataMax',
+            ),
+            legend_opts=opts.LegendOpts(type_='scroll',pos_bottom=10),
+            tooltip_opts=opts.TooltipOpts(is_show=True, trigger='axis'), )
 
         return c
 
@@ -96,28 +106,35 @@ class Bar(Chart):
 
 
 class Parallel(Chart):
-    def __init__(self, names: list, params_dicts: dict, metric_dicts: dict, title: str = 'Parallel'):
+    def __init__(self, names: list, params_dicts: List[dict], metric_dicts: List[dict], title: str = None):
         super().__init__()
         self.names = names
         self.params_dicts, self.metric_dicts = params_dicts, metric_dicts
-        self.title = title
+
+        self.key_vals = defaultdict(list)
+
+        for metric_dict in chain(self.metric_dicts, self.params_dicts):
+            for k, v in metric_dict.items():
+                if isinstance(v, (str, bool)):
+                    continue
+                self.key_vals[k].append(v)
 
     def _echarts_axis_opts(self):
         """
         ([{'epoch': 3,
-   'eidx': 1,
-   'idx': 0,
-   'global_step': 0,
-   'device': 'cpu',
-   'optim.lr': 0.1},
-  {'epoch': 3,
-   'eidx': 1,
-   'idx': 0,
-   'global_step': 0,
-   'device': 'cpu',
-   'optim.lr': 0.001}],
- [{'auto_train_loss': 3.7000625133514404},
-  {'auto_train_loss': 2.3023736476898193}])
+           'eidx': 1,
+           'idx': 0,
+           'global_step': 0,
+           'device': 'cpu',
+           'optim.lr': 0.1},
+          {'epoch': 3,
+           'eidx': 1,
+           'idx': 0,
+           'global_step': 0,
+           'device': 'cpu',
+           'optim.lr': 0.001}],
+         [{'auto_train_loss': 3.7000625133514404},
+          {'auto_train_loss': 2.3023736476898193}])
         :return:
         """
         str_opts = defaultdict(list)
@@ -130,7 +147,8 @@ class Parallel(Chart):
             if k in str_opts:
                 res.append(opts.ParallelAxisOpts(dim=i, name=k, type_="category", data=str_opts[k]))
             else:
-                res.append(opts.ParallelAxisOpts(dim=i, name=k))
+
+                res.append(opts.ParallelAxisOpts(dim=i, name=k, max_=max(self.key_vals[k]), min_=min(self.key_vals[k])))
 
         return res
 
@@ -146,7 +164,7 @@ class Parallel(Chart):
         c = charts.Parallel().add_schema(self._echarts_axis_opts())
         for name, data in self._echarts_data():
             c.add(name, data, is_smooth=True)
-        c.set_global_opts(title_opts=opts.TitleOpts(title=self.title))
+        # c.set_global_opts(title_opts=opts.TitleOpts(title=self.title))
 
         return c
 

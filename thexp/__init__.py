@@ -18,15 +18,14 @@
     to purchase a commercial license.
 """
 
-__VERSION__ = "1.4"
+__VERSION__ = "1.4.0.12"
 
 # __all__ = ['DataBundler','Experiment','glob']
 # def __getattr__(name):
 
 
-
 from .frame.databundler import DataBundler
-from .frame.experiment import Experiment,glob
+from .frame.experiment import Experiment, glob
 from .frame.rndmanager import RndManager
 from .frame.logger import Logger
 from .frame.meter import Meter, AvgMeter
@@ -35,5 +34,3 @@ from .frame.saver import Saver
 from .frame.trainer import Trainer
 
 from .frame import callbacks
-
-

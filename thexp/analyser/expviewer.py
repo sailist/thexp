@@ -20,6 +20,7 @@
 import json
 import os
 import pprint
+
 from collections.abc import Iterable
 from functools import lru_cache
 from typing import Union, List
@@ -448,11 +449,15 @@ class TestViewer():
         return Repo(self.repopath)
 
     @property
-    def test_name(self):
+    def test_time(self) -> int:
+        return int(self.test_name.split('.')[0])
+
+    @property
+    def test_name(self) -> str:
         return self.json_info[_INFOJ.test_name]
 
     @property
-    def json_fn(self):
+    def json_fn(self) -> str:
         return os.path.join(self.test_dir, _FNAME.info)
 
     @property
@@ -479,7 +484,7 @@ class TestViewer():
         return self.json_info
 
     @property
-    def repopath(self):
+    def repopath(self) -> str:
         return self.json_info[_INFOJ.repo]
 
     @property
@@ -487,11 +492,15 @@ class TestViewer():
         return self.json_info[_INFOJ.argv]
 
     @property
-    def commit_hash(self):
+    def commit_hash(self) -> str:
         return self.json_info[_INFOJ.commit_hash]
 
     @property
-    def success_exit(self):
+    def short_hash(self) -> str:
+        return self.json_info[_INFOJ.short_hash]
+
+    @property
+    def success_exit(self) -> int:
         return _INFOJ.end_code in self.json_info and self.json_info[_INFOJ.end_code] == 0
 
     @property

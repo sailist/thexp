@@ -68,7 +68,7 @@ class Comparer:
     @property
     def boards(self):
         if self._bds is None:
-            self._bds = [i.board_reader for i in self.tvs]
+            self._bds = [i.board_reader for i in self.tvs if i.board_reader is not None]
         return self._bds
 
     @property

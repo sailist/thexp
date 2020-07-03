@@ -17,13 +17,14 @@
              
     to purchase a commercial license.
 """
-from ..expviewer import TestViewer
+from thexp.analyser.expviewer import TestViewer
 
 deplug_map = {}
 
 
 def deplug(cls):
     deplug_map[cls.__plugin_name__] = cls()
+    return cls
 
 
 class Deplug:

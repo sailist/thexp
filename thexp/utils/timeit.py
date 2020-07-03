@@ -18,9 +18,10 @@
     to purchase a commercial license.
 """
 import pprint
-import time
 import warnings
 from collections import OrderedDict
+
+import time
 
 from thexp.utils.generel_util import curent_date
 
@@ -88,24 +89,31 @@ class TimeIt:
         key = str(key)
         offset, now = self.offset()
 
+        self.times.setdefault("use", 0)
+        self.times["use"] += offset
+
         if add_now:
             self.times[key] = curent_date("%H:%M:%S")
         else:
             self.times.setdefault(key, 0)
             self.times[key] += offset
-        self.times.setdefault("use", 0)
-        self.times["use"] += offset
 
     def end(self):
         self.mark("end", True)
         self.ends = True
 
-    def meter(self):
+    def meter(self, ratio=True):
         from thexp import Meter
 
         meter = Meter()
         for key, offset in self.times.items():
-            meter[key] = offset
+            if ratio:
+                if key == 'use':
+                    continue
+                meter[key] = offset / self.times['use']
+            else:
+                meter[key] = offset
+
         return meter
 
     def __str__(self):
