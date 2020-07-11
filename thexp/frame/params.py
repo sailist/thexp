@@ -98,6 +98,11 @@ class BaseParams:
         key = str(key)
         self.__delattr__(key)
 
+    def __eq__(self, other):
+        if isinstance(other, BaseParams):
+            return self.hash() == other.hash()
+        return False
+
     def _check(self, name, value):
         if name in self._bound:
             self._bound[name](value)
@@ -259,6 +264,8 @@ class BaseParams:
         for k, v in dic.items():
             self._param_dict[k] = v
 
+        return self
+
     def hash(self) -> str:
         """
         返回对参数的定义顺序及其相应值的一个hash，理论上，两个Param 对象的hash方法返回的参数相同，
@@ -281,11 +288,6 @@ class BaseParams:
     @property
     def inner_dict(self) -> attr:
         return self._param_dict
-
-    def __eq__(self, other):
-        if isinstance(other, BaseParams):
-            return self.hash() == other.hash()
-        return False
 
     def get(self, k, default=None):
         """
@@ -345,6 +347,10 @@ class BaseParams:
 
     def create_schedule(self, schedule_type, start, end, **kwargs):
         return ParamsFactory
+
+    def replace(self, **kwargs):
+        self.update(kwargs)
+        return self
 
 
 class Params(BaseParams):
