@@ -22,6 +22,18 @@ from typing import Tuple, List, Callable
 import torch
 
 
+def rotate_right_angle(x: torch.Tensor, w_dim: int = 2, h_dim: int = 3, degree: int = 90):
+    assert degree in {90, 270, 180}
+    if degree == 90:
+        x = x.transpose(w_dim, h_dim)  # 90
+    elif degree == 180:
+        x = x.flip(w_dim)
+    elif degree == 270:
+        x = x.transpose(w_dim, h_dim).flip(h_dim)  # 270
+
+    return x
+
+
 def split_sub_matrix(mat: torch.Tensor, *sizes):
     """
     将一个[N,M,...,L]的矩阵按 n,m,...l 拆分成 N/n*M/m*...L/l 个 [n,m,...l]的小矩阵
