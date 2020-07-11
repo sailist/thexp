@@ -28,8 +28,7 @@ import torch
 from functools import lru_cache
 from functools import wraps
 from torch.utils.data.dataloader import DataLoader
-from typing import Any, Union
-from typing import Dict
+from typing import Any, Union, List, Dict
 
 from .databundler import DataBundler
 from .meter import AvgMeter, Meter
@@ -112,7 +111,19 @@ class BaseTrainer(metaclass=Merge):
         self.train_toggle = False
         if params is not None:
             self.params = params
-            self.device = torch.device(params.device)
+            if isinstance(params.device, str):
+                self.regist_device(torch.device(params.device))
+            elif isinstance(params.device, (list, dict)):
+                if isinstance(params.device, list):
+                    self.regist_devices([torch.device(i) for i in params.device])
+                elif isinstance(params.device, dict):
+                    self.regist_devices({k: torch.device(v) for k, v in params.device.items()})
+                elif isinstance(params.device, torch.device):
+                    warnings.warn("define torch.device in params is not recommanded, allocate a string is better.")
+                    self.regist_device(params.device)
+                else:
+                    warnings.warn("Unknown type for params.device.")
+
         self.initial()
 
     def initial(self):
@@ -148,6 +159,12 @@ class BaseTrainer(metaclass=Merge):
             val = DataBundler().add(val)
         self._databundler_dict[key] = val
 
+    def regist_device(self, device: torch.device):
+        self.device = device
+
+    def regist_devices(self, devices: Union[List[torch.device], Dict[Union[int, str], torch.device]]):
+        self.devices = devices
+
     def regist_databundler(self,
                            train: Union[DataBundler, DataLoader] = None,
                            eval: Union[DataBundler, DataLoader] = None,
@@ -168,6 +185,8 @@ class BaseTrainer(metaclass=Merge):
             self._regist_databundler("eval", eval)
         if test is not None:
             self._regist_databundler("tests", test)
+
+        self.logger.info(self._databundler_dict)
 
     def train(self):
         params = self.params
@@ -662,7 +681,6 @@ class BaseTrainer(metaclass=Merge):
     def models(self, params: Params):
         """初始化模型"""
         pass
-
 
 
 class Trainer(BaseTrainer):

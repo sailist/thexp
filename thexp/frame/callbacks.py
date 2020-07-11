@@ -227,7 +227,7 @@ class LoggerCallback(TrainCallback):
         self.start = params.eidx
         self.traintime = TimeIt()
         self.traintime.start()
-        # trainer.logger.info()
+        trainer.logger.info(trainer._databundler_dict)
         super().on_train_begin(trainer, func, params, *args, **kwargs)
 
     def on_train_end(self, trainer: 'BaseTrainer', func, params: Params, meter: Meter, *args, **kwargs):
