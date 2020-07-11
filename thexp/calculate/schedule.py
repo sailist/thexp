@@ -28,6 +28,9 @@ class Schedule(attr):
     def __call__(self, cur):
         return self.func(cur)
 
+    def __getitem__(self, cur):
+        return self.func(cur)
+
     def plot(self, num=1000, left=None, right=None):
         from matplotlib import pyplot as plt
         if left is None:
