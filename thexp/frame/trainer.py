@@ -127,11 +127,11 @@ class BaseTrainer(metaclass=Merge):
 
         self.params.to_json(os.path.join(self.experiment.test_dir, _FNAME.params))
 
-        self.experiment.regist_plugin(_BUILTIN_PLUGIN.params, {
+        self.experiment.add_plugin(_BUILTIN_PLUGIN.params, {
             'param_hash': self.params.hash(),
         })
 
-        self.experiment.regist_plugin(_BUILTIN_PLUGIN.trainer, {
+        self.experiment.add_plugin(_BUILTIN_PLUGIN.trainer, {
             'path': inspect.getfile(self.__class__),
             'doc': self.__class__.__doc__,
             'module': self.__class__.__module__,
@@ -270,7 +270,7 @@ class BaseTrainer(metaclass=Merge):
             _PLUGIN_WRITER.log_dir: d,
             _PLUGIN_WRITER.filename_suffix: '.bd'
         }
-        self.experiment.regist_plugin(_BUILTIN_PLUGIN.writer, kwargs)
+        self.experiment.add_plugin(_BUILTIN_PLUGIN.writer, kwargs)
 
         res = SummaryWriter(**kwargs)
 
@@ -287,7 +287,7 @@ class BaseTrainer(metaclass=Merge):
         from .logger import Logger
         logger = Logger()
         fn = logger.add_log_dir(self.experiment.test_dir)
-        self.experiment.regist_plugin(_BUILTIN_PLUGIN.logger, dict(
+        self.experiment.add_plugin(_BUILTIN_PLUGIN.logger, dict(
             log_dir=self.experiment.test_dir,
             fn=fn,
         ))
@@ -301,7 +301,7 @@ class BaseTrainer(metaclass=Merge):
             max_to_keep=3,
             ckpt_dir=d
         )
-        self.experiment.regist_plugin(_BUILTIN_PLUGIN.saver, kwargs)
+        self.experiment.add_plugin(_BUILTIN_PLUGIN.saver, kwargs)
         return Saver(**kwargs)
 
     @property
@@ -312,7 +312,7 @@ class BaseTrainer(metaclass=Merge):
         kwargs = dict(
             save_dir=d,
         )
-        self.experiment.regist_plugin(_BUILTIN_PLUGIN.rnd, kwargs)
+        self.experiment.add_plugin(_BUILTIN_PLUGIN.rnd, kwargs)
         return RndManager(**kwargs)
 
     @property
@@ -362,7 +362,7 @@ class BaseTrainer(metaclass=Merge):
 
         """
         state_dict = self.checkpoint_dict()
-        fn = self.saver.save_keypoint(state_dict["_eidx"], state_dict, extra_info, replacement)
+        fn = self.saver.save_keypoint(self.params.eidx, state_dict, extra_info, replacement)
         self.logger.info("save keypoint in {}".format(fn))
         return fn
 
@@ -377,7 +377,7 @@ class BaseTrainer(metaclass=Merge):
             保存的 checkpoint 的文件名
         """
         state_dict = self.checkpoint_dict()
-        fn = self.saver.save_checkpoint(state_dict["_eidx"], state_dict, extra_info, replacement)
+        fn = self.saver.save_checkpoint(self.params.eidx, state_dict, extra_info, replacement)
         self.logger.info("save checkpoint in {}".format(fn))
         return fn
 
@@ -437,11 +437,14 @@ class BaseTrainer(metaclass=Merge):
         msg = None
         from .callbacks import BaseCallback
 
-        if issubclass(callback, BaseCallback):
-            for cb in self._callback_set:
-                if cb.__class__.__name__ == callback.__name__:
-                    callback = cb
-                    break
+        try:
+            if issubclass(callback, BaseCallback):
+                for cb in self._callback_set:
+                    if cb.__class__.__name__ == callback.__name__:
+                        callback = cb
+                        break
+        except: # handle TypeError: issubclass() arg 1 must be a class
+            pass
 
         if isinstance(callback, str):
             for cb in self._callback_set:
@@ -692,8 +695,3 @@ class Trainer(BaseTrainer):
 
     def load_extra_state_dict(self, state_dict, strict=False):
         super().load_extra_state_dict(state_dict, strict)
-
-
-class FixTrainer(Trainer):
-    # TODO 根据其他代码的实现方式，封装一个默认的Trainer，传进去模型，数据集，损失函数就可以用
-    pass

@@ -1,109 +1,18 @@
-"""
-    Copyright (C) 2020 Shandong University
-
-    This program is licensed under the GNU General Public License 3.0 
-    (https://www.gnu.org/licenses/gpl-3.0.html). 
-    Any derivative work obtained under this license must be licensed 
-    under the GNU General Public License as published by the Free 
-    Software Foundation, either Version 3 of the License, or (at your option) 
-    any later version, if this derivative work is distributed to a third party.
-
-    The copyright for the program is owned by Shandong University. 
-    For commercial projects that require the ability to distribute 
-    the code of this program as part of a program that cannot be 
-    distributed under the GNU General Public License, please contact 
-            
-            sailist@outlook.com
-             
-    to purchase a commercial license.
-"""
 import atexit
 import json
 import os
+import re
 import sys
 import warnings
 from collections import namedtuple
-from pprint import pformat
 
-import re
-from typing import Any
+from thexp.globals import _CONFIGL, _GITKEY, _FNAME
+from thexp.utils.dates import curent_date
 
-from ..globals import _CONFIGL, _GITKEY, _FNAME
-
-
-def gitutils():
-    from thexp.utils import gitutils
-    return gitutils
+from .configs import globs
 
 
-from thexp.utils.generel_util import config_path, curent_date
-from .params import BaseParams
-
-'''
-一个项目有多个实验，一个实验有多次试验，一次Python运行对应多次试验
-实验放在一个文件夹，每次试验
-'''
 test_dir_pt = re.compile("[0-9]{4}\.[a-z0-9]{7}")
-
-
-class Globals:
-    LEVEL = _CONFIGL
-
-    def __init__(self):
-        self._git_config = ExpConfig(_CONFIGL.repository)
-        self._configs = [
-            ExpConfig(_CONFIGL.exp),
-            self._git_config,
-            ExpConfig(_CONFIGL.user),
-        ]
-
-    def __setattr__(self, name: str, value: Any) -> None:
-        if name.startswith("_"):
-            super().__setattr__(name, value)
-        else:
-            self.__setitem__(name, value)
-
-    def __getattr__(self, item):
-        return self.__getitem__(item)
-
-    def __getitem__(self, item):
-        for config in self._configs:
-            if item in config:
-                return config[item]
-
-    def __setitem__(self, key, value):
-        self._configs[0][key] = value
-
-    def add_value(self, key, value, level=_CONFIGL.exp):
-        if level == _CONFIGL.exp:
-            self._configs[0][key] = value
-        elif level == _CONFIGL.user:
-            self._configs[1][key] = value
-        elif level == _CONFIGL.repository:
-            self._configs[2][key] = value
-        else:
-            assert False, 'level name error {}'.format(level)
-
-    def items(self):
-        return {
-            _CONFIGL.exp: self._configs[0].items(),
-            _CONFIGL.repository: self._configs[1].items(),
-            _CONFIGL.user: self._configs[2].items(),
-        }
-
-    def __repr__(self):
-
-        return "Globals({})".format(pformat({
-            _CONFIGL.exp: self._configs[0].items(),
-            _CONFIGL.repository: self._configs[1].items(),
-            _CONFIGL.user: self._configs[2].items(),
-        }))
-
-
-# repo.json 首先要知道所有的repo的位置信息，这或许可以通过为每个repo生成一个唯一的uuid来完成
-# 每个repo都存在多个实验，每个实验做一次算一次试验
-# 目录层级为 {实验名.repoid}/{试验名}/{...}
-
 exception = namedtuple('exception_status', ['exc_type', 'exc_value', 'exc_tb'])
 
 
@@ -111,15 +20,13 @@ class Experiment:
     """
     用于目录管理和常量配置管理
     """
-    user_level = _CONFIGL.user
-    exp_level = _CONFIGL.exp
+    user_level = _CONFIGL.running
+    exp_level = _CONFIGL.globals
     repo_level = _CONFIGL.repository
     count = 0
     whole_tests = []
 
     def __init__(self, exp_name):
-        from git import Repo
-        from ..utils.gitutils import ExpRepo
 
         self._exp_name = exp_name
         self._exp_dir = None
@@ -127,27 +34,17 @@ class Experiment:
         self._end_state = False  # 是否试验已结束
         self._test_dir = None
         self._project_dir = None
-        self.git_config = ExpConfig(_CONFIGL.repository)
-        self.exp_repo = ExpRepo.singleton()
-        self.git_repo = self.exp_repo.repo  # type:Repo
+
+        self._repo = None
+        # self.git_repo = self.exp_repo.repo  # type:Repo #TODO 有问题
         self._tags = {}
         self._hashs = []
-        self._config = glob
+        self._config = globs
         self._hold_dirs = []
         self._time_fmt = "%Y-%m-%d %H:%M:%S"
         self._plugins = {}
         self._exc_dict = None  # type:exception
         self._initial()
-
-    def add_config(self, key, value, level=_CONFIGL.exp):
-        """
-        添加配置
-        :param key:
-        :param value:
-        :param level: 配置级别，查看 globals._CONFIGL
-        :return:
-        """
-        self._config.add_value(key, value, level)
 
     def __getitem__(self, item):
         return self._config[item]
@@ -155,9 +52,137 @@ class Experiment:
     def __setitem__(self, key, value):
         self._config[key] = value
 
+    def _initial(self):
+        """初始化，会在实例被创建完成后调用"""
+        from thexp.utils.repository import commit as git_commit
+        if self._start_time is None:
+            self._start_time = curent_date(self._time_fmt)
+            sys.excepthook = self.exc_end
+            atexit.register(self.end)
+
+            self._regist_repo()
+            self._regist_exp()
+
+            # 在regist_exp 后运行，因为上面的方法可能导致 repo.json 文件修改
+            git_commit(self.repo, _GITKEY.commit_key, branch_name=_GITKEY.thexp_branch)
+
+            self._write()
+        else:
+            warnings.warn("start the same experiment twice is not suggested.")
+
+    def _regist_repo(self):
+        """
+        在 repo 的根目录下注册实验名，用于 ProjViewer 检索
+        :param exp_repo:  Exprepo对象
+        :return:
+        """
+        from ..utils.paths import home_dir
+        from ..globals import _FNAME
+        projkey = self.projkey
+        expsdir = self.expsdir
+        repopath = self.repo.working_dir
+
+        rp = os.path.join(home_dir(), _FNAME.repo)
+        if not os.path.exists(rp):
+            res = {}
+        else:
+            with open(rp, encoding='utf-8') as r:
+                res = json.load(r)
+
+        dic = res.setdefault(projkey, dict())
+
+        dic['repopath'] = repopath
+        dic['exp_root'] = expsdir
+
+        with open(rp, 'w', encoding='utf-8') as w:
+            json.dump(res, w, indent=2)
+
+        rp = os.path.join(repopath, _FNAME.repo)
+        if not os.path.exists(rp):
+            res = {}
+        else:
+            with open(rp, encoding='utf-8') as r:
+                res = json.load(r)
+            if len(res.keys()) > 0 and projkey not in res:
+                val = list(res.values())[0]
+                res = {projkey: val}
+
+        dic = res.setdefault(projkey, dict())
+        dic['repopath'] = repopath
+        dic['exp_root'] = expsdir
+        with open(rp, 'w', encoding='utf-8') as w:
+            json.dump(res, w, indent=2)
+
+    def _regist_exp(self):
+        """
+        在 repo 目录下注册某实验 exp ，用于 ProjViewer 的检索
+
+        Returns:
+            返回是否修改，如有修改，可能需要重新提交保证最新
+        """
+        from ..globals import _FNAME
+        repo = self.repo
+        projkey = self.projkey
+        exp_name = self._exp_name
+
+        rp = os.path.join(repo.working_dir, _FNAME.repo)
+        if not os.path.exists(rp):
+            res = {}
+        else:
+            with open(rp, encoding='utf-8') as r:
+                res = json.load(r)
+
+        amend = False
+
+        lis = res[projkey].setdefault('exps', [])
+        if exp_name not in lis:
+            lis.append(exp_name)
+            amend = True
+
+        with open(rp, 'w', encoding='utf-8') as w:
+            json.dump(res, w, indent=2)
+
+        return amend
+
+    def _write(self, **extra):
+        """将试验状态写入试验目录中的 info.json """
+        if self._end_state:
+            return
+
+        res = dict(
+            repo=self.repo.working_dir,
+            argv=sys.argv,
+            exp_name=self._exp_name,
+            exp_dir=self.exp_dir,
+            test_name=os.path.basename(self.test_dir),
+            test_dir=self.test_dir,
+            root_dir=self.root_dir,
+            project_name=self.project_name,
+            project_iname=os.path.basename(self.project_dir),
+            project_dir=self.project_dir,
+            commit_hash=self.commit_hash,
+            short_hash=self.test_hash,
+            dirs=self._hold_dirs,
+            time_fmt=self._time_fmt,
+            start_time=self._start_time,
+            tags=self._tags,
+            plugins=self._plugins,
+            **extra,
+        )
+        with open(self.test_info_fn, 'w', encoding='utf-8') as w:
+            json.dump(res, w, indent=2)
+
+    @property
+    def repo(self):
+        from ..utils.repository import load_repo
+        if self._repo is None:
+            self._repo = load_repo()
+        return self._repo
+
     @property
     def commit(self):
-        return self.exp_repo.commit
+        from thexp.utils.repository import commit as git_commit
+        return git_commit(self.repo, _GITKEY.commit_key, branch_name=_GITKEY.thexp_branch)
 
     @property
     def test_hash(self):
@@ -185,9 +210,19 @@ class Experiment:
         return self[_GITKEY.expsdir]
 
     @property
+    def projkey(self):
+        # return self[_CONFIGL]
+        return '{}.{}'.format(self.project_name, self[_GITKEY.uuid])
+
+    @property
+    def expsdir(self):
+        return self[_GITKEY.expsdir]
+
+    @property
     def project_dir(self):
         if self._project_dir is None:
-            self._project_dir = os.path.join(self.root_dir, '{}.{}'.format(self.project_name, self.exp_repo.uuid))
+            project_dir_ = self.projkey
+            self._project_dir = os.path.join(self.root_dir, project_dir_)
             os.makedirs(self._project_dir, exist_ok=True)
 
         return self._project_dir
@@ -258,46 +293,6 @@ class Experiment:
         os.makedirs(d, exist_ok=True)
         return d
 
-    def _initial(self):
-        """初始化，会在实例被创建完成后调用"""
-        if self._start_time is None:
-            self._start_time = curent_date(self._time_fmt)
-            sys.excepthook = self.exc_end
-            atexit.register(self.end)
-
-            gitutils().regist_exps(self.exp_repo, self._exp_name, self.exp_dir)
-            self.exp_repo.check_commit()  # 在regist_exp 后运行，因为该方法可能导致 repo.json 文件修改
-            self._write()
-        else:
-            warnings.warn("start the same experiment twice is not suggested.")
-
-    def _write(self, **extra):
-        """将试验状态写入试验目录中的 info.json """
-        if self._end_state:
-            return
-        res = dict(
-            repo=self.git_repo.working_dir,
-            argv=sys.argv,
-            exp_name=self._exp_name,
-            exp_dir=self.exp_dir,
-            test_name=os.path.basename(self.test_dir),
-            test_dir=self.test_dir,
-            root_dir=self.root_dir,
-            project_name=self.project_name,
-            project_iname=os.path.basename(self.project_dir),
-            project_dir=self.project_dir,
-            commit_hash=self.commit_hash,
-            short_hash=self.test_hash,
-            dirs=self._hold_dirs,
-            time_fmt=self._time_fmt,
-            start_time=self._start_time,
-            tags=self._tags,
-            plugins=self._plugins,
-            **extra,
-        )
-        with open(self.test_info_fn, 'w', encoding='utf-8') as w:
-            json.dump(res, w, indent=2)
-
     def end(self, end_code=0, **extra):
         """
         手动结束试验时调用该方法可以传入其他信息写入文件，
@@ -338,13 +333,6 @@ class Experiment:
         self._end_state = True
         traceback.print_exception(exc_type, exc_val, exc_tb)
 
-    def config_items(self):
-        """
-        三个等级的配置文件的内容
-        :return:
-        """
-        return self._config.items()
-
     def add_tag(self, name, *plugins):
         """
         插件的插件，用来表示tag对应的某个插件利用另一个插件做了某些什么事情
@@ -355,7 +343,7 @@ class Experiment:
         self._tags[name] = plugins
         self._write()
 
-    def regist_plugin(self, key, value=None):
+    def add_plugin(self, key, value=None):
         """
         注册试验中使用的插件。
         :param key: 插件名
@@ -366,6 +354,24 @@ class Experiment:
             value = {}
         self._plugins[key] = value
         self._write()
+
+    def config_items(self):
+        """
+        三个等级的配置文件的内容
+        :return:
+        """
+        return self._config.items()
+
+    def add_config(self, key, value, level=_CONFIGL.globals):
+
+        """
+        添加配置
+        :param key:
+        :param value:
+        :param level: 配置级别，查看 globals._CONFIGL
+        :return:
+        """
+        self._config.add_value(key, value, level)
 
     def regist_exit_hook(self, func):
         """
@@ -385,121 +391,3 @@ class Experiment:
             func(self, self._exc_dict)
 
         atexit.register(exp_func)
-
-
-class ExpConfig:
-    """
-    试验配置，根据等级分为用户级（整个用户），repo级（当前项目），实验级（当次运行）
-    """
-    config_levels = {_CONFIGL.user, _CONFIGL.repository, _CONFIGL.exp}
-
-    def __init__(self, config_level):
-        assert config_level in ExpConfig.config_levels, 'config level must in {}'.format(ExpConfig.config_levels)
-        self._config_level = config_level
-        if config_level == _CONFIGL.user:
-            self._repo = self.load_user_config()
-        elif config_level == _CONFIGL.repository:
-            self._repo = None
-        elif config_level == _CONFIGL.exp:
-            self._repo = BaseParams()
-
-    @property
-    def repo(self):
-        from ..utils.gitutils import ExpRepo
-        if self.config_level == _CONFIGL.repository:
-            return ExpRepo().repo
-        return self._repo
-
-    @property
-    def config_level(self):
-        return self._config_level
-
-    @property
-    def user_level(self):
-        return self._config_level == _CONFIGL.user
-
-    @property
-    def exp_level(self):
-        return self._config_level == _CONFIGL.exp
-
-    @property
-    def repo_level(self):
-        return self._config_level == _CONFIGL.repository
-
-    def __setitem__(self, key, value: str):
-        """
-        key 和 value尽量简洁
-        :param key:
-        :param value:
-        :return:
-        """
-        key = str(key)
-        if self._config_level == _CONFIGL.user:
-            self._repo[key] = value
-            with open(config_path(), "w") as w:
-                json.dump(self._repo, w)
-        elif self._config_level == _CONFIGL.repository:
-            value = gitutils().git_config_syntax(value)
-            writer = self._repo.config_writer()
-            writer.add_config(_GITKEY.section_name, key, value)
-            writer.write()
-            writer.release()
-        elif self._config_level == _CONFIGL.exp:
-            self._repo[key] = value
-
-    def __getitem__(self, key):
-        key = str(key)
-        if self._config_level == _CONFIGL.user:
-            if key not in self.repo:
-                raise AttributeError(key)
-            return self.repo[key]
-        elif self._config_level == _CONFIGL.repository:
-            if self.repo is None:
-                raise AttributeError(key)
-            reader = self.repo.config_reader()
-            res = reader.get_value(_GITKEY.section_name, key, None)
-            if res is None:
-                raise AttributeError(key)
-            return res
-        elif self._config_level == _CONFIGL.exp:
-            if key not in self.repo:
-                raise AttributeError(key)
-            return self.repo[key]
-
-    def items(self):
-        if self._config_level == _CONFIGL.user:
-            return self.repo.items()
-        elif self._config_level == _CONFIGL.repository:
-            if self.repo is None:
-                return {}
-            reader = self.repo.config_reader()
-
-            reader.get_value(_GITKEY.thexp, _GITKEY.projname)
-            return reader.items(_GITKEY.section_name)
-        elif self._config_level == _CONFIGL.exp:
-            return self.repo.items()
-
-    def __contains__(self, item):
-        try:
-            res = self[item]
-            return True
-        except:
-            return False
-
-    def load_user_config(self):
-        with open(config_path(), "r") as r:
-            return json.load(r)
-
-    def __repr__(self) -> str:
-        return "ExpConfig(level={}\nvalues={})".format(self._config_level, pformat(self.items()))
-
-
-glob = Globals()
-
-
-def final_report():
-    for test_name in Experiment.whole_tests:
-        print('Test:{} end.'.format(test_name))
-
-
-atexit.register(final_report)
