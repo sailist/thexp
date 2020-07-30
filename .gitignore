@@ -136,8 +136,6 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
-.thexp
-
 .thexp/
-
 repo.json
+.expsdirs
