@@ -28,9 +28,6 @@ class Schedule(attr):
     def __call__(self, cur):
         return self.func(cur)
 
-    def __getitem__(self, cur):
-        return self.func(cur)
-
     def plot(self, num=1000, left=None, right=None):
         from matplotlib import pyplot as plt
         if left is None:
@@ -80,6 +77,13 @@ class Schedule(attr):
             param_group['lr'] = new_lr
 
         return new_lr
+
+    def __str__(self):
+        return "{}(left={}, right={}, start={}, end={})".format(self.schedule,
+                                                                self.left,
+                                                                self.right,
+                                                                self.start,
+                                                                self.end)
 
 
 class CosSchedule(Schedule):

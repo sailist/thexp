@@ -1,21 +1,5 @@
 """
-    Copyright (C) 2020 Shandong University
 
-    This program is licensed under the GNU General Public License 3.0 
-    (https://www.gnu.org/licenses/gpl-3.0.html). 
-    Any derivative work obtained under this license must be licensed 
-    under the GNU General Public License as published by the Free 
-    Software Foundation, either Version 3 of the License, or (at your option) 
-    any later version, if this derivative work is distributed to a third party.
-
-    The copyright for the program is owned by Shandong University. 
-    For commercial projects that require the ability to distribute 
-    the code of this program as part of a program that cannot be 
-    distributed under the GNU General Public License, please contact 
-            
-            sailist@outlook.com
-             
-    to purchase a commercial license.
 """
 from typing import Tuple, List, Callable
 
@@ -70,6 +54,19 @@ def split_sub_matrix(mat: torch.Tensor, *sizes):
     return mat
 
 
+def onehot(labels: torch.Tensor, label_num):
+    """
+    convert label to onehot vector
+    Args:
+        labels:
+        label_num:
+
+    Returns:
+
+    """
+    return torch.zeros(labels.shape[0], label_num, device=labels.device).scatter_(1, labels.view(-1, 1), 1)
+
+
 def cartesian_product(left: torch.Tensor, right: torch.Tensor = None) -> Tuple[torch.Tensor, torch.Tensor]:
     """
         笛卡尔积
@@ -116,3 +113,16 @@ def cat_then_split(op: Callable[[torch.Tensor], torch.Tensor], tensors: List[tor
 
     res = op(torch.cat(tensors))  # type: torch.Tensor
     return res.split_with_sizes([i.shape[0] for i in tensors])
+
+
+def label_smoothing(onthot_labels, epsilon=0.1):
+    """
+    Applies label smoothing, see https://arxiv.org/abs/1512.00567
+    Args:
+        onthot_labels:
+        epsilon:
+
+    Returns:
+
+    """
+    return ((1 - epsilon) * onthot_labels) + (epsilon / onthot_labels.shape[-1])

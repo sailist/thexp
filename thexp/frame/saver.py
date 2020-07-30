@@ -1,21 +1,5 @@
 """
-    Copyright (C) 2020 Shandong University
 
-    This program is licensed under the GNU General Public License 3.0 
-    (https://www.gnu.org/licenses/gpl-3.0.html). 
-    Any derivative work obtained under this license must be licensed 
-    under the GNU General Public License as published by the Free 
-    Software Foundation, either Version 3 of the License, or (at your option) 
-    any later version, if this derivative work is distributed to a third party.
-
-    The copyright for the program is owned by Shandong University. 
-    For commercial projects that require the ability to distribute 
-    the code of this program as part of a program that cannot be 
-    distributed under the GNU General Public License, please contact 
-            
-            sailist@outlook.com
-             
-    to purchase a commercial license.
 """
 import json
 import os
@@ -23,8 +7,8 @@ import re
 from collections import namedtuple
 from typing import List
 
-from ..utils.generel_util import listdir_by_time
-from ..utils.lazy import torch
+from ..utils.paths import listdir_by_time
+import torch
 
 ckpt_tuple = namedtuple("Checkpoint", ["checkpoint", 'info'])
 
@@ -110,7 +94,7 @@ class Saver:
         """
         fn = self._build_model_name(epoch)
         json_fn = "{}.json".format(fn)
-        torch().save(state_dict, fn)
+        torch.save(state_dict, fn)
 
         if extra_info is None:
             extra_info = dict()
@@ -134,7 +118,7 @@ class Saver:
         fn = self._build_checkpoint_name(epoch, replacement, lasting)
 
         json_fn = "{}.json".format(fn)
-        torch().save(state_dict, fn)
+        torch.save(state_dict, fn)
         if extra_info is None:
             extra_info = dict()
         extra_info["fn"] = fn
@@ -169,12 +153,12 @@ class Saver:
     def load_state_dict(self, fn):
         """
         :param fn: rel path or abs path
-        :return:  None or torch().load() result
+        :return:  None or torch.load() result
         """
         path = self._guess_abs_path(fn)
 
         if os.path.exists(path):
-            ckpt = torch().load(fn)
+            ckpt = torch.load(fn)
         else:
             ckpt = None
         info_path = "{}.json".format(path)

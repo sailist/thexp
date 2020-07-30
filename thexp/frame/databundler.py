@@ -1,29 +1,12 @@
 """
-    Copyright (C) 2020 Shandong University
 
-    This program is licensed under the GNU General Public License 3.0 
-    (https://www.gnu.org/licenses/gpl-3.0.html). 
-    Any derivative work obtained under this license must be licensed 
-    under the GNU General Public License as published by the Free 
-    Software Foundation, either Version 3 of the License, or (at your option) 
-    any later version, if this derivative work is distributed to a third party.
-
-    The copyright for the program is owned by Shandong University. 
-    For commercial projects that require the ability to distribute 
-    the code of this program as part of a program that cannot be 
-    distributed under the GNU General Public License, please contact 
-            
-            sailist@outlook.com
-             
-    to purchase a commercial license.
 """
 from collections import OrderedDict
-
 from itertools import cycle, chain
 
-from thexp.utils.device import to_device
-# from ..utils.lazy import torch
 import torch
+
+from thexp.contrib.device import to_device
 
 
 class DataBundler:
@@ -51,10 +34,11 @@ class DataBundler:
     def __init__(self):
         self.dataloaders = DataBundler.DataBundler()
         self.iter_mode = "chain"
+        self.device = None
 
     def set_batch_size(self, batch_size):
         from torch.utils.data import DataLoader
-        from thexp.torch.data.dataloader import DataLoader as thDataLoader
+        from thexp.contrib.data.dataloader import DataLoader as thDataLoader
         for _, (loader, _) in self.dataloaders.items():
             if isinstance(loader, thDataLoader):
                 loader.set_batch_size(batch_size)
@@ -78,7 +62,7 @@ class DataBundler:
 
     def __len__(self):
         if self.iter_mode == 'zip':
-            return max(*self.len_list())
+            return min(len(loader) for name, (loader, func) in self.dataloaders.items() if func.__name__ != 'cycle')
         elif self.iter_mode == "chain":
             return sum(self.len_list())
 

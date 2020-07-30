@@ -11,7 +11,6 @@ import PIL.ImageEnhance
 import PIL.ImageDraw
 from PIL import Image
 
-
 PARAMETER_MAX = 10
 
 
@@ -201,6 +200,8 @@ class RandAugmentPC(object):
 
 
 class RandAugmentMC(object):
+    """输入为 PIL.Image，输出为增广后的 PIL.Image"""
+
     def __init__(self, n, m):
         assert n >= 1
         assert 1 <= m <= 10

@@ -1,23 +1,5 @@
 """
-    Copyright (C) 2020 Shandong University
-
-    This program is licensed under the GNU General Public License 3.0 
-    (https://www.gnu.org/licenses/gpl-3.0.html). 
-    Any derivative work obtained under this license must be licensed 
-    under the GNU General Public License as published by the Free 
-    Software Foundation, either Version 3 of the License, or (at your option) 
-    any later version, if this derivative work is distributed to a third party.
-
-    The copyright for the program is owned by Shandong University. 
-    For commercial projects that require the ability to distribute 
-    the code of this program as part of a program that cannot be 
-    distributed under the GNU General Public License, please contact 
-            
-            sailist@outlook.com
-             
-    to purchase a commercial license.
-
-    该部分提供一些用于向标准输出进行输出的方法
+该部分提供一些用于向标准输出进行输出的方法
 """
 import collections
 import os
@@ -119,11 +101,11 @@ class ScreenStr():
         # TODO 下面这一计算方法会报错，待解决
         """
         
-File "/home/yanghaozhe/.local/lib/python3.5/site-packages/thexp/utils/screen.py", line 173, in _screen_str
-offset = ScreenStr.cacu_offset(len(right) - (width))
-File "/home/yanghaozhe/.local/lib/python3.5/site-packages/thexp/utils/screen.py", line 116, in cacu_offset
-h * ((a + b) <= (t % period) < (2 * a + b)) + \
-ZeroDivisionError: float modulo
+        File "/home/yanghaozhe/.local/lib/python3.5/site-packages/thexp/utils/screen.py", line 173, in _screen_str
+        offset = ScreenStr.cacu_offset(len(right) - (width))
+        File "/home/yanghaozhe/.local/lib/python3.5/site-packages/thexp/utils/screen.py", line 116, in cacu_offset
+        h * ((a + b) <= (t % period) < (2 * a + b)) + \
+        ZeroDivisionError: float modulo
         """
 
         offset = ((t % period) - a) * k * (a <= (t % period) < (a + b)) + \

@@ -1,34 +1,40 @@
 """
-    Copyright (C) 2020 Shandong University
 
-    This program is licensed under the GNU General Public License 3.0 
-    (https://www.gnu.org/licenses/gpl-3.0.html). 
-    Any derivative work obtained under this license must be licensed 
-    under the GNU General Public License as published by the Free 
-    Software Foundation, either Version 3 of the License, or (at your option) 
-    any later version, if this derivative work is distributed to a third party.
-
-    The copyright for the program is owned by Shandong University. 
-    For commercial projects that require the ability to distribute 
-    the code of this program as part of a program that cannot be 
-    distributed under the GNU General Public License, please contact 
-            
-            sailist@outlook.com
-             
-    to purchase a commercial license.
 """
 from collections.abc import Iterable
+import torch
+import numbers
+
 
 class llist(list):
     """
     添加了根据 可迭代对象切片的功能
-    Examples
+    Examples:
     >>> res = llist([1,2,3,4])
+    ... print(res[0])
+    ... print(res[0:3])
     ... print(res[0,2,1])
-    """
-    def __getitem__(self, i: [int,slice,Iterable]):
-        if isinstance(i,(slice,int)):
-            return super().__getitem__(i)
-        elif isinstance(i,Iterable):
-            return [self.__getitem__(id) for id in i]
 
+    >>> idx = torch.randperm(3)
+    ... print(res[idx])
+
+    >>> idx = torch.randint(0,3,[3,4])
+    ... print(res[idx])
+    """
+
+    def __getitem__(self, i: [int, slice, Iterable]):
+        if isinstance(i, (slice, numbers.Integral)):
+            # numpy.int64 is not an instance of built-in type int
+            res = super().__getitem__(i)
+            if isinstance(res, list):
+                return llist(res)
+            else:
+                return res
+        elif isinstance(i, Iterable):
+            if isinstance(i, torch.Tensor):
+                if len(i.shape) == 0:
+                    i = i.item()
+                    return self.__getitem__(i)
+                else:
+                    i = i.tolist()
+            return llist(self.__getitem__(id) for id in i)

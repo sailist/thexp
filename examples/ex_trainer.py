@@ -1,21 +1,5 @@
 """
-    Copyright (C) 2020 Shandong University
 
-    This program is licensed under the GNU General Public License 3.0 
-    (https://www.gnu.org/licenses/gpl-3.0.html). 
-    Any derivative work obtained under this license must be licensed 
-    under the GNU General Public License as published by the Free 
-    Software Foundation, either Version 3 of the License, or (at your option) 
-    any later version, if this derivative work is distributed to a third party.
-
-    The copyright for the program is owned by Shandong University. 
-    For commercial projects that require the ability to distribute 
-    the code of this program as part of a program that cannot be 
-    distributed under the GNU General Public License, please contact 
-            
-            sailist@outlook.com
-             
-    to purchase a commercial license.
 """
 import sys
 
@@ -52,7 +36,7 @@ class MyTrainer(Trainer):
     def datasets(self, params: Params):
         from torchvision import transforms
         from torchvision.datasets import FakeData
-        from thexp.torch.data import DataLoader
+        from thexp.contrib.data import DataLoader
 
         dataset = FakeData(size=32 * 10, image_size=(28, 28), transform=transforms.ToTensor())
         train_loader = eval_loader = test_loader = DataLoader(dataset, shuffle=True, batch_size=32, drop_last=True)
