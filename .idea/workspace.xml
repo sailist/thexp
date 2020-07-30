@@ -547,7 +547,14 @@
       <option name="project" value="LOCAL" />
       <updated>1595848908849</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="fix">
+      <created>1596100918851</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1596100918851</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -583,7 +590,8 @@
     <MESSAGE value="新增Schedule，渐变方法，或许换个名比较好" />
     <MESSAGE value="添加了对yield的支持，如果返回迭代器，那么会消耗掉迭代器并返回最后一次迭代的结果" />
     <MESSAGE value="将config、experiment、git repo分离，同时优化了配置读取逻辑，大幅提升了初始化效率" />
-    <option name="LAST_COMMIT_MESSAGE" value="将config、experiment、git repo分离，同时优化了配置读取逻辑，大幅提升了初始化效率" />
+    <MESSAGE value="fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix" />
   </component>
   <component name="WindowStateProjectService">
     <state x="552" y="181" key="#Deployment" timestamp="1593501042994">
@@ -602,38 +610,42 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="765" y="239" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1596008195644" />
-    <state x="690" y="269" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1596100790424">
+    <state x="690" y="269" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1596101494696">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="690" y="269" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1596100790424" />
+    <state x="690" y="269" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1596101494696" />
     <state x="806" y="418" key="#com.jetbrains.python.refactoring.move.PyMoveModuleMembersDialog" timestamp="1595923706144">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="806" y="418" key="#com.jetbrains.python.refactoring.move.PyMoveModuleMembersDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1595923706144" />
-    <state x="572" y="115" key="CommitChangelistDialog2" timestamp="1595848906008">
+    <state x="572" y="115" key="CommitChangelistDialog2" timestamp="1596100917394">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="572" y="115" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1595848906008" />
+    <state x="572" y="115" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1596100917394" />
+    <state x="92" y="92" width="1736" height="856" key="DiffContextDialog" timestamp="1596101541490">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="92" y="92" width="1736" height="856" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1596101541490" />
     <state x="746" y="284" key="FileChooserDialogImpl" timestamp="1596012115599">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="746" y="284" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1596012115599" />
-    <state width="1877" height="368" key="GridCell.Tab.0.bottom" timestamp="1596099513822">
+    <state width="1877" height="368" key="GridCell.Tab.0.bottom" timestamp="1596101426178">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="368" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1596099513822" />
-    <state width="1877" height="368" key="GridCell.Tab.0.center" timestamp="1596099513822">
+    <state width="1877" height="368" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1596101426178" />
+    <state width="1877" height="368" key="GridCell.Tab.0.center" timestamp="1596101426177">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="368" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1596099513822" />
-    <state width="1877" height="368" key="GridCell.Tab.0.left" timestamp="1596099513822">
+    <state width="1877" height="368" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1596101426177" />
+    <state width="1877" height="368" key="GridCell.Tab.0.left" timestamp="1596101426177">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="368" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1596099513822" />
-    <state width="1877" height="368" key="GridCell.Tab.0.right" timestamp="1596099513822">
+    <state width="1877" height="368" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1596101426177" />
+    <state width="1877" height="368" key="GridCell.Tab.0.right" timestamp="1596101426177">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="368" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1596099513822" />
+    <state width="1877" height="368" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1596101426177" />
     <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1595948480747">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -658,6 +670,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="681" y="261" width="540" height="524" key="StructurePopup/0.0.1920.1040@0.0.1920.1040" timestamp="1593763881502" />
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1596101108697">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1596101108697" />
     <state width="968" height="528" key="XDebugger.FullValuePopup" timestamp="1595936657112">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -686,10 +702,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="701" y="167" key="refactoring.ChangeSignatureDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1593746645966" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1595814535802">
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1596100961702">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1595814535802" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1596100961702" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -747,7 +763,7 @@
     <SUITE FILE_PATH="coverage/thexp$reverts.coverage" NAME="reverts Coverage Results" MODIFIED="1590542664136" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../thexp-test2" />
     <SUITE FILE_PATH="coverage/thexp$1_1_trainer.coverage" NAME="1.1.trainer Coverage Results" MODIFIED="1589786569007" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
     <SUITE FILE_PATH="coverage/thexp$pytest_in_test_list_py.coverage" NAME="pytest in test_list.py Coverage Results" MODIFIED="1596012011291" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests/base_classes" />
-    <SUITE FILE_PATH="coverage/thexp$1_trainer.coverage" NAME="1.trainer Coverage Results" MODIFIED="1596099430201" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
+    <SUITE FILE_PATH="coverage/thexp$1_trainer.coverage" NAME="1.trainer Coverage Results" MODIFIED="1596101381490" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
     <SUITE FILE_PATH="coverage/thexp$5_saver.coverage" NAME="5.saver Coverage Results" MODIFIED="1589511688374" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
     <SUITE FILE_PATH="coverage/thexp$8_params.coverage" NAME="8.params Coverage Results" MODIFIED="1595948218756" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/examples" />
     <SUITE FILE_PATH="coverage/thexp$util.coverage" NAME="util Coverage Results" MODIFIED="1590540500158" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:/ProgramData/Anaconda3/Lib/site-packages/git" />

@@ -11,7 +11,7 @@ from thexp.utils.paths import renormpath
 from .dates import curent_date
 from ..globals import GITKEY_, OSENVI_, FNAME_
 
-thexp_gitignores = ['.thexp/', FNAME_.repo, FNAME_.expsdirs]
+thexp_gitignores = ['.thexp/', FNAME_.repo, FNAME_.expsdirs, '.idea/']
 py_gitignore = "\n".join(['# Byte-compiled / optimized / DLL files', '__pycache__/', '*.py[cod]',
                           '*$py.class', '', '# C extensions', '*.so', '', '# Distribution / packaging',
                           '.Python', 'build/', 'develop-eggs/', 'dist/', 'downloads/', 'eggs/', '.eggs/',
@@ -98,7 +98,7 @@ def git_config(repo: Repo):
 
 
 def check_gitignore(repo: Repo, force=False):
-    rp = os.path.join(repo.working_dir, FNAME_.repo)
+    rp = os.path.join(repo.working_dir, FNAME_.expsdirs)
     if os.path.exists(rp) and not force:
         return
 
