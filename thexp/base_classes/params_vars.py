@@ -1,6 +1,7 @@
-from typing import Any
-from torch.optim.optimizer import Optimizer
 import importlib
+
+from torch.optim.optimizer import Optimizer
+
 from .attr import attr
 
 

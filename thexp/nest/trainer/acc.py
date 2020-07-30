@@ -3,8 +3,8 @@ from thexp import Meter, Params
 
 
 class UnsupervisedAccMixin:
-    def acc_assigned_acc_(self):
-        pass
+    def acc_assigned_(self):
+        pass  # TODO
 
     def acc_nmi_(self, pred_labels: torch.Tensor, labels: torch.Tensor,
                  meter: Meter = None, name='nmi'):

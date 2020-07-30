@@ -19,7 +19,7 @@ from .meter import AvgMeter, Meter
 from .params import Params
 from .saver import Saver
 from ..base_classes.metaclasses import Merge
-from ..globals import _BUILTIN_PLUGIN, _FNAME
+from ..globals import BUILTIN_PLUGIN_, FNAME_, PLUGIN_DIRNAME_
 
 
 class BaseTrainer(metaclass=Merge):
@@ -125,13 +125,13 @@ class BaseTrainer(metaclass=Merge):
         pre = self.__class__.__module__.split('.')[-1]
         self.experiment = Experiment("{}.{}".format(self.__exp_name__, pre))
 
-        self.params.to_json(os.path.join(self.experiment.test_dir, _FNAME.params))
+        self.params.to_json(os.path.join(self.experiment.test_dir, FNAME_.params))
 
-        self.experiment.add_plugin(_BUILTIN_PLUGIN.params, {
+        self.experiment.add_plugin(BUILTIN_PLUGIN_.params, {
             'param_hash': self.params.hash(),
         })
 
-        self.experiment.add_plugin(_BUILTIN_PLUGIN.trainer, {
+        self.experiment.add_plugin(BUILTIN_PLUGIN_.trainer, {
             'path': inspect.getfile(self.__class__),
             'doc': self.__class__.__doc__,
             'module': self.__class__.__module__,
@@ -178,6 +178,12 @@ class BaseTrainer(metaclass=Merge):
 
         self.logger.info(self._databundler_dict)
 
+    def stop_train(self):
+        self.train_toggle = True
+
+    def stop_current_epoch(self):
+        self.train_epoch_toggle = True
+
     def train(self):
         params = self.params
         for eidx in range(params.eidx, params.epoch + 1):
@@ -190,7 +196,7 @@ class BaseTrainer(metaclass=Merge):
     def train_epoch(self, eidx, params):
         avg = AvgMeter()
         self.change_mode(True)
-        for idx, batch_data in enumerate(self.train_dataloader):
+        for idx, batch_data in enumerate(self.train_dataloader): # 复现多线程下 Keyboard Interupt，尝试通过Try解决
             meter = self.train_batch(eidx, idx, self.params.global_step, batch_data, params, self.device)
             avg.update(meter)
 
@@ -261,16 +267,59 @@ class BaseTrainer(metaclass=Merge):
         return self.test_eval_logic(loader, self.params)
 
     @property
+    def safe_writer(self):
+        import tensorflow as tf
+        import tensorboard as tb
+        tf.io.gfile = tb.compat.tensorflow_stub.io.gfile
+        return self.writer
+
+    @property
     @lru_cache()
     def writer(self):
+        """
+        Notes:
+        ------
+        When using add_embedding, there may raise some exceptions cased by version conflict, here is some solutions:
+
+        1. tensorflow_core._api.v1.io.gfile' or'tensorflow_core._api.v2.io.gfile' has no attribute 'get_filesystem'
+        first, try upgrade tensorboard and tensorflow as followed version:
+            tensorboard==2.0.2
+            tensorflow==2.0.0
+
+        if you still have the same problem, use this code as a temporary solution:
+
+            import tensorflow as tf
+            import tensorboard as tb
+            tf.io.gfile = tb.compat.tensorflow_stub.io.gfile
+
+        use `trainer.safe_writer` to get a writter with these code added inside thexp.
+
+        solution is referred by https://github.com/pytorch/pytorch/issues/30966
+
+
+        2. You may cause PermissionError like: [Errno 13] Permission denied: '/tmp/.tensorboard-info/pid-20281.info'
+        the solution is to set environment variable TMPDIR
+
+            export TMPDIR=/tmp/$USER;
+            mkdir -p $TMPDIR;
+            tensorboard --logdir ...
+
+        code in line:
+            export TMPDIR=/tmp/$USER; mkdir -p $TMPDIR; tensorboard --logdir ....
+
+        solution is referred by https://github.com/tensorflow/tensorboard/issues/2010
+
+        Returns:
+            A SummaryWriter instance
+        """
         from torch.utils.tensorboard import SummaryWriter
-        from ..globals import _PLUGIN_WRITER
-        d = self.experiment.makedir(_PLUGIN_WRITER.dir_name)
+        from ..globals import PLUGIN_WRITER_
+        d = self.experiment.makedir(PLUGIN_DIRNAME_.writer)
         kwargs = {
-            _PLUGIN_WRITER.log_dir: d,
-            _PLUGIN_WRITER.filename_suffix: '.bd'
+            PLUGIN_WRITER_.log_dir: d,
+            PLUGIN_WRITER_.filename_suffix: '.bd'
         }
-        self.experiment.add_plugin(_BUILTIN_PLUGIN.writer, kwargs)
+        self.experiment.add_plugin(BUILTIN_PLUGIN_.writer, kwargs)
 
         res = SummaryWriter(**kwargs)
 
@@ -287,7 +336,7 @@ class BaseTrainer(metaclass=Merge):
         from .logger import Logger
         logger = Logger()
         fn = logger.add_log_dir(self.experiment.test_dir)
-        self.experiment.add_plugin(_BUILTIN_PLUGIN.logger, dict(
+        self.experiment.add_plugin(BUILTIN_PLUGIN_.logger, dict(
             log_dir=self.experiment.test_dir,
             fn=fn,
         ))
@@ -296,23 +345,23 @@ class BaseTrainer(metaclass=Merge):
     @property
     @lru_cache()
     def saver(self):
-        d = self.experiment.makedir("modules")
+        d = self.experiment.makedir(PLUGIN_DIRNAME_.saver)
         kwargs = dict(
             max_to_keep=3,
             ckpt_dir=d
         )
-        self.experiment.add_plugin(_BUILTIN_PLUGIN.saver, kwargs)
+        self.experiment.add_plugin(BUILTIN_PLUGIN_.saver, kwargs)
         return Saver(**kwargs)
 
     @property
     @lru_cache()
     def rnd(self):
         from .rndmanager import RndManager
-        d = self.experiment.make_exp_dir("rnd")
+        d = self.experiment.make_exp_dir(PLUGIN_DIRNAME_.rnd)
         kwargs = dict(
             save_dir=d,
         )
-        self.experiment.add_plugin(_BUILTIN_PLUGIN.rnd, kwargs)
+        self.experiment.add_plugin(BUILTIN_PLUGIN_.rnd, kwargs)
         return RndManager(**kwargs)
 
     @property
@@ -443,7 +492,7 @@ class BaseTrainer(metaclass=Merge):
                     if cb.__class__.__name__ == callback.__name__:
                         callback = cb
                         break
-        except: # handle TypeError: issubclass() arg 1 must be a class
+        except:  # handle TypeError: issubclass() arg 1 must be a class
             pass
 
         if isinstance(callback, str):
@@ -637,6 +686,9 @@ class BaseTrainer(metaclass=Merge):
             self.__setattr__(k, v.to(device))
         for k, v in self._databundler_dict.items():
             v.to(device)
+        for k, v in self._vector_dict.items():
+            if isinstance(v, torch.Tensor):
+                self.__setattr__(k, v.to(device))
 
     '''magic functions'''
 
@@ -695,3 +747,13 @@ class Trainer(BaseTrainer):
 
     def load_extra_state_dict(self, state_dict, strict=False):
         super().load_extra_state_dict(state_dict, strict)
+
+
+class WrapTrainer(Trainer):
+
+    def __init__(self, params: Params, train_dataloader, model_with_loss_fn, optimize, eval_dataloader=None,
+                 test_dataloader=None):
+        super().__init__(params)
+
+    def train_batch(self, eidx, idx, global_step, batch_data, params: Params, device: torch.device):
+        super().train_batch(eidx, idx, global_step, batch_data, params, device)

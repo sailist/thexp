@@ -1,18 +1,25 @@
 from setuptools import setup, find_packages
 from thexp import __VERSION__
+from rename_templete import copy_templete
+
+copy_templete()
 
 setup(
     name='thexp',
     # 主版本，次版本，修订号？，bug修订号，...待定
     version=__VERSION__,
-    description='An useful torch tool for your experiment.',
+    description='An useful torch framework for dl experiments.',
     url='https://github.com/sailist/thexp',
     author='sailist',
     author_email='sailist@outlook.com',
     license='Apache License 2.0',
     include_package_data=True,
     install_requires=[
-        "torch", "fire", "tensorboard", "docopt", "gitpython", 'flask', 'matplotlib', 'numpy'
+        'torch',
+        'tensorboard', 'matplotlib', 'numpy', 'pandas',
+        'fire',
+        'docopt',
+        'gitpython',
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',

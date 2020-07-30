@@ -1,12 +1,12 @@
 """
-
+绘图类，用于和tensorboard配合
 """
 from collections import defaultdict
 
 from itertools import chain
 from pyecharts import charts
 from pyecharts import options as opts
-from typing import List
+from typing import List, Dict, Union
 
 
 class Chart:
@@ -19,7 +19,8 @@ class Chart:
 
 class Curve(Chart):
 
-    def __init__(self, curve_values: dict, title="-", x_key='x', y_key='y', name_key='name') -> None:
+    def __init__(self, curve_values: Dict[str, Dict[str, Union[list, str]]], title="-", x_key='x', y_key='y',
+                 name_key='name') -> None:
         super().__init__()
         self.title = title
         self.curve_values = curve_values
@@ -59,7 +60,7 @@ class Curve(Chart):
             c.add_xaxis([str(i) for i in self.x_axis])
             break
 
-        max_v_dict = defaultdict(list)
+        # max_v_dict = defaultdict(list)
 
         for _, v in self.curve_values.items():
             # max_v_dict[k].append([max(v[self.y_key]),min(v[self.y_key])])
@@ -76,13 +77,20 @@ class Curve(Chart):
                 min_='dataMin',
                 max_='dataMax',
             ),
-            legend_opts=opts.LegendOpts(type_='scroll',pos_bottom=10),
+            legend_opts=opts.LegendOpts(type_='scroll', pos_bottom=10),
             tooltip_opts=opts.TooltipOpts(is_show=True, trigger='axis'), )
 
         return c
 
     def matplotlib(self):
-        pass
+        self._align_data()
+        from matplotlib import pyplot as plt
+        axes = plt.axes()
+
+        for _, v in self.curve_values.items():
+            plt.plot(v[self.x_key], v[self.y_key])
+
+        return axes
 
 
 class Bar(Chart):

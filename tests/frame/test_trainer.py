@@ -1,8 +1,11 @@
 """
 
 """
+import torch
+from torch import nn
+from thexp import Params, Trainer
 
-import torch.nn as nn
+
 class MyModel(nn.Module):
     def __init__(self):
         super().__init__()
@@ -14,64 +17,27 @@ class MyModel(nn.Module):
         return x
 
 
-from thexp.frame import Meter, Params, Trainer
-from thexp.frame.callbacks import TimingCheckpint
 class MyTrainer(Trainer):
 
+    def models(self, params: Params):
+        super().models(params)
+        self.rnd.mark('test')
+        self.modela = MyModel()
+        self.rnd.mark('test')
+        self.modelb = MyModel()
+        for pa, pb in zip(self.modela.parameters(), self.modelb.parameters()):
+            assert (pa.data == pb.data).all()
 
-    def initial_callback(self):
-        super().initial_callback()
-        tc = TimingCheckpint(2)
-        tc.hook(self)
-
-    def initial_trainer(self,params:Params):
-        from torch.optim import SGD
-        from torchvision import transforms
-        from torchvision.datasets import FakeData
-        from thexp.contrib.data import DataLoader
-
-        self.model = MyModel()
-        self.optim = SGD(self.model.parameters(), lr=params.lr)
-        dataset = FakeData(size=32*10,image_size=(28, 28), transform=transforms.ToTensor())
-        train_loader = eval_loader = test_loader = DataLoader(dataset, shuffle=True, batch_size=32, drop_last=True)
-
-        self.regist_databundler(
-            train=train_loader,
-            test=test_loader,
-            eval=eval_loader,
-        )
-        self.cross = nn.CrossEntropyLoss()
-
-    def train_batch(self, eidx, idx, global_step, batch_data, params, device):
-        optim, cross = self.optim, self.cross
-        meter = Meter()
-        xs, ys = batch_data
-
-        # 训练逻辑
-        logits = self.model(xs)
-        meter.loss = cross(logits, ys)
-
-        # 反向传播
-        meter.loss.backward()
-        optim.step()
-        optim.zero_grad()
-
-        return meter
-
-
-params = Params()
-params.epoch=5
-params.lr = 0.01
-params.build_exp_name("mytrainer", "lr")
-
-trainer = MyTrainer(params)
-trainer.initial_exp("./test_experiment")
+    def train_batch(self, eidx, idx, global_step, batch_data, params: Params, device: torch.device):
+        super().train_batch(eidx, idx, global_step, batch_data, params, device)
 
 
 def test_trainer():
-    trainer.params.eidx = 4
-    trainer.save_keypoint(4)
+    trainer = MyTrainer(Params())
+
+    trainer.params.eidx = 3
+    fn = trainer.save_keypoint()
     trainer.train()
-    assert trainer.params.eidx == trainer.params.epoch+1
-    trainer.load_keypoint(4)
-    assert trainer.params.eidx == 5
+    assert trainer.params.eidx == trainer.params.epoch
+    trainer.load_checkpoint(fn)
+    assert trainer.params.eidx == 3

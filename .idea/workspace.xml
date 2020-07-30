@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="232f6e19-5cb1-41b7-8b12-9b1150540616" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-addtricks/arch/__init__.py" afterDir="false" />
@@ -26,201 +44,11 @@
       <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splittrainer/trainer/mnisttrainer.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splittrainer/tricks/__init__.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splittrainer/tricks/ema.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/rename_templete.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/analyser/query.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/analyser/queryset.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/analyser/viewer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/base_classes/qnode.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/cli/templete/dataloaders/dataxy.py-tpl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/cli/templete/dataloaders/transforms.py-tpl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/cli/templete/trainers/__init__.py-tpl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/cli/templete/trainers/__trainer.py-tpl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/cli/templete/trainers/mixin/__init__.py-tpl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/cli/templete/trainers/mixin/acc.py-tpl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/cli/templete/trainers/mixin/callbacks.py-tpl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/cli/templete/trainers/mixin/datasets.py-tpl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/cli/templete/trainers/mixin/losses.py-tpl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/cli/templete/trainers/mixin/models.py-tpl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/contrib/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/contrib/board/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/contrib/data/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/contrib/data/augments/audio.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/contrib/data/dataloader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/contrib/data/dataset/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/contrib/device.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/contrib/module/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/contrib/module/metanet.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/contrib/module/shake.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/contrib/optim/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/contrib/optim/lr_schedule.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/decorators/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/decorators/deprecated.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/decorators/regist.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/frame/builder.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/frame/configs.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/future/audio/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/future/audio/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/future/audio/audio_tools.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/future/audio/unsupervised_vad.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/future/cudamemory.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/future/preprocess_mean_std.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/future/torchsummary.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/nest/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/nest/trainer/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/nest/trainer/acc.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/nest/trainer/losses.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/utils/dates.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/utils/iters.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/utils/repository.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../thexp-demo/.idea/thexp-test3.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../thexp-demo/.idea/thexp-test3.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../thexp-demo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../thexp-demo/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../thexp-demo/onefile.py" beforeDir="false" afterPath="$PROJECT_DIR$/../thexp-demo/simple/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/thexp.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/thexp.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/1.trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/1.trainer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/2.meters.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/2.meters.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/3.logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/3.logger.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/4.rnd_seed.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/4.rnd_seed.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/5.saver.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/5.saver.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/6.global_config.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/6.global_config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/7.exp.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/7.exp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/8.params.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/8.params.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex_databundler.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex_databundler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex_reporter.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex_reporter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ex_trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ex_trainer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/more/attr.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/attr.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/more/avg_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/avg_item.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/more/global_var.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/global_var.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/more/hook.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/hook.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/more/hpparamexp.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/hpparamexp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/more/iter2obj.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/iter2obj.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/more/markdownwrite.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/markdownwrite.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/more/mem.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/mem.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/more/none_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/none_item.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/more/rampup.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/rampup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/more/screen_str.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/screen_str.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/more/ssl.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/ssl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/more/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/temp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/more/timeit.py" beforeDir="false" afterPath="$PROJECT_DIR$/examples/more/timeit.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/repo.json" beforeDir="false" afterPath="$PROJECT_DIR$/repo.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/temp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/base_classes/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/base_classes/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/base_classes/test_meta_classes.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/base_classes/test_meta_classes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/base_classes/test_tree.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/base_classes/test_tree.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/base_classes/test_trick_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/base_classes/test_trick_item.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/calculate/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/calculate/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/calculate/test_acc.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/calculate/test_acc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/frame/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/frame/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/frame/callbacks.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/frame/callbacks.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/frame/test_meter.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/frame/test_meter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/frame/test_saver.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/frame/test_saver.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/frame/test_trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/frame/test_trainer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/utils/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/utils/test_random.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/utils/test_random.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-demo/simple-addtricks/arch/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp-demo/simple-addtricks/arch/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-demo/simple-addtricks/arch/simple.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp-demo/simple-addtricks/arch/simple.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-demo/simple-addtricks/datasets.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp-demo/simple-addtricks/datasets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-demo/simple-addtricks/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp-demo/simple-addtricks/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-demo/simple-addtricks/tricks/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp-demo/simple-addtricks/tricks/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-demo/simple-addtricks/tricks/ema.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp-demo/simple-addtricks/tricks/ema.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-demo/simple-splitdataset/datasets.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp-demo/simple-splitdataset/datasets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-demo/simple-splitdataset/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp-demo/simple-splitdataset/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-demo/simple-splitmodel/arch/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp-demo/simple-splitmodel/arch/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-demo/simple-splitmodel/arch/simple.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp-demo/simple-splitmodel/arch/simple.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-demo/simple-splitmodel/datasets.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp-demo/simple-splitmodel/datasets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-demo/simple-splitmodel/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp-demo/simple-splitmodel/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-demo/simple-splittrainer/arch/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp-demo/simple-splittrainer/arch/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-demo/simple-splittrainer/arch/simple.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp-demo/simple-splittrainer/arch/simple.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-demo/simple-splittrainer/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp-demo/simple-splittrainer/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-demo/simple-splittrainer/datasets.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp-demo/simple-splittrainer/datasets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-demo/simple-splittrainer/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp-demo/simple-splittrainer/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-demo/simple-splittrainer/trainer/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp-demo/simple-splittrainer/trainer/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-demo/simple-splittrainer/trainer/mnisttrainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp-demo/simple-splittrainer/trainer/mnisttrainer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-demo/simple-splittrainer/tricks/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp-demo/simple-splittrainer/tricks/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-demo/simple-splittrainer/tricks/ema.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp-demo/simple-splittrainer/tricks/ema.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-demo/simple/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp-demo/simple/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/analyser/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/analyser/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/analyser/charts.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/analyser/charts.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/analyser/compare.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/analyser/compare.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/analyser/deplugs.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/analyser/deplugs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/analyser/expviewer.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/analyser/expviewer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/analyser/reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/analyser/reader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/analyser/summary.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/analyser/summary.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/analyser/web/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/analyser/web/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/analyser/web/events.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/analyser/web/events.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/analyser/web/response.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/analyser/web/response.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/analyser/web/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/analyser/web/util.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/analyser/web/web_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/analyser/web/web_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/base_classes/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/base_classes/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/base_classes/attr.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/base_classes/attr.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/base_classes/defaults.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/base_classes/defaults.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/base_classes/errors.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/base_classes/errors.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/base_classes/list.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/base_classes/list.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/base_classes/metaclasses.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/base_classes/metaclasses.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/base_classes/tree.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/base_classes/tree.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/base_classes/trickitems.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/base_classes/trickitems.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/calculate/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/calculate/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/calculate/accuracy.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/calculate/accuracy.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/calculate/memory.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/calculate/memory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/calculate/rampup.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/calculate/rampup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/calculate/schedule.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/calculate/schedule.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/calculate/tensor.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/calculate/tensor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/cli/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/cli/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/cli/cli.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/cli/cli.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/frame/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/frame/callbacks.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/callbacks.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/frame/databundler.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/databundler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/frame/drawer.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/drawer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/frame/experiment.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/experiment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/frame/logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/logger.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/frame/meter.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/meter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/frame/mixin/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/frame/params.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/params.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/frame/rndmanager.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/rndmanager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/frame/saver.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/saver.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/frame/trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/trainer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/future/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/future/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/future/nddatasets/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/future/nddatasets/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/future/nddatasets/cifar.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/future/nddatasets/ndtransforms.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/future/nddatasets/ndtransforms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/future/nddatasets/pttransforms.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/future/nddatasets/pttransforms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/future/randaugment.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/future/randaugment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/future/randaugument.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/globals.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/globals.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/torch/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/torch/data/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/torch/data/collate.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/contrib/data/collate.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/torch/data/dataloader.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/torch/data/dataset.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/torch/data/dataset/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/torch/data/dataset/builder.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/torch/data/dataset/splits.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/contrib/data/dataset/splits.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/torch/data/transforms.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/contrib/data/augments/image.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/torch/module/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/cli/templete/arch/__init__.py-tpl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/torch/module/ema.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/contrib/module/ema.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/torch/module/metanet.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/cli/templete/dataloaders/__init__.py-tpl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/torch/module/wideresnet.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/torch/optim/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/torch/optim/grouper.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/contrib/optim/grouper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/torch/optim/lr_schedule.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/torch/vision/BatchEmbedding.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/contrib/board/BatchEmbedding.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/torch/vision/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/utils/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/utils/decorators/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/contrib/data/augments/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/utils/decorators/deprecated.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/utils/device.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/utils/generel_util.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/utils/paths.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/utils/gitutils.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/utils/gitutils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/utils/lazy.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/utils/markdown_writer.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/utils/markdown_writer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/utils/optim.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/utils/random.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/utils/random.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/utils/screen.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/utils/screen.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/utils/timeit.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/utils/timeit.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web.py" beforeDir="false" afterPath="$PROJECT_DIR$/web.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/thexp/utils/repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/utils/repository.py" afterDir="false" />
     </list>
     <list id="b3718b25-7204-4605-af22-7efa5eb0e45c" name="imporove" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -250,30 +78,32 @@
     <property name="ChangesTree.GroupingKeys" value="directory&#10;repository" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="TERMINAL_CUSTOM_COMMANDS_GOT_IT" value="true" />
     <property name="WebServerToolWindowFactoryState" value="true" />
     <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
     <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/thexp/base_classes/qnode.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/tests/base_classes" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyIntegratedToolsModulesConfigurable" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Python\iLearn\thexp" />
+      <recent name="E:\Python\iLearn\thexp\thexp\frame" />
+      <recent name="E:\Python\iLearn\thexp\thexp\future\audio" />
+      <recent name="E:\Python\iLearn\thexp\thexp\torch\module" />
+      <recent name="E:\Python\iLearn\thexp-test3" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\Python\iLearn\thexp\thexp\cli" />
       <recent name="E:\Python\iLearn\thexp\thexp" />
       <recent name="E:\Python\iLearn\thexp\thexp\torch" />
       <recent name="E:\Python\iLearn\thexp\thexp\nest\trainer" />
       <recent name="E:\Python\iLearn\thexp\thexp\torch\data\dataset" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="E:\Python\iLearn\thexp\thexp\frame" />
-      <recent name="E:\Python\iLearn\thexp\thexp\future\audio" />
-      <recent name="E:\Python\iLearn\thexp\thexp\torch\module" />
-      <recent name="E:\Python\iLearn\thexp-test3" />
-      <recent name="E:\Python\iLearn\thexp-test3\simple-splitmodel\architecture" />
     </key>
   </component>
   <component name="RunManager" selected="Python.1.trainer">
@@ -321,72 +151,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="experiment" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="thexp" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/thexp/frame" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/thexp/frame/experiment.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="query" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="thexp" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/thexp/analyser" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/thexp/analyser/query.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="rename_templete" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="thexp" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/rename_templete.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="temp (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="thexp" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -409,21 +173,74 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="Doctests in list" type="tests" factoryName="Doctests" temporary="true" nameIsGenerated="true">
+      <module name="thexp" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/thexp/base_classes" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/thexp/base_classes/list.py" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest in test_attr.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="thexp" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/base_classes" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/base_classes/test_attr.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest in test_list.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="thexp" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/base_classes" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/base_classes/test_list.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
     <list>
-      <item itemvalue="Python.1.trainer" />
       <item itemvalue="Python.8.params" />
-      <item itemvalue="Python.experiment" />
-      <item itemvalue="Python.query" />
-      <item itemvalue="Python.rename_templete" />
       <item itemvalue="Python.temp (1)" />
+      <item itemvalue="Python.1.trainer" />
+      <item itemvalue="Python tests.Doctests in list" />
+      <item itemvalue="Python tests.pytest in test_list.py" />
+      <item itemvalue="Python tests.pytest in test_attr.py" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.1.trainer" />
-        <item itemvalue="Python.experiment" />
+        <item itemvalue="Python tests.pytest in test_attr.py" />
+        <item itemvalue="Python tests.pytest in test_list.py" />
+        <item itemvalue="Python tests.Doctests in list" />
         <item itemvalue="Python.temp (1)" />
-        <item itemvalue="Python.query" />
-        <item itemvalue="Python.rename_templete" />
       </list>
     </recent_temporary>
   </component>
@@ -555,7 +372,12 @@
       <workItem from="1595678011477" duration="588000" />
       <workItem from="1595722345415" duration="3676000" />
       <workItem from="1595807703249" duration="8440000" />
-      <workItem from="1595817511180" duration="19154000" />
+      <workItem from="1595817511180" duration="29226000" />
+      <workItem from="1595895128630" duration="33875000" />
+      <workItem from="1595937236214" duration="7146000" />
+      <workItem from="1595985015620" duration="1699000" />
+      <workItem from="1595987744674" duration="10411000" />
+      <workItem from="1596068306153" duration="10704000" />
     </task>
     <task id="LOCAL-00001" summary="change">
       <created>1589534271920</created>
@@ -718,7 +540,14 @@
       <option name="project" value="LOCAL" />
       <updated>1594539026454</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="将config、experiment、git repo分离，同时优化了配置读取逻辑，大幅提升了初始化效率">
+      <created>1595848908849</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1595848908849</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -753,7 +582,8 @@
     <MESSAGE value="添加了EMA模型、MetaNet和WRN，以后会持续添加可直接应用的模型结果" />
     <MESSAGE value="新增Schedule，渐变方法，或许换个名比较好" />
     <MESSAGE value="添加了对yield的支持，如果返回迭代器，那么会消耗掉迭代器并返回最后一次迭代的结果" />
-    <option name="LAST_COMMIT_MESSAGE" value="添加了对yield的支持，如果返回迭代器，那么会消耗掉迭代器并返回最后一次迭代的结果" />
+    <MESSAGE value="将config、experiment、git repo分离，同时优化了配置读取逻辑，大幅提升了初始化效率" />
+    <option name="LAST_COMMIT_MESSAGE" value="将config、experiment、git repo分离，同时优化了配置读取逻辑，大幅提升了初始化效率" />
   </component>
   <component name="WindowStateProjectService">
     <state x="552" y="181" key="#Deployment" timestamp="1593501042994">
@@ -768,74 +598,82 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="629" y="328" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1595219069460" />
-    <state x="765" y="239" key="#com.intellij.ide.util.MemberChooser" timestamp="1595480967838">
+    <state x="765" y="239" key="#com.intellij.ide.util.MemberChooser" timestamp="1596008195644">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="765" y="239" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1595480967838" />
-    <state x="690" y="269" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1595848109861">
+    <state x="765" y="239" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1596008195644" />
+    <state x="690" y="269" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1596100790424">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="690" y="269" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1595848109861" />
-    <state x="806" y="418" key="#com.jetbrains.python.refactoring.move.PyMoveModuleMembersDialog" timestamp="1595812344605">
+    <state x="690" y="269" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1596100790424" />
+    <state x="806" y="418" key="#com.jetbrains.python.refactoring.move.PyMoveModuleMembersDialog" timestamp="1595923706144">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="806" y="418" key="#com.jetbrains.python.refactoring.move.PyMoveModuleMembersDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1595812344605" />
-    <state x="572" y="115" key="CommitChangelistDialog2" timestamp="1594539024237">
+    <state x="806" y="418" key="#com.jetbrains.python.refactoring.move.PyMoveModuleMembersDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1595923706144" />
+    <state x="572" y="115" key="CommitChangelistDialog2" timestamp="1595848906008">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="572" y="115" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1594539024237" />
-    <state x="746" y="284" key="FileChooserDialogImpl" timestamp="1595812343867">
+    <state x="572" y="115" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1595848906008" />
+    <state x="746" y="284" key="FileChooserDialogImpl" timestamp="1596012115599">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="746" y="284" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1595812343867" />
-    <state width="1877" height="243" key="GridCell.Tab.0.bottom" timestamp="1595848275159">
+    <state x="746" y="284" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1596012115599" />
+    <state width="1877" height="368" key="GridCell.Tab.0.bottom" timestamp="1596099513822">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="243" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1595848275159" />
-    <state width="1877" height="243" key="GridCell.Tab.0.center" timestamp="1595848275159">
+    <state width="1877" height="368" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1596099513822" />
+    <state width="1877" height="368" key="GridCell.Tab.0.center" timestamp="1596099513822">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="243" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1595848275159" />
-    <state width="1877" height="243" key="GridCell.Tab.0.left" timestamp="1595848275159">
+    <state width="1877" height="368" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1596099513822" />
+    <state width="1877" height="368" key="GridCell.Tab.0.left" timestamp="1596099513822">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="243" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1595848275159" />
-    <state width="1877" height="243" key="GridCell.Tab.0.right" timestamp="1595848275159">
+    <state width="1877" height="368" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1596099513822" />
+    <state width="1877" height="368" key="GridCell.Tab.0.right" timestamp="1596099513822">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="243" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1595848275159" />
-    <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1595824553606">
+    <state width="1877" height="368" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1596099513822" />
+    <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1595948480747">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1595824553606" />
-    <state width="1877" height="348" key="GridCell.Tab.1.center" timestamp="1595824553604">
+    <state width="1877" height="348" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1595948480747" />
+    <state width="1877" height="348" key="GridCell.Tab.1.center" timestamp="1595948480747">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1595824553604" />
-    <state width="1877" height="348" key="GridCell.Tab.1.left" timestamp="1595824553604">
+    <state width="1877" height="348" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1595948480747" />
+    <state width="1877" height="348" key="GridCell.Tab.1.left" timestamp="1595948480747">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1595824553604" />
-    <state width="1877" height="348" key="GridCell.Tab.1.right" timestamp="1595824553605">
+    <state width="1877" height="348" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1595948480747" />
+    <state width="1877" height="348" key="GridCell.Tab.1.right" timestamp="1595948480747">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1595824553605" />
-    <state x="463" y="165" key="SettingsEditor" timestamp="1595817582547">
+    <state width="1877" height="348" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1595948480747" />
+    <state x="463" y="165" key="SettingsEditor" timestamp="1595938519618">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="463" y="165" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1595817582547" />
+    <state x="463" y="165" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1595938519618" />
     <state x="681" y="261" width="540" height="524" key="StructurePopup" timestamp="1593763881502">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="681" y="261" width="540" height="524" key="StructurePopup/0.0.1920.1040@0.0.1920.1040" timestamp="1593763881502" />
+    <state width="968" height="528" key="XDebugger.FullValuePopup" timestamp="1595936657112">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="968" height="528" key="XDebugger.FullValuePopup/0.0.1920.1040@0.0.1920.1040" timestamp="1595936657112" />
     <state x="652" y="347" key="com.intellij.ide.util.TipDialog" timestamp="1594338611329">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="652" y="347" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1594338611329" />
-    <state x="647" y="280" width="759" height="538" key="find.popup" timestamp="1595834791068">
+    <state x="504" y="248" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1595936983212">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="647" y="280" width="759" height="538" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1595834791068" />
+    <state x="504" y="248" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.1040@0.0.1920.1040" timestamp="1595936983212" />
+    <state x="647" y="280" width="759" height="594" key="find.popup" timestamp="1596100402148">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="647" y="280" width="759" height="594" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1596100402148" />
     <state x="836" y="256" key="ftp.server.browser" timestamp="1593501038029">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -857,94 +695,9 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/examples/more/global_var.py</url>
-          <line>12</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/thexp/frame/params.py</url>
-          <line>110</line>
-          <option name="timeStamp" value="18" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/examples/8.params.py</url>
-          <line>31</line>
-          <option name="timeStamp" value="23" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/examples/8.params.py</url>
-          <line>19</line>
-          <option name="timeStamp" value="26" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/examples/more/hook.py</url>
-          <line>18</line>
-          <option name="timeStamp" value="30" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/thexp/analyser/expviewer.py</url>
-          <line>284</line>
-          <option name="timeStamp" value="40" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/thexp/analyser/expviewer.py</url>
-          <line>124</line>
-          <option name="timeStamp" value="62" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/thexp/analyser/expviewer.py</url>
-          <line>257</line>
-          <option name="timeStamp" value="63" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/thexp/analyser/deplugs.py</url>
-          <line>33</line>
-          <option name="timeStamp" value="70" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/thexp/analyser/web/response.py</url>
-          <line>128</line>
-          <option name="timeStamp" value="71" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/thexp/cli/cli.py</url>
-          <line>40</line>
-          <option name="timeStamp" value="84" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$USER_HOME$/.PyCharm2019.2/system/remote_sources/-677275561/-1406446990/thexp/frame/trainer.py</url>
-          <line>128</line>
-          <option name="timeStamp" value="93" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$USER_HOME$/.PyCharm2019.2/system/remote_sources/-677275561/-1406446990/thexp/frame/trainer.py</url>
-          <line>123</line>
-          <option name="timeStamp" value="94" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$USER_HOME$/.PyCharm2019.2/system/remote_sources/-677275561/-1406446990/thexp/frame/experiment.py</url>
-          <line>126</line>
-          <option name="timeStamp" value="95" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$USER_HOME$/.PyCharm2019.2/system/remote_sources/-677275561/-1406446990/thexp/utils/gitutils.py</url>
-          <line>249</line>
-          <option name="timeStamp" value="96" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/examples/more/temp.py</url>
-          <line>15</line>
-          <option name="timeStamp" value="97" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/thexp/frame/params.py</url>
-          <line>322</line>
-          <option name="timeStamp" value="101" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/thexp/calculate/schedule.py</url>
-          <line>106</line>
-          <option name="timeStamp" value="102" />
+          <url>file://$PROJECT_DIR$/thexp/decorators/deprecated.py</url>
+          <line>197</line>
+          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

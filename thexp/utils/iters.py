@@ -1,3 +1,6 @@
+from collections.abc import Iterator
+
+
 def iter2pair(obj):
     """"""
     for k in obj:
@@ -11,13 +14,22 @@ def iter2pair(obj):
 
 
 def deep_chain(item):
-    from collections.abc import Iterable
-    if isinstance(item, Iterable):
+    if isinstance(item, Iterator):
         for i in item:
-            if isinstance(i, Iterable):
+            if isinstance(i, Iterator):
                 for ii in deep_chain(i):
                     yield ii
             else:
                 yield i
     else:
         yield item
+
+
+def is_same_type(items, ty=None):
+    for item in items:
+        if ty is None:
+            ty = type(item)
+        else:
+            if type(item) != ty:
+                return False
+    return True

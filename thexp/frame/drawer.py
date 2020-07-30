@@ -25,10 +25,10 @@ class Reporter():
     def savedir(self):
         if self.cur_dir is None:
             i = 1
-            fn = os.path.join(self.base_dir, "{:04}".format(i))
+            fn = os.path.join(self.base_dir, '{:04}'.format(i))
             while os.path.exists(fn):
                 i += 1
-                fn = os.path.join(self.base_dir, "{:04}".format(i))
+                fn = os.path.join(self.base_dir, '{:04}'.format(i))
             os.makedirs(fn, exist_ok=True)
             self.cur_dir = fn
 
@@ -60,11 +60,11 @@ class Reporter():
         from thexp.utils.paths import filter_filename
         dir = self.savedir
         for k, v in self.plot_dict.items():
-            if "fn" in v:
+            if 'fn' in v:
                 continue
 
             plt.figure()
-            base_name = filter_filename("{}.jpg".format(k))
+            base_name = filter_filename('{}.jpg'.format(k))
             fn = os.path.join(dir, base_name)
             plt.plot(v['x'], v['y'])
             plt.title(k)
@@ -74,11 +74,11 @@ class Reporter():
 
     @property
     def picklefile(self):
-        return "analyser.pkl"
+        return 'analyser.pkl'
 
     @property
     def reportfile(self):
-        return "report.md"
+        return 'report.md'
 
     def add_tag(self, tag):
         self.tags.add(str(tag))
@@ -88,36 +88,36 @@ class Reporter():
 
         from thexp.utils.markdown_writer import Markdown
         md = Markdown()
-        md.add_title(curent_date("%y-%m-%d-%H:%M:%S"))
+        md.add_title(curent_date('%y-%m-%d-%H:%M:%S'))
         with md.code() as code:
             for tag in self.tags:
                 code.add_line(tag)
 
         if otherinfo is not None:
             md.extends(otherinfo)
-        md.add_title("Vars", level=2)
+        md.add_title('Vars', level=2)
         self.savefig()
         for k, v in self.plot_dict.items():
             md.add_title(k, level=3)
-            if "fn" in v:
-                md.add_picture("./{}".format(v["fn"]), k, False)
+            if 'fn' in v:
+                md.add_picture('./{}'.format(v['fn']), k, False)
 
             lines = []
-            head = ["step"]
-            vars = ["values"]
+            head = ['step']
+            vars = ['values']
 
             xs = []
             ys = []
 
-            for x, y in zip(v["x"][::every], v["y"][::every]):
-                head.append("**{}**".format(x))
-                vars.append("{:.4f}".format(y))
+            for x, y in zip(v['x'][::every], v['y'][::every]):
+                head.append('**{}**'.format(x))
+                vars.append('{:.4f}'.format(y))
                 xs.append(x)
                 ys.append(y)
                 if len(head) > 10:
                     lines.append(head)
                     lines.append(vars)
-                    head = ["**step**"]
+                    head = ['**step**']
                     vars = ["values"]
 
             if len(head) != 1:

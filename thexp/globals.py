@@ -3,13 +3,13 @@
 """
 
 
-class _REPOJ:
+class REPOJ_:
     repopath = 'repopath'
     exps = 'exps'
     exp_root = 'exp_root'
 
 
-class _INFOJ:
+class INFOJ_:
     repo = 'repo'
     argv = 'argv'
     test_name = 'test_name'
@@ -26,13 +26,13 @@ class _INFOJ:
     end_code = 'end_code'
 
 
-class _CONFIGL:
+class CONFIGL_:
     running = 'user'
     globals = 'globals'
     repository = 'repository'
 
 
-class _GITKEY:
+class GITKEY_:
     thexp = 'thexp'
     projname = 'projname'
     expsdir = 'expsdir'
@@ -42,23 +42,29 @@ class _GITKEY:
     commit_key = 'thexp-commit'
 
 
-class _FNAME:
+class FNAME_:
     Exception = 'Exception'
     info = 'info.json'
     repo = 'repo.json'
     params = 'params.json'
-    hide = '.hide'
-    fav = '.fav'
+    repopath = '.repopath'
+    expsdirs = '.expsdirs'
+    gitignore = ".gitignore"
 
 
-class _ML:
+class TEST_BUILTIN_STATE_:
+    hide = 'hide'
+    fav = 'fav'
+
+
+class ML_:
     train = 'train'
     test = 'test'
     eval = 'eval'
     cuda = 'cuda'
 
 
-class _BUILTIN_PLUGIN:
+class BUILTIN_PLUGIN_:
     trainer = 'trainer'
     params = 'params'
     writer = 'writer'
@@ -66,23 +72,35 @@ class _BUILTIN_PLUGIN:
     saver = 'saver'
     rnd = 'rnd'
 
-class _PLUGIN_WRITER:
+
+class PLUGIN_DIRNAME_:
+    writer = 'board'
+    writer_tmp = 'board_tmp'
+    saver = 'modules'
+    rnd = 'rnd'
+
+
+class PLUGIN_WRITER_:
     log_dir = 'log_dir'
     filename_suffix = 'filename_suffix'
     dir_name = 'board'
 
 
-class _OSENVI:
+class OSENVI_:
     ignore_repo = 'ignore_repo'
 
 
-class _INDENT:
+class INDENT_:
     tab = '  '
     ttab = '    '
     tttab = '      '
 
 
-class _DLEVEL:
+class DLEVEL_:
     proj = 'proj'
     exp = 'exp'
     test = 'test'
+
+
+class OS_ENV_:
+    CUDA_VISIBLE_DEVICES = 'CUDA_VISIBLE_DEVICES'

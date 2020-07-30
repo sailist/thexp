@@ -1,19 +1,17 @@
 import json
 import os
 import sys
-from typing import List
 from functools import lru_cache
+from typing import List
 from uuid import uuid4
 
-from git import Git, Commit, Repo
-from gitdb.util import hex_to_bin
+from git import Git, Repo
 
 from thexp.utils.paths import renormpath
 from .dates import curent_date
-from ..analyser.expviewer import TestViewer
-from ..frame.experiment import Experiment
-from ..globals import _GITKEY, _OSENVI, _FNAME
+from ..globals import GITKEY_, OSENVI_, FNAME_
 
+thexp_gitignores = ['.thexp/', FNAME_.repo, FNAME_.expsdirs]
 py_gitignore = "\n".join(['# Byte-compiled / optimized / DLL files', '__pycache__/', '*.py[cod]',
                           '*$py.class', '', '# C extensions', '*.so', '', '# Distribution / packaging',
                           '.Python', 'build/', 'develop-eggs/', 'dist/', 'downloads/', 'eggs/', '.eggs/',
@@ -39,7 +37,7 @@ py_gitignore = "\n".join(['# Byte-compiled / optimized / DLL files', '__pycache_
                           '# Spyder project settings', '.spyderproject', '.spyproject', '',
                           '# Rope project settings', '.ropeproject', '', '# mkdocs documentation',
                           '/site', '', '# mypy', '.mypy_cache/', '.dmypy.json', 'dmypy.json', '',
-                          '# Pyre type checker', '.pyre/', '', '.thexp/', 'repo.json'])
+                          '# Pyre type checker', '.pyre/'] + thexp_gitignores)
 
 
 def _set_default_config(repo: Repo, names: List[str]):
@@ -49,20 +47,20 @@ def _set_default_config(repo: Repo, names: List[str]):
     def _expsdir(repo):
         from .paths import global_config
         config = global_config()
-        expsdir = config.get(_GITKEY.expsdir, renormpath(os.path.join(repo.working_dir, '.thexp/experiments')))
+        expsdir = config.get(GITKEY_.expsdir, renormpath(os.path.join(repo.working_dir, '.thexp/experiments')))
         return expsdir
 
     _default = {
-        _GITKEY.uuid: lambda *args: uuid4().hex[:2],
-        _GITKEY.expsdir: lambda repo: _expsdir(repo),
-        _GITKEY.projname: lambda repo: renormpath(os.path.basename(repo.working_dir))
+        GITKEY_.uuid: lambda *args: uuid4().hex[:2],
+        GITKEY_.expsdir: lambda repo: _expsdir(repo),
+        GITKEY_.projname: lambda repo: renormpath(os.path.basename(repo.working_dir))
     }
 
     writer = repo.config_writer()
     res = {}
     for name in names:
         value = _default[name](repo)
-        writer.add_value(_GITKEY.section_name, name, value)
+        writer.add_value(GITKEY_.section_name, name, value)
         res[name] = value
 
     writer.write()
@@ -73,8 +71,8 @@ def _set_default_config(repo: Repo, names: List[str]):
 
 def _check_section(repo: Repo):
     writer = repo.config_writer()
-    if not writer.has_section(_GITKEY.section_name):
-        writer.add_section(_GITKEY.section_name)
+    if not writer.has_section(GITKEY_.section_name):
+        writer.add_section(GITKEY_.section_name)
     writer.write()
     writer.release()
 
@@ -82,16 +80,16 @@ def _check_section(repo: Repo):
 @lru_cache()
 def git_config(repo: Repo):
     reader = repo.config_reader()
-    if not reader.has_section(_GITKEY.section_name):
+    if not reader.has_section(GITKEY_.section_name):
         _check_section(repo)
         reader = repo.config_reader()
     reader.read()
     try:
-        config = {k: v for k, v in reader.items(_GITKEY.section_name)}
+        config = {k: v for k, v in reader.items(GITKEY_.section_name)}
     except:
         config = {}
 
-    lack_names = [i for i in {_GITKEY.expsdir, _GITKEY.uuid, _GITKEY.projname} if i not in config]
+    lack_names = [i for i in {GITKEY_.expsdir, GITKEY_.uuid, GITKEY_.projname} if i not in config]
     _updates = _set_default_config(repo, lack_names)
 
     config.update(_updates)
@@ -100,24 +98,27 @@ def git_config(repo: Repo):
 
 
 def check_gitignore(repo: Repo, force=False):
-    rp = os.path.join(repo.working_dir, _FNAME.repo)
+    rp = os.path.join(repo.working_dir, FNAME_.repo)
     if os.path.exists(rp) and not force:
         return
 
-    ignorefn = os.path.join(repo.working_dir, ".gitignore")
+    ignorefn = os.path.join(repo.working_dir, FNAME_.gitignore)
     if not os.path.exists(ignorefn):
         with open(ignorefn, 'w', encoding='utf-8') as w:
             w.write(py_gitignore)
+        return True
     else:
+        amend = False
         with open(ignorefn, 'r', encoding='utf-8') as r:
             lines = [i.strip() for i in r.readlines()]
-            if '.thexp/' not in lines:
-                lines.append('.thexp/')
-            if 'repo.json' not in lines:
-                lines.append('repo.json')
-
-        with open(ignorefn, 'w', encoding='utf-8') as w:
-            w.write('\n'.join(lines))
+            for item in thexp_gitignores:
+                if item not in lines:
+                    lines.append(item)
+                    amend = True
+        if amend:
+            with open(ignorefn, 'w', encoding='utf-8') as w:
+                w.write('\n'.join(lines))
+        return amend
 
 
 def git_config_syntax(value: str):
@@ -175,6 +176,27 @@ class branch:
         self.repo.head.reference = self.old_branch
 
 
+def init_repo(dir='./'):
+    """
+    初始化某目录为 git repository，除了完成 git init 外，还会确认 thexp 需要的配置
+    Args:
+        dir:
+
+    Returns:
+
+    """
+    path = git_root(dir)
+    if path is not None:
+        res = Repo(path)
+    else:
+        res = Repo.init(path)
+    check_gitignore(repo=res, force=True)
+    git_config(res)
+    res.git.add('.')
+    res.index.commit('initial commit')
+    return res
+
+
 @lru_cache()
 def load_repo(dir='./') -> Repo:
     """
@@ -192,7 +214,7 @@ def load_repo(dir='./') -> Repo:
     path = git_root(dir)
 
     if path is None:
-        if _OSENVI.ignore_repo not in os.environ:
+        if OSENVI_.ignore_repo not in os.environ:
             print("fatal: not a git repository (or any of the parent directories)")
             print("-----------------------")
             path = input("type root path to init this project, \n(default: {}, type '!' to ignore".format(os.getcwd()))
@@ -209,19 +231,21 @@ def load_repo(dir='./') -> Repo:
         res = Repo.init(path)
         check_gitignore(repo=res, force=True)
         # check_gitconfig(repo=res, force=True)
-        res.git.add(".")
-        res.index.commit("initial commit")
+        res.git.add('.')
+        res.index.commit('initial commit')
     else:
         res = Repo(path)
-        check_gitignore(repo=res, force=False)
-        # check_gitconfig(repo=res, force=False)
+        amend = check_gitignore(repo=res, force=False)
+        if amend:
+            res.git.add(FNAME_.gitignore)
+            res.index.commit('fix gitignore')
     return res
 
 
 _commits_map = {}
 
 
-def commit(repo: Repo, key=None, branch_name=_GITKEY.thexp_branch):
+def commit(repo: Repo, key=None, branch_name=GITKEY_.thexp_branch):
     """
 
     Args:
@@ -246,72 +270,3 @@ def commit(repo: Repo, key=None, branch_name=_GITKEY.thexp_branch):
     if key is not None:
         _commits_map[key] = commit_
     return commit_
-
-
-def archive(test_viewer: TestViewer) -> Experiment:
-    """
-    将某次 test 对应 commit 的文件打包，相关命令为
-        git archive -o <filename> <commit-id>
-    :param test_viewer:
-    :return:
-    """
-    repo = test_viewer.repo
-    commit = Commit(repo, hex_to_bin(test_viewer.json_info['commit_hash']))
-
-    old_path = os.getcwd()
-    os.chdir(commit.tree.abspath)
-    exp = Experiment('Archive')
-
-    revert_path = exp.makedir('archive')
-    revert_fn = os.path.join(revert_path, "file.zip")
-    exp.add_plugin('archive', {'file': revert_fn,
-                               'test_name': test_viewer.test_name})
-    with open(revert_fn, 'wb') as w:
-        commit.repo.archive(w, commit)
-
-    exp.end()
-    os.chdir(old_path)
-    return exp
-
-
-def reset(test_viewer: TestViewer) -> Experiment:
-    """
-    将工作目录中的文件恢复到某个commit
-        恢复快照的 git 流程：
-            git branch experiment
-            git add . & git commit -m ... // 保证文件最新，防止冲突报错，这一步由 Experiment() 代为完成
-            git checkout <commit-id> // 恢复文件到 <commit-id>
-            git checkout -b reset // 将当前状态附到新的临时分支 reset 上
-            git branch experiment // 切换回 experiment 分支
-            git add . & git commit -m ... // 将当前状态重新提交到最新
-                // 此时experiment 中最新的commit 为恢复的<commit-id>
-            git branch -D reset  // 删除临时分支
-            git branch master // 最终回到原来分支，保证除文件变动外git状态完好
-    :param test_viewer: TestViewer
-    :return:
-    """
-    repo = test_viewer.repo
-    commit = Commit(repo, hex_to_bin(test_viewer.json_info['commit_hash']))
-
-    old_path = os.getcwd()
-    os.chdir(commit.tree.abspath)
-    exp = Experiment('Reset')
-
-    repo = commit.repo  # type:Repo
-    with branch(commit.repo, _GITKEY.thexp_branch) as new_branch:
-        repo.git.checkout(commit.hexsha)
-        repo.git.checkout('-b', 'reset')
-        repo.head.reference = new_branch
-        repo.git.add('.')
-        ncommit = repo.index.commit("Reset from {}".format(commit.hexsha))
-        repo.git.branch('-d', 'reset')
-    exp.add_plugin('reset', {
-        'test_name': test_viewer.test_name,  # 从哪个状态恢复
-        'from': exp.commit.hexsha,  # reset 运行时的快照
-        'where': commit.hexsha,  # 恢复到哪一次 commit，是恢复前的保存的状态
-        'to': ncommit.hexsha,  # 对恢复后的状态再次进行提交，此时 from 和 to 两次提交状态应该完全相同
-    })
-
-    exp.end()
-    os.chdir(old_path)
-    return exp

@@ -6,7 +6,7 @@
 def draw_dict():
     res = dict()
 
-    res["x"] = []
+    res['x'] = []
     res['y'] = []
     return res
 

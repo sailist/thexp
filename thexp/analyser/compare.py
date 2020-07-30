@@ -1,10 +1,10 @@
 """
-
+TODO 该类下各个功能还需要思考是否保留以及用途
 """
 
 import pandas as pd
 
-from thexp.analyser.expviewer import TestViewer
+from thexp.analyser.viewer import TestViewer
 from ..frame.params import BaseParams
 
 _ignore_key = {'eidx', 'idx', 'device','global_step'}
@@ -69,7 +69,7 @@ class Comparer:
                 tattr = ValueSummary(stag, bd.get_scalars(stag).values).to_attr()
                 line.update(tattr.walk())
             res.append(line)
-        return pd.DataFrame(res,index=[i.test_name for i in self.tvs])
+        return pd.DataFrame(res, index=[i.name for i in self.tvs])
 
     def merge_statistics(self):
         """
@@ -85,8 +85,8 @@ class Comparer:
             for stag in bd.scalars_tags:
                 figure = res.setdefault(stag,{})
                 scalars = bd.get_scalars(stag)
-                figure[tv.test_name] = {
-                    'name':tv.test_name,
+                figure[tv.name] = {
+                    'name':tv.name,
                     'x':scalars.steps,
                     'y':scalars.values,
                 }

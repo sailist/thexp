@@ -103,6 +103,9 @@ class Delegate:
         """
         return ID(value, name)
 
+    def __len__(self):
+        return 0
+
     def __call__(self, index, builder=None) -> Union[X, Y, ID, None, Iterable[_Value]]:
         raise NotImplementedError()
 
@@ -136,6 +139,7 @@ class DatasetBuilder(Dataset):
     """
 
     """
+
     def __init__(self, xs=None, ys=None, indices=None):
         self._dataset_len = None
         self._ipts = {}
@@ -198,7 +202,7 @@ class DatasetBuilder(Dataset):
             return self.sample_num
         if self._indices is not None:
             return len(self._indices)
-        return len(list(self._ipts.values())[0])
+        return self._dataset_len
 
     def __getitem__(self, index: int):
         if self._re_indices is not None:
@@ -328,6 +332,7 @@ class DatasetBuilder(Dataset):
         if name is None:
             name = 'delegate_{}'.format(len(self._delegates))
         self._check_delegate_name(name)
+        self._check_len(delegate)
         self._delegates.append(_delegate_placehold(delegate, transform, target_transform, name))
         return self
 
@@ -346,7 +351,7 @@ class DatasetBuilder(Dataset):
     def virtual_sample(self, sample_num: int):
         self.sample_num = sample_num
         if self._indices is None:
-            self.real_num = len(list(self._ipts.values())[0])
+            self.real_num = self._dataset_len
         else:
             self.real_num = len(self._indices)
         self.vitu_num = self.sample_num - self.real_num

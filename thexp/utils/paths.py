@@ -6,7 +6,7 @@ import json
 import os
 from functools import lru_cache
 
-from ..globals import _GITKEY
+from ..globals import GITKEY_
 
 
 def listdir_by_time(dir_path):
@@ -30,7 +30,7 @@ def _create_home_dir(path):
     import json
     with open("config.json", "w") as w:
         json.dump({
-            _GITKEY.expsdir: os.path.join(path, 'experiments')
+            GITKEY_.expsdir: os.path.join(path, 'experiments')
         }, w, indent=2)
 
 

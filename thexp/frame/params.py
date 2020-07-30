@@ -8,7 +8,7 @@ import pprint as pp
 import warnings
 from collections import defaultdict
 from collections.abc import Iterable
-from typing import Any
+from typing import Any, overload
 
 import fire
 import torch
@@ -21,6 +21,7 @@ from ..base_classes.params_vars import ParamsFactory, OptimParams
 class BaseParams:
     def __init__(self):
         self._param_dict = attr()
+        self._copy = attr()
         self._exp_name = None
         self._bound = {}
         self._lock = False
@@ -53,8 +54,6 @@ class BaseParams:
                                 name))
                     self._param_dict[name] = value.default
             else:
-                # TODO 添加 xx_schdule / xx_optim 的对应支持，能够调用 self.create_optim() / self.create_schedule()
-                #  方法对应过去
                 self._param_dict[name] = value
             if name in self._bind:
                 for _v, _bind_k, _bind_v in self._bind[name]:
@@ -309,26 +308,8 @@ class BaseParams:
         from ..base_classes.defaults import default
         return default(value, warn)
 
-    def create_optim(self,
-                     name,
-                     lr=None,
-                     rho=None,
-                     eps=None,
-                     weight_decay=None,
-                     lr_decay=None,
-                     initial_accumulator_value=None,
-                     momentum=None,
-                     dampening=None,
-                     nesterov=None, **kwargs):
-        return ParamsFactory.create_optim(name, lr=lr,
-                                          rho=rho,
-                                          eps=eps,
-                                          weight_decay=weight_decay,
-                                          lr_decay=lr_decay,
-                                          initial_accumulator_value=initial_accumulator_value,
-                                          momentum=momentum,
-                                          dampening=dampening,
-                                          nesterov=nesterov, **kwargs)
+    def create_optim(self, **kwargs):
+        return ParamsFactory.create_optim(**kwargs)
 
     def create_schedule(self, schedule_type, start, end, **kwargs):
         return ParamsFactory
@@ -336,6 +317,54 @@ class BaseParams:
     def replace(self, **kwargs):
         self.update(kwargs)
         return self
+
+    @overload
+    def create_optim(self, name='SGD', lr=None, momentum=0, dampening=0, weight_decay=0, nesterov=False):
+        pass
+
+    @overload
+    def create_optim(self, name='Adam', lr=1e-3, betas=(0.9, 0.999), eps=1e-8, weight_decay=0, amsgrad=False):
+        pass
+
+    @overload
+    def create_optim(self, name='Adadelta', lr=1.0, rho=0.9, eps=1e-6, weight_decay=0):
+        pass
+
+    @overload
+    def create_optim(self, name='Adagrad', lr=1e-2, lr_decay=0, weight_decay=0, initial_accumulator_value=0, eps=1e-10):
+        pass
+
+    @overload
+    def create_optim(self, name='AdamW', lr=2e-3, betas=(0.9, 0.999), eps=1e-8, weight_decay=0):
+        pass
+
+    @overload
+    def create_optim(self, name='AdamW',
+                     lr=1e-3, betas=(0.9, 0.999), eps=1e-8, weight_decay=1e-2, amsgrad=False):
+        pass
+
+    @overload
+    def create_optim(self, name='ASGD',
+                     lr=1e-2, lambd=1e-4, alpha=0.75, t0=1e6, weight_decay=0):
+        pass
+
+    @overload
+    def create_optim(self, name='LBFGS',
+                     lr=1, max_iter=20, max_eval=None, tolerance_grad=1e-7, tolerance_change=1e-9, history_size=100,
+                     line_search_fn=None):
+        pass
+
+    @overload
+    def create_optim(self, name='RMSprop', lr=1e-2, alpha=0.99, eps=1e-8, weight_decay=0, momentum=0, centered=False):
+        pass
+
+    @overload
+    def create_optim(self, name='Rprop', lr=1e-2, etas=(0.5, 1.2), step_sizes=(1e-6, 50)):
+        pass
+
+    @overload
+    def create_optim(self, name='SparseAdam', lr=1e-3, betas=(0.9, 0.999), eps=1e-8):
+        pass
 
 
 class Params(BaseParams):
@@ -351,8 +380,19 @@ class Params(BaseParams):
         self.dataset = None
         self.architecture = None
         self.optim = None  # type:OptimParams
-        self.ignore_set = set()
+
+    def dataloader(self):
+        pass
+
+    def optimizer(self):
+        return self.optim.args
+
 
 
 if __name__ == '__main__':
-    pass
+    Params().create_optim()
+
+    from torch.optim.sgd import SGD
+    from torch.optim.sparse_adam import SparseAdam
+    from torch.optim import adam, adamw, adamax, adagrad, adadelta, asgd, sparse_adam, sgd, lr_scheduler, lbfgs, \
+        optimizer, rmsprop, rprop

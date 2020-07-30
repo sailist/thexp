@@ -1,6 +1,6 @@
 from thexp import Trainer
 from trainers import GlobalParams
-from thexp.contrib.data import splits
+from thexp.torch.data import splits
 from thexp import DatasetBuilder
 
 from dataloaders.transforms import ToTensor

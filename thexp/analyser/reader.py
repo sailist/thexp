@@ -1,12 +1,13 @@
 """
-
+用于读取tensorboard记录的各种数据
 """
 import pprint as pp
-from collections import namedtuple,defaultdict
+from collections import namedtuple
 
 from tensorboard.backend.event_processing import event_accumulator
+
 Scalars = namedtuple('ScalarEvent', ['wall_times', 'values', 'steps'])
-import numpy as np
+
 
 class BoardReader():
     """
@@ -37,21 +38,28 @@ class BoardReader():
                                                          event_accumulator.SCALARS: 0,
                                                          event_accumulator.HISTOGRAMS: 1,
                                                      })
-        self.ea.Reload()
+        self._reloaded = False
+
+    def _check_reload(self):
+        if not self._reloaded:
+            self.ea.Reload()
 
     def get_scalars(self, tag):
+        self._check_reload()
         wall_times, steps, values = list(zip(*self.ea.Scalars(tag)))  # 'wall_time', 'step', 'value'
         values = [float("{:.4f}".format(i)) for i in values]
         return Scalars(wall_times, values, steps)
 
     @property
     def scalars_tags(self):
+        self._check_reload()
         return self.tags['scalars']
 
     @property
     def tags(self):
+        self._check_reload()
         return self.ea.Tags()
 
     def summary(self):
+        self._check_reload()
         pp.pprint(self.ea.Tags())
-

@@ -6,11 +6,10 @@ import sys
 import warnings
 from collections import namedtuple
 
-from thexp.globals import _CONFIGL, _GITKEY, _FNAME
+from thexp.globals import CONFIGL_, GITKEY_, FNAME_
 from thexp.utils.dates import curent_date
 
 from .configs import globs
-
 
 test_dir_pt = re.compile("[0-9]{4}\.[a-z0-9]{7}")
 exception = namedtuple('exception_status', ['exc_type', 'exc_value', 'exc_tb'])
@@ -20,9 +19,9 @@ class Experiment:
     """
     用于目录管理和常量配置管理
     """
-    user_level = _CONFIGL.running
-    exp_level = _CONFIGL.globals
-    repo_level = _CONFIGL.repository
+    user_level = CONFIGL_.running
+    exp_level = CONFIGL_.globals
+    repo_level = CONFIGL_.repository
     count = 0
     whole_tests = []
 
@@ -36,9 +35,7 @@ class Experiment:
         self._project_dir = None
 
         self._repo = None
-        # self.git_repo = self.exp_repo.repo  # type:Repo #TODO 有问题
         self._tags = {}
-        self._hashs = []
         self._config = globs
         self._hold_dirs = []
         self._time_fmt = "%Y-%m-%d %H:%M:%S"
@@ -63,8 +60,8 @@ class Experiment:
             self._regist_repo()
             self._regist_exp()
 
-            # 在regist_exp 后运行，因为上面的方法可能导致 repo.json 文件修改
-            git_commit(self.repo, _GITKEY.commit_key, branch_name=_GITKEY.thexp_branch)
+            # 目录下所有thexp项目
+            git_commit(self.repo, GITKEY_.commit_key, branch_name=GITKEY_.thexp_branch)
 
             self._write()
         else:
@@ -72,77 +69,55 @@ class Experiment:
 
     def _regist_repo(self):
         """
-        在 repo 的根目录下注册实验名，用于 ProjViewer 检索
+        在相应位置注册当前实验保存的项目级别的路径（project_dir）与该repo的相应位置，便于回溯。
+
+        共在三个位置添加相应关系（每次都会确认，未添加会添加，添加则覆盖）
+
         :param exp_repo:  Exprepo对象
         :return:
         """
-        from ..utils.paths import home_dir
-        from ..globals import _FNAME
-        projkey = self.projkey
-        expsdir = self.expsdir
-        repopath = self.repo.working_dir
 
-        rp = os.path.join(home_dir(), _FNAME.repo)
-        if not os.path.exists(rp):
-            res = {}
-        else:
-            with open(rp, encoding='utf-8') as r:
+        # 在全局添加 项目下实验存储路径与相应repo的关系，由此可以存储所有的实验存储目录
+        from thexp.utils.paths import home_dir
+        global_repofn = os.path.join(home_dir(), FNAME_.repo)
+        if os.path.exists(global_repofn):
+            with open(global_repofn, 'r', encoding='utf-8') as r:
                 res = json.load(r)
-
-        dic = res.setdefault(projkey, dict())
-
-        dic['repopath'] = repopath
-        dic['exp_root'] = expsdir
-
-        with open(rp, 'w', encoding='utf-8') as w:
-            json.dump(res, w, indent=2)
-
-        rp = os.path.join(repopath, _FNAME.repo)
-        if not os.path.exists(rp):
-            res = {}
         else:
-            with open(rp, encoding='utf-8') as r:
-                res = json.load(r)
-            if len(res.keys()) > 0 and projkey not in res:
-                val = list(res.values())[0]
-                res = {projkey: val}
+            res = {}
+        res[self.project_dir] = self.repo.working_dir
+        with open(global_repofn, 'w', encoding='utf-8') as w:
+            json.dump(res, w)
 
-        dic = res.setdefault(projkey, dict())
-        dic['repopath'] = repopath
-        dic['exp_root'] = expsdir
-        with open(rp, 'w', encoding='utf-8') as w:
-            json.dump(res, w, indent=2)
+        # 在项目级别的实验存储目录下写下相应 repo ，用于方便获取
+        local_repofn = os.path.join(self.project_dir, FNAME_.repopath)
+        with open(local_repofn, 'w', encoding='utf-8') as w:
+            w.write(self.repo.working_dir)
+
+        # 在repo目录下记录所用过的实验存储路径到 .expsdirs，方便回溯
+        repo_expdirfn = os.path.join(self.repo.working_dir, FNAME_.expsdirs)
+        if os.path.exists(repo_expdirfn):
+            with open(repo_expdirfn, 'r', encoding='utf-8') as r:
+                _expsdirs = [i.strip() for i in r.readlines()]
+        else:
+            _expsdirs = []
+
+        if self.expsdir not in _expsdirs:
+            _expsdirs.append(self.expsdir)
+            with open(repo_expdirfn, 'w', encoding='utf-8') as w:
+                w.write("\n".join(_expsdirs))
 
     def _regist_exp(self):
         """
-        在 repo 目录下注册某实验 exp ，用于 ProjViewer 的检索
+        在实验目录下存储该实验对应的repo
 
         Returns:
             返回是否修改，如有修改，可能需要重新提交保证最新
         """
-        from ..globals import _FNAME
-        repo = self.repo
-        projkey = self.projkey
-        exp_name = self._exp_name
-
-        rp = os.path.join(repo.working_dir, _FNAME.repo)
-        if not os.path.exists(rp):
-            res = {}
-        else:
-            with open(rp, encoding='utf-8') as r:
-                res = json.load(r)
-
-        amend = False
-
-        lis = res[projkey].setdefault('exps', [])
-        if exp_name not in lis:
-            lis.append(exp_name)
-            amend = True
-
-        with open(rp, 'w', encoding='utf-8') as w:
-            json.dump(res, w, indent=2)
-
-        return amend
+        # 在 exp_dir 下存储对应的 repo 路径
+        local_repofn = os.path.join(self.exp_dir, FNAME_.repopath)
+        with open(local_repofn, 'w', encoding='utf-8') as w:
+            w.write(self.repo.working_dir)
 
     def _write(self, **extra):
         """将试验状态写入试验目录中的 info.json """
@@ -156,7 +131,7 @@ class Experiment:
             exp_dir=self.exp_dir,
             test_name=os.path.basename(self.test_dir),
             test_dir=self.test_dir,
-            root_dir=self.root_dir,
+            root_dir=self.expsdir,
             project_name=self.project_name,
             project_iname=os.path.basename(self.project_dir),
             project_dir=self.project_dir,
@@ -182,60 +157,73 @@ class Experiment:
     @property
     def commit(self):
         from thexp.utils.repository import commit as git_commit
-        return git_commit(self.repo, _GITKEY.commit_key, branch_name=_GITKEY.thexp_branch)
+        return git_commit(self.repo, GITKEY_.commit_key, branch_name=GITKEY_.thexp_branch)
 
     @property
-    def test_hash(self):
+    def test_hash(self) -> str:
         if self.commit is None:
             return ""
 
         return self.commit.hexsha[:8]
 
     @property
-    def test_name(self):
+    def test_name(self) -> str:
         return os.path.basename(self.test_dir)
 
     @property
-    def commit_hash(self):
+    def commit_hash(self) -> str:
         if self.commit is None:
             return ""
         return self.commit.hexsha
 
     @property
-    def project_name(self):
-        return self[_GITKEY.projname]
+    def project_name(self) -> str:
+        return self[GITKEY_.projname]
 
     @property
-    def root_dir(self):
-        return self[_GITKEY.expsdir]
-
-    @property
-    def projkey(self):
+    def projkey(self) -> str:
         # return self[_CONFIGL]
-        return '{}.{}'.format(self.project_name, self[_GITKEY.uuid])
+        return '{}.{}'.format(self.project_name, self[GITKEY_.uuid])
 
     @property
-    def expsdir(self):
-        return self[_GITKEY.expsdir]
+    def expsdir(self) -> str:
+        """
+        配置中存储的，可以用于所有项目实验日志记录的根路径
+        Returns:
+
+        """
+        return self[GITKEY_.expsdir].rstrip('\\/')
 
     @property
-    def project_dir(self):
+    def project_dir(self) -> str:
+        """
+        实验根目录下，项目级别的目录
+        Returns:
+
+        """
         if self._project_dir is None:
             project_dir_ = self.projkey
-            self._project_dir = os.path.join(self.root_dir, project_dir_)
+            self._project_dir = os.path.join(self.expsdir, project_dir_)
             os.makedirs(self._project_dir, exist_ok=True)
 
         return self._project_dir
 
     @property
-    def exp_dir(self):
+    def exp_dir(self) -> str:
+        """
+        在每个项目下的每个实验的目录
+        Returns:
+
+        """
         if self._exp_dir is None:
             self._exp_dir = os.path.join(self.project_dir, self._exp_name)
             os.makedirs(self._exp_dir, exist_ok=True)
+            with open(os.path.join(self._exp_dir, FNAME_.repopath), 'w', encoding='utf-8') as w:
+                w.write(self.repo.working_dir)
         return self._exp_dir
 
     @property
-    def test_dir(self):
+    def test_dir(self) -> str:
         """
         获取当前 exp 目录下的 test_dir
         命名方式： 通过 序号.hash 的方式命名每一次实验
@@ -255,6 +243,7 @@ class Experiment:
             if Experiment.count != 0:  # 如果
                 i = self.count + 1
             else:
+                atexit.register(final_report)
                 i = len([f for f in fs if re.search(test_dir_pt, f) is not None]) + 1
 
             cf_set = {f.split('.')[0] for f in fs}  # 首位元素永远存在，不需要判断其他文件
@@ -269,11 +258,11 @@ class Experiment:
         return self._test_dir
 
     @property
-    def test_info_fn(self):
-        return os.path.join(self.test_dir, _FNAME.info)
+    def test_info_fn(self) -> str:
+        return os.path.join(self.test_dir, FNAME_.info)
 
     @property
-    def plugins(self):
+    def plugins(self) -> dict:
         return self._plugins
 
     def makedir(self, name):
@@ -287,7 +276,7 @@ class Experiment:
         self._hold_dirs.append(name)
         return d
 
-    def make_exp_dir(self, name):
+    def make_exp_dir(self, name) -> str:
         """创建 exp 级别的目录"""
         d = os.path.join(self.exp_dir, name)
         os.makedirs(d, exist_ok=True)
@@ -323,7 +312,7 @@ class Experiment:
         :return:
         """
         import traceback
-        with open(os.path.join(self.test_dir, _FNAME.Exception), 'w', encoding='utf-8') as w:
+        with open(os.path.join(self.test_dir, FNAME_.Exception), 'w', encoding='utf-8') as w:
             w.write("".join(traceback.format_exception(exc_type, exc_val, exc_tb)))
         self.end(
             end_code=1,
@@ -362,7 +351,7 @@ class Experiment:
         """
         return self._config.items()
 
-    def add_config(self, key, value, level=_CONFIGL.globals):
+    def add_config(self, key, value, level=CONFIGL_.globals):
 
         """
         添加配置
@@ -391,3 +380,9 @@ class Experiment:
             func(self, self._exc_dict)
 
         atexit.register(exp_func)
+
+
+def final_report():
+    print('Test end:')
+    import pprint
+    pprint.pprint(Experiment.whole_tests)

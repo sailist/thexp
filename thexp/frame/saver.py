@@ -49,7 +49,7 @@ class Saver:
             absfn = os.path.join(self.ckpt_dir, build_fn())
         return absfn
 
-    def _build_model_name(self, epoch=0):
+    def _build_model_name(self, epoch: int = 0) -> str:
         fn = os.path.join(self.ckpt_dir, Saver._model_fn_templete.format(0, epoch))
         return fn
 
@@ -150,10 +150,15 @@ class Saver:
             return ckpt_tuple(None, None)
         return self.load_state_dict(fs[-1])
 
-    def load_state_dict(self, fn):
+    def load_state_dict(self, fn:str) -> ckpt_tuple:
         """
-        :param fn: rel path or abs path
-        :return:  None or torch.load() result
+
+        Args:
+            fn: fn: rel path or abs path
+
+        Returns:
+            A namedtuple("Checkpoint", ["checkpoint", 'info']) instance, include two items, first item is a state_dict,
+            second item is information attached when stored the state_dict
         """
         path = self._guess_abs_path(fn)
 
@@ -170,14 +175,14 @@ class Saver:
 
         return ckpt_tuple(ckpt, info)
 
-    def _guess_abs_path(self, fn):
+    def _guess_abs_path(self, fn:str)->str:
         if os.path.basename(fn) == fn:
             path = os.path.join(self.ckpt_dir, fn)
         else:
             path = fn
         return path
 
-    def check_remove(self, fn, with_json=True):
+    def check_remove(self, fn:str, with_json=True):
         if os.path.exists(fn):
             os.remove(fn)
         if with_json:

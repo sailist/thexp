@@ -57,6 +57,18 @@ params.from_json('params.json')
 p = Params()
 p.margin = 0.5
 p.margin = p.default(0.1,True)
+
+
 p = Params()
 p.margin = p.default(0.3,True)
 print(p.margin)
+
+p.optim = p.create_optim('SGD',lr=0.1)
+from torch import nn
+p.optim.build(nn.Linear(2,2).parameters())
+cp = p._param_dict.copy()
+
+
+
+print(cp)
+

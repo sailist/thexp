@@ -5,38 +5,18 @@ from torch._utils import _accumulate
 from torch.utils.data import Dataset, Subset
 
 
-def sequence_split(dataset: Dataset, lengths: List[int]) -> List[Dataset]:
+def sequence_split(lengths: List[int]) -> List[Dataset]:
     """
     对应于 torch.utils.data.dataset.random_split ，用于按照长度顺序切分数据集
     Args:
-        dataset:
         lengths:
 
     Returns:
 
     """
     indices = torch.arange(0, sum(lengths)).tolist()
-    return [Subset(dataset, indices[offset - length:offset]) for offset, length in
+    return [indices[offset - length:offset] for offset, length in
             zip(_accumulate(lengths), lengths)]
-
-
-def split_with_indices(dataset: Dataset, lengths: List[int], indices: List[int]) -> Tuple[List[Dataset], List[int]]:
-    """
-    Randomly split a dataset into non-overlapping new nddatasets of given lengths.
-
-    Args:
-        dataset: Dataset to be split
-        lengths: lengths of splits to be produced
-        indices: indices of dataset
-
-    Returns:
-        切分后的结果
-    """
-    if sum(lengths) != len(dataset):
-        raise ValueError("Sum of input lengths does not equal the length of the input dataset!")
-
-    return ([Subset(dataset, indices[offset - length:offset]) for offset, length in
-             zip(_accumulate(lengths), lengths)], indices)
 
 
 def semi_split(labels, n_percls, val_size=10000, include_sup=True, repeat_sup=True, shuffle=True):

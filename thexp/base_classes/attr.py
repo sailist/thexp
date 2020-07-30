@@ -2,6 +2,8 @@
 
 """
 import copy
+import torch
+import numpy as np
 from collections import OrderedDict
 
 from typing import Any
@@ -61,9 +63,8 @@ class attr(OrderedDict):
             return False
 
     def __copy__(self):
-        return attr(
-            **{k: copy.copy(v) for k, v in self.items()}
-        )
+        # res = attr()
+        return self.from_dict(self)
 
     def walk(self):
         for k, v in self.items():
@@ -105,11 +106,27 @@ class attr(OrderedDict):
             self[k] = v
         return self
 
-    @staticmethod
-    def from_dict(dic: dict):
-        res = attr()
+    @classmethod
+    def from_dict(cls, dic: dict):
+        res = cls()
         for k, v in dic.items():
-            if isinstance(v, dict):
-                v = attr.from_dict(v)
+            if isinstance(v, attr):
+                v = v.from_dict(v)
+            elif isinstance(v, (list, tuple, torch.Tensor, np.ndarray)):
+                v = cls._copy_iters(v)
+
             res[k] = v
         return res
+
+    @staticmethod
+    def _copy_iters(item):
+        if isinstance(item, torch.Tensor):
+            return item.clone()
+        elif isinstance(item, np.ndarray):
+            return item.copy()
+        elif isinstance(item, list):
+            return list(attr._copy_iters(i) for i in item)
+        elif isinstance(item, tuple):
+            return tuple(attr._copy_iters(i) for i in item)
+        else:
+            return copy.copy(item)

@@ -9,8 +9,9 @@ import random
 class myTrainer(Trainer, callbacks.TrainCallback):
     pass
 
+
 #
-trainer = myTrainer(Params())
+trainer_ = myTrainer(Params())
 #
 # for i in range(50):
 #     trainer.logger.info(i)
@@ -47,6 +48,7 @@ class MyTrainer(Trainer):
     def callbacks(self, params: Params):
         from thexp import callbacks
         callbacks.LoggerCallback().hook(self)  # 添加日志输出功能
+        callbacks.AutoRecord().hook(self)
 
     def datasets(self, params: Params):
         from torchvision import transforms
@@ -90,4 +92,4 @@ params.epoch = 20
 params.lr = 0.01
 
 trainer = MyTrainer(params)
-# trainer.train()
+trainer.train()

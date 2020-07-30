@@ -2,24 +2,21 @@
 
 """
 
-__VERSION__ = "1.4.0.23"
-
-# __all__ = ['DataBundler','Experiment','glob']
-# def __getattr__(name):
-
+__VERSION__ = "1.4.1"
 
 from .frame import (
+    Logger,
+    Meter,
+    AvgMeter,
+    Params,
+    Saver,
     RndManager,
     Delegate,
     DatasetBuilder,
     DataBundler,
-    Params,
     Trainer,
-    Meter,
-    AvgMeter,
-    Saver,
-    Logger,
+    callbacks,
     Experiment,
     globs)
 
-from .frame import callbacks
+from .analyser import Q

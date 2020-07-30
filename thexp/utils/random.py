@@ -14,6 +14,7 @@ def fix_seed(seed=10):
         torch.backends.cudnn.benchmark = False
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.enabled = True
+    return get_state()
 
 
 def get_state():
