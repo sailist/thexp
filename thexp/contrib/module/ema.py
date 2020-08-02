@@ -4,12 +4,8 @@ from copy import deepcopy
 from torch import FloatTensor, LongTensor
 from torch.cuda import LongTensor as CLongTensor
 
-from typing import Generic, TypeVar
 
-Module = TypeVar('Module', nn.Module, str)
-
-
-def EMA(model: Module, alpha_=0.999) -> Module:
+def EMA(model: nn.Module, alpha_=0.999):
     """
     Exponential Moving Average for nn.Module
     Args:

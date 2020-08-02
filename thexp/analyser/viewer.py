@@ -185,7 +185,6 @@ class ExpViewer(_Viewer):
             return []
         fs = [os.path.join(self.root, f) for f in os.listdir(self.root)]
         fs = [f for f in fs if os.path.exists(os.path.join(f, _FNAME.info))]
-        fs = sorted(fs, key=lambda f: os.path.getmtime(f))
         return fs
 
     @property
@@ -386,8 +385,10 @@ class TestViewer(_Viewer):
     def params(self):
         from ..frame.params import BaseParams
         if self.has_plugin(_BUILTIN_PLUGIN.params):
-            return BaseParams().from_json(self.params_fn)
-        return None
+            p = BaseParams().from_json(self.params_fn)
+        else:
+            p = BaseParams()
+        return p
 
     """tensorboard CRUD"""
 
@@ -402,29 +403,20 @@ class TestViewer(_Viewer):
     @lru_cache()
     def board_reader(self) -> BoardReader:
 
-        logdir = self.board_logdir
-        if logdir is None:
+        writer = self.board_logdir
+        if writer is None:
             return None
 
-        fs = os.listdir(logdir)
+        fs = os.listdir(writer[_PLUGIN_KEY.WRITER.log_dir])
         fs = [i for i in fs if i.endswith('.bd') and i.startswith('events.out.tfevents')]
         if len(fs) == 0:
             return None
         if len(fs) > 1:
             import warnings
             warnings.warn('found multi tfevents file, return the first one')
-        file = os.path.join(logdir, fs[0])
+        file = os.path.join(writer[_PLUGIN_KEY.WRITER.log_dir], fs[0])
 
         return BoardReader(file)
-
-    def tensorboard(self):
-        import subprocess
-        with subprocess.Popen(['tensorboard', '--logdir={}'.format(self.board_logdir)], env=dict(os.environ)) as p:
-            try:
-                return p.wait(timeout=None)
-            except:  # Including KeyboardInterrupt, wait handled that.
-                p.kill()
-                raise
 
     def has_board(self):
         return self.has_plugin(_BUILTIN_PLUGIN.writer) and self.has_dir(_PLUGIN_DIRNAME.writer)

@@ -122,8 +122,8 @@ class BaseTrainer(metaclass=Merge):
         import inspect
         from .experiment import Experiment
         # from ..utils.gitutils import locate_cls
-        pre = os.path.splitext(os.path.basename(inspect.getfile(self.__class__)))[0]
-        self.experiment = Experiment("{}.{}".format(pre, self.__exp_name__))
+        pre = self.__class__.__module__.split('.')[-1]
+        self.experiment = Experiment("{}.{}".format(self.__exp_name__, pre))
 
         self.params.to_json(os.path.join(self.experiment.test_dir, _FNAME.params))
 
@@ -136,7 +136,7 @@ class BaseTrainer(metaclass=Merge):
         trainer_kwargs = {
             _PLUGIN_KEY.TRAINER.path: inspect.getfile(self.__class__),
             _PLUGIN_KEY.TRAINER.doc: self.__class__.__doc__,
-            _PLUGIN_KEY.TRAINER.fn: pre,
+            _PLUGIN_KEY.TRAINER.module: self.__class__.__module__,
             _PLUGIN_KEY.TRAINER.class_name: self.__class__.__name__
         }
 
