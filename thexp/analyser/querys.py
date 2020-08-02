@@ -61,11 +61,22 @@ class Query:
             with open(global_repofn, 'r', encoding='utf-8') as r:
                 res = json.load(r)
 
+        re_write = False
+
         repos = []
         projs = []
         for k, v in res.items():  # log_dir(proj level), repopath
+            if not os.path.exists(k):  # 不仅需要日志记录，还需要该试验目录确实存在
+                re_write = True
+                continue
+
             repos.append(v)
             projs.append(k)
+
+        if re_write:
+            with open(global_repofn, 'w', encoding='utf-8') as w:
+                json.dump({k: v for k, v in zip(projs, repos)}, w)
+
         return projs, repos
 
 
@@ -175,6 +186,10 @@ class ReposQuery:
         from .viewer import ProjViewer
         return [ProjViewer(i) for i in self.projs]
 
+    def delete(self):
+        for viewer in self.to_viewers():
+            viewer.delete()
+
 
 class ExpsQuery:
     def __init__(self, exp_dirs):
@@ -279,7 +294,7 @@ class ExpsQuery:
 
 class BoardQuery():
     def __init__(self, board_readers: List[BoardReader], test_names: List[str]):
-        self.board_readers = llist(board_readers)
+        self.board_readers = llist(board_readers)  # type:llist[BoardReader]
         self.test_names = llist(test_names)
 
     def __and__(self, other):
@@ -338,7 +353,7 @@ class BoardQuery():
         from operator import and_
 
         scalars_tags = [set(i.scalars_tags) for i in self.board_readers]
-        return reduce(and_, set(scalars_tags))
+        return reduce(and_, scalars_tags)
 
     def has_scalar_tags(self, tag):
         res = []
@@ -353,7 +368,7 @@ class BoardQuery():
             try:
                 val = reader.get_scalars(tag)
                 if not with_step:
-                    res.append(val.value)
+                    res.append(val.values)
             except:
                 res.append(None)
         return res
@@ -588,6 +603,9 @@ class TestsQuery:
             else:
                 if not toggle: res.append(i)
         return self[res]
+
+    def params_filter(self, **kwargs):
+        pass # todo 应该不仅仅要满足相等条件，满足大于小于条件应该也是可以的
 
     """update test state"""
 

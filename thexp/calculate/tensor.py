@@ -69,23 +69,23 @@ def onehot(labels: torch.Tensor, label_num):
 
 def cartesian_product(left: torch.Tensor, right: torch.Tensor = None) -> Tuple[torch.Tensor, torch.Tensor]:
     """
-        笛卡尔积
+    Calculate cartesian product of the given tensor(s)
 
     Args:
-        left: if None, wile be left X left
-        right: two tensors
+        left: A pytorch tensor.
+        right: A pytorch tensor,
+            if None, wile be left X left
 
     Returns:
+        Tuple[torch.Tensor, torch.Tensor]
 
     Example:
-    >>> cartesian_product(torch.arange(0,3),torch.arange(0,5))
+        >>> cartesian_product(torch.arange(0,3),torch.arange(0,5))
 
     (tensor([0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2]),
       tensor([0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4]))
 
     """
-    # za = mat.repeat_interleave(mat.shape[0], dim=0)
-    # zb = mat.repeat([mat.shape[0], 1])
     if right is None:
         right = left
 
@@ -93,8 +93,6 @@ def cartesian_product(left: torch.Tensor, right: torch.Tensor = None) -> Tuple[t
     nright = right.repeat(*[item if i == 0 else 1 for i, item in enumerate(left.shape)])
     return nleft, nright
 
-
-# def similarity(ipt1,ipt2=None,norm)
 
 def cat_then_split(op: Callable[[torch.Tensor], torch.Tensor], tensors: List[torch.Tensor]) -> List[torch.Tensor]:
     """

@@ -44,30 +44,10 @@
       <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splittrainer/trainer/mnisttrainer.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splittrainer/tricks/__init__.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splittrainer/tricks/ema.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/temp.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/analyser/summary.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/cli/cli2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../thexp-demo/.idea/thexp-test3.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../thexp-demo/.idea/thexp-test3.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../thexp-demo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../thexp-demo/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../thexp-demo/onefile.py" beforeDir="false" afterPath="$PROJECT_DIR$/../thexp-demo/simple/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/p2.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-templete/trainers/mixin/tricks.py" beforeDir="false" afterPath="$PROJECT_DIR$/.thexp.1.4.1.11" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/analyser/constrain.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/analyser/querys.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/analyser/querys.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/analyser/viewer.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/analyser/viewer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/base_classes/errors.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/base_classes/errors.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/thexp/cli/cli.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/cli/cli.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/contrib/data/map.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/contrib/module/ema.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/contrib/module/ema.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/decorators/clsmethod.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/cli/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/frame/params.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/params.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/frame/trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/frame/trainer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/globals.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/globals.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/utils/repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/utils/repository.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web.py" beforeDir="false" afterPath="$PROJECT_DIR$/web.py" afterDir="false" />
     </list>
     <list id="b3718b25-7204-4605-af22-7efa5eb0e45c" name="imporove" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -107,7 +87,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/tests/base_classes" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyIntegratedToolsModulesConfigurable" />
+    <property name="settings.editor.selected.configurable" value="copyright.profiles" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -126,6 +106,9 @@
     </key>
   </component>
   <component name="RunManager" selected="Python.web">
+    <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/thexp/doc/build/html/index.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
     <configuration name="1.trainer" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="thexp" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -163,6 +146,28 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/examples/8.params.py" />
       <option name="PARAMETERS" value="--optim.lr=0.001 --epoch=400 --dataset=cifar10 --k=12" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="p2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="thexp" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/p2.py" />
+      <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -214,55 +219,21 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="pytest in test_attr.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
-      <module name="thexp" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/base_classes" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_parameters" value="&quot;&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/base_classes/test_attr.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
-      <method v="2" />
-    </configuration>
-    <configuration name="pytest in test_list.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
-      <module name="thexp" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests/base_classes" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="_new_keywords" value="&quot;&quot;" />
-      <option name="_new_parameters" value="&quot;&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/base_classes/test_list.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
-      <method v="2" />
-    </configuration>
     <list>
+      <item itemvalue="JavaScript Debug.index.html" />
       <item itemvalue="Python.8.params" />
       <item itemvalue="Python.temp (1)" />
       <item itemvalue="Python.1.trainer" />
       <item itemvalue="Python.web" />
-      <item itemvalue="Python tests.pytest in test_list.py" />
-      <item itemvalue="Python tests.pytest in test_attr.py" />
+      <item itemvalue="Python.p2" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.web" />
+        <item itemvalue="Python.p2" />
+        <item itemvalue="JavaScript Debug.index.html" />
         <item itemvalue="Python.1.trainer" />
         <item itemvalue="Python.temp (1)" />
-        <item itemvalue="Python tests.pytest in test_attr.py" />
-        <item itemvalue="Python tests.pytest in test_list.py" />
       </list>
     </recent_temporary>
   </component>
@@ -400,7 +371,11 @@
       <workItem from="1595985015620" duration="1699000" />
       <workItem from="1595987744674" duration="10411000" />
       <workItem from="1596068306153" duration="10704000" />
-      <workItem from="1596154615245" duration="10656000" />
+      <workItem from="1596154615245" duration="20977000" />
+      <workItem from="1596242733746" duration="21996000" />
+      <workItem from="1596280470212" duration="5172000" />
+      <workItem from="1596328901040" duration="6652000" />
+      <workItem from="1596361588184" duration="29000" />
     </task>
     <task id="LOCAL-00001" summary="change">
       <created>1589534271920</created>
@@ -577,7 +552,14 @@
       <option name="project" value="LOCAL" />
       <updated>1596100918851</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="add generic type hint">
+      <created>1596329243830</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1596329243830</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -614,7 +596,8 @@
     <MESSAGE value="添加了对yield的支持，如果返回迭代器，那么会消耗掉迭代器并返回最后一次迭代的结果" />
     <MESSAGE value="将config、experiment、git repo分离，同时优化了配置读取逻辑，大幅提升了初始化效率" />
     <MESSAGE value="fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix" />
+    <MESSAGE value="add generic type hint" />
+    <option name="LAST_COMMIT_MESSAGE" value="add generic type hint" />
   </component>
   <component name="WindowStateProjectService">
     <state x="552" y="181" key="#Deployment" timestamp="1593501042994">
@@ -625,18 +608,18 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="552" y="178" width="816" height="731" key="#Intentions/0.0.1920.1040@0.0.1920.1040" timestamp="1595771958414" />
-    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1596103974835">
+    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1596194222046">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1596103974835" />
-    <state x="629" y="328" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1595219069460">
+    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1596194222046" />
+    <state x="629" y="328" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1596195590204">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="629" y="328" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1595219069460" />
-    <state x="765" y="239" key="#com.intellij.ide.util.MemberChooser" timestamp="1596008195644">
+    <state x="629" y="328" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1596195590204" />
+    <state x="765" y="239" key="#com.intellij.ide.util.MemberChooser" timestamp="1596255357506">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="765" y="239" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1596008195644" />
+    <state x="765" y="239" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1596255357506" />
     <state x="690" y="269" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1596162510518">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -645,54 +628,54 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="806" y="418" key="#com.jetbrains.python.refactoring.move.PyMoveModuleMembersDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1595923706144" />
-    <state x="572" y="115" key="CommitChangelistDialog2" timestamp="1596100917394">
+    <state x="973" y="118" key="CommitChangelistDialog2" timestamp="1596329242032">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="572" y="115" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1596100917394" />
-    <state x="92" y="92" width="1736" height="856" key="DiffContextDialog" timestamp="1596361220744">
+    <state x="973" y="118" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1596329242032" />
+    <state x="92" y="92" width="1736" height="856" key="DiffContextDialog" timestamp="1596105447967">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="92" y="92" width="1736" height="856" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1596361220744" />
-    <state x="746" y="284" key="FileChooserDialogImpl" timestamp="1596012115599">
+    <state x="92" y="92" width="1736" height="856" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1596105447967" />
+    <state x="746" y="284" key="FileChooserDialogImpl" timestamp="1596194207908">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="746" y="284" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1596012115599" />
-    <state width="1877" height="348" key="GridCell.Tab.0.bottom" timestamp="1596169775545">
+    <state x="746" y="284" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1596194207908" />
+    <state width="1877" height="345" key="GridCell.Tab.0.bottom" timestamp="1596351934498">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1596169775545" />
-    <state width="1877" height="348" key="GridCell.Tab.0.center" timestamp="1596169775544">
+    <state width="1877" height="345" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1596351934498" />
+    <state width="1877" height="345" key="GridCell.Tab.0.center" timestamp="1596351934498">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1596169775544" />
-    <state width="1877" height="348" key="GridCell.Tab.0.left" timestamp="1596169775544">
+    <state width="1877" height="345" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1596351934498" />
+    <state width="1877" height="345" key="GridCell.Tab.0.left" timestamp="1596351934498">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1596169775544" />
-    <state width="1877" height="348" key="GridCell.Tab.0.right" timestamp="1596169775544">
+    <state width="1877" height="345" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1596351934498" />
+    <state width="1877" height="345" key="GridCell.Tab.0.right" timestamp="1596351934498">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1596169775544" />
-    <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1596169775545">
+    <state width="1877" height="345" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1596351934498" />
+    <state width="1877" height="345" key="GridCell.Tab.1.bottom" timestamp="1596351934500">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1596169775545" />
-    <state width="1877" height="348" key="GridCell.Tab.1.center" timestamp="1596169775545">
+    <state width="1877" height="345" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1596351934500" />
+    <state width="1877" height="345" key="GridCell.Tab.1.center" timestamp="1596351934498">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1596169775545" />
-    <state width="1877" height="348" key="GridCell.Tab.1.left" timestamp="1596169775545">
+    <state width="1877" height="345" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1596351934498" />
+    <state width="1877" height="345" key="GridCell.Tab.1.left" timestamp="1596351934498">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1596169775545" />
-    <state width="1877" height="348" key="GridCell.Tab.1.right" timestamp="1596169775545">
+    <state width="1877" height="345" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1596351934498" />
+    <state width="1877" height="345" key="GridCell.Tab.1.right" timestamp="1596351934498">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1596169775545" />
-    <state x="463" y="165" key="SettingsEditor" timestamp="1595938519618">
+    <state width="1877" height="345" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1596351934498" />
+    <state x="463" y="165" key="SettingsEditor" timestamp="1596244330146">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="463" y="165" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1595938519618" />
+    <state x="463" y="165" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1596244330146" />
     <state x="681" y="261" width="540" height="524" key="StructurePopup" timestamp="1593763881502">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -713,18 +696,14 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="504" y="248" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.1040@0.0.1920.1040" timestamp="1595936983212" />
-    <state x="647" y="280" width="759" height="594" key="find.popup" timestamp="1596100402148">
+    <state x="647" y="280" width="759" height="594" key="find.popup" timestamp="1596357739394">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="647" y="280" width="759" height="594" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1596100402148" />
+    <state x="647" y="280" width="759" height="594" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1596357739394" />
     <state x="836" y="256" key="ftp.server.browser" timestamp="1593501038029">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="836" y="256" key="ftp.server.browser/0.0.1920.1040@0.0.1920.1040" timestamp="1593501038029" />
-    <state x="721" y="231" key="git4idea.branch.GitSmartOperationDialog" timestamp="1596361177846">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="721" y="231" key="git4idea.branch.GitSmartOperationDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1596361177846" />
     <state x="827" y="424" key="publish.login" timestamp="1593490174760">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -733,10 +712,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="701" y="167" key="refactoring.ChangeSignatureDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1593746645966" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1596100961702">
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1596357729214">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1596100961702" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1596357729214" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -755,6 +734,12 @@
         </breakpoint>
       </default-breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="__file__" language="Python" />
+        <watch expression="inspect.getfile(self.__class__)" language="Python" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/thexp$schedule.coverage" NAME="schedule Coverage Results" MODIFIED="1593777972401" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/thexp/calculate" />

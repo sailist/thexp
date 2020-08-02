@@ -15,11 +15,11 @@ import torch
 
 from ..base_classes.attr import attr
 from ..base_classes.errors import BoundCheckError, NewParamWarning
-from ..base_classes.params_vars import ParamsFactory, OptimParams
+from ..base_classes.params_vars import ParamsFactory, OptimParams,OptimMixin
 from ..utils.environ import ENVIRON_
 
 
-class BaseParams:
+class BaseParams(OptimMixin):
     ENV = ENVIRON_
 
     def __init__(self):
@@ -311,9 +311,6 @@ class BaseParams:
         from ..base_classes.defaults import default
         return default(value, warn)
 
-    def create_optim(self, **kwargs):
-        return ParamsFactory.create_optim(**kwargs)
-
     def create_schedule(self, schedule_type, start, end, **kwargs):
         return ParamsFactory
 
@@ -321,53 +318,7 @@ class BaseParams:
         self.update(kwargs)
         return self
 
-    @overload
-    def create_optim(self, name='SGD', lr=None, momentum=0, dampening=0, weight_decay=0, nesterov=False):
-        pass
 
-    @overload
-    def create_optim(self, name='Adam', lr=1e-3, betas=(0.9, 0.999), eps=1e-8, weight_decay=0, amsgrad=False):
-        pass
-
-    @overload
-    def create_optim(self, name='Adadelta', lr=1.0, rho=0.9, eps=1e-6, weight_decay=0):
-        pass
-
-    @overload
-    def create_optim(self, name='Adagrad', lr=1e-2, lr_decay=0, weight_decay=0, initial_accumulator_value=0, eps=1e-10):
-        pass
-
-    @overload
-    def create_optim(self, name='AdamW', lr=2e-3, betas=(0.9, 0.999), eps=1e-8, weight_decay=0):
-        pass
-
-    @overload
-    def create_optim(self, name='AdamW',
-                     lr=1e-3, betas=(0.9, 0.999), eps=1e-8, weight_decay=1e-2, amsgrad=False):
-        pass
-
-    @overload
-    def create_optim(self, name='ASGD',
-                     lr=1e-2, lambd=1e-4, alpha=0.75, t0=1e6, weight_decay=0):
-        pass
-
-    @overload
-    def create_optim(self, name='LBFGS',
-                     lr=1, max_iter=20, max_eval=None, tolerance_grad=1e-7, tolerance_change=1e-9, history_size=100,
-                     line_search_fn=None):
-        pass
-
-    @overload
-    def create_optim(self, name='RMSprop', lr=1e-2, alpha=0.99, eps=1e-8, weight_decay=0, momentum=0, centered=False):
-        pass
-
-    @overload
-    def create_optim(self, name='Rprop', lr=1e-2, etas=(0.5, 1.2), step_sizes=(1e-6, 50)):
-        pass
-
-    @overload
-    def create_optim(self, name='SparseAdam', lr=1e-3, betas=(0.9, 0.999), eps=1e-8):
-        pass
 
 
 class Params(BaseParams):
@@ -392,7 +343,6 @@ class Params(BaseParams):
 
 
 if __name__ == '__main__':
-    Params().create_optim()
 
     from torch.optim.sgd import SGD
     from torch.optim.sparse_adam import SparseAdam

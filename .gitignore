@@ -140,3 +140,8 @@ cython_debug/
 repo.json
 .expsdirs
 .idea/
+repo.v1.json
+*.pth
+*.npy
+*.ckpt
+*.thexp.*

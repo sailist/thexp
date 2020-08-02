@@ -26,19 +26,22 @@ class BaseDatasetMixin(DatasetMixin):
         train_idx, val_idx = splits.train_val_split(train_y)
 
         test_dataloader = (
-            DatasetBuilder(test_x, testy).add_x(transform=toTensor).add_y()
+            DatasetBuilder(test_x, testy)
+                .add_x(transform=toTensor).add_y()
                 .DataLoader(batch_size=params.batch_size, num_workers=4)
         )
 
         train_dataloader = (
-            DatasetBuilder(train_x[train_idx], train_y[train_idx]).add_x(transform=toTensor).add_y()
+            DatasetBuilder(train_x[train_idx], train_y[train_idx])
+                .add_x(transform=toTensor).add_y()
                 .DataLoader(batch_size=params.batch_size,
                             num_workers=params.num_workers,
                             shuffle=True)
         )
 
         val_datalaoder = (
-            DatasetBuilder(train_x[val_idx], train_y[val_idx]).add_x(transform=toTensor).add_y()
+            DatasetBuilder(train_x[val_idx], train_y[val_idx])
+                .add_x(transform=toTensor).add_y()
                 .DataLoader(batch_size=params.batch_size, num_workers=4)
         )
 

@@ -1,0 +1,23 @@
+{
+  "_class_name": "attr",
+  "epoch": 10,
+  "eidx": 1,
+  "idx": 0,
+  "global_step": 0,
+  "device": "cpu",
+  "optim": {
+    "_class_name": "OptimParams",
+    "args": {
+      "_class_name": "attr",
+      "lr": 0.1
+    },
+    "name": "SGD"
+  },
+  "sch": {
+    "_class_name": "LinearSchedule",
+    "right": 10,
+    "left": 0,
+    "start": 0,
+    "end": 1
+  }
+}

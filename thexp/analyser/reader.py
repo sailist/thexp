@@ -1,9 +1,9 @@
 """
-用于读取tensorboard记录的各种数据
+for reading values recorded by tensorboard directly instead of opening tensorboard web pages.
 """
 import pprint as pp
 from collections import namedtuple
-
+from typing import List
 from tensorboard.backend.event_processing import event_accumulator
 
 Scalars = namedtuple('ScalarEvent', ['wall_times', 'values', 'steps'])
@@ -41,25 +41,30 @@ class BoardReader():
         self._reloaded = False
 
     def _check_reload(self):
+        """load values from dist to memory"""
         if not self._reloaded:
             self.ea.Reload()
 
-    def get_scalars(self, tag):
+    def get_scalars(self, tag) -> Scalars:
+        """get scalars named '<tag>' in this board"""
         self._check_reload()
         wall_times, steps, values = list(zip(*self.ea.Scalars(tag)))  # 'wall_time', 'step', 'value'
         values = [float("{:.4f}".format(i)) for i in values]
         return Scalars(wall_times, values, steps)
 
     @property
-    def scalars_tags(self):
+    def scalars_tags(self) -> List[str]:
+        """get all scalar tags"""
         self._check_reload()
         return self.tags['scalars']
 
     @property
-    def tags(self):
+    def tags(self) -> dict:
+        """get all tags in this board"""
         self._check_reload()
         return self.ea.Tags()
 
     def summary(self):
+        """print tags in this board"""
         self._check_reload()
         pp.pprint(self.ea.Tags())

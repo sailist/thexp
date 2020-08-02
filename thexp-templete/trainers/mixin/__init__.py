@@ -1,1 +1,1 @@
-from . import callbacks, datasets, losses, models, acc
+from . import callbacks, datasets, losses, models, acc, tricks

@@ -1,6 +1,7 @@
 """
 
 """
+import warnings
 import copy
 import torch
 import numpy as np
@@ -8,11 +9,25 @@ from collections import OrderedDict
 
 from typing import Any
 
+_attr_clss = {}
 
-class attr(OrderedDict):
+
+class meta_attr(type):
+    def __new__(cls, *args: Any, **kwargs: Any):
+        cls = type.__new__(cls, *args, **kwargs)
+        _attr_clss[cls.__name__] = cls
+        return cls
+
+
+class attr(OrderedDict, metaclass=meta_attr):
     """
     和EasyDict类似，相比于EasyDict，更好的地方在于参数是有序的，可能会在某些情况下更方便一些
     """
+
+    def __new__(cls, *args: Any, **kwargs: Any):
+        self = super().__new__(cls, *args, **kwargs)
+        # self._class_name = cls.__name__
+        return self
 
     @staticmethod
     def __parse_value(v):
@@ -75,6 +90,15 @@ class attr(OrderedDict):
             else:
                 yield k, v
 
+    def items(self, toggle=False):
+        if toggle:
+            yield '_class_name', self.__class__.__name__
+        for k, v in super().items():
+            yield k, v
+
+    def raw_items(self):
+        return self.items(toggle=True)
+
     def jsonify(self) -> dict:
         """
         获取可被json化的dict，目前仅支持 数字类型、字符串、bool、list/set 类型
@@ -82,7 +106,7 @@ class attr(OrderedDict):
         """
         import numbers
         res = dict()
-        for k, v in self.items():
+        for k, v in self.raw_items():
             if isinstance(v, (numbers.Number, str, bool)):
                 res[k] = v
             elif isinstance(v, (set, list)):
@@ -108,7 +132,19 @@ class attr(OrderedDict):
 
     @classmethod
     def from_dict(cls, dic: dict):
-        res = cls()
+        # res = cls()
+        cls_name = dic.get('_class_name', cls.__name__)
+        if cls_name not in _attr_clss:
+            res = attr()
+            from .errors import AttrTypeNotFoundWarning
+            warnings.warn('{} not found, will use class attr to receive values.'.format(cls_name),
+                          AttrTypeNotFoundWarning)
+        else:
+            res = _attr_clss[cls_name]()
+
+        if '_class_name' in dic:
+            dic.pop('_class_name')
+
         for k, v in dic.items():
             if isinstance(v, attr):
                 v = v.from_dict(v)

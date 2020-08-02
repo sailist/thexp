@@ -2,7 +2,7 @@
 
 """
 
-__VERSION__ = "1.4.1.0"
+__VERSION__ = "1.4.1.11"
 
 from .frame import (
     Logger,
@@ -20,3 +20,6 @@ from .frame import (
     globs)
 
 from .analyser import Q
+from .utils.environ import ENVIRON_ as ENV
+
+import thexp.calculate # initialize schedule attr classes

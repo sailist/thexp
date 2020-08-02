@@ -1,6 +1,7 @@
 """
 define some global string variables in case name mistakes
 """
+from thexp import __VERSION__
 
 
 class _REPOJ:
@@ -50,6 +51,7 @@ class _FNAME:
     repopath = '.repopath'
     expsdirs = '.expsdirs'
     gitignore = ".gitignore"
+    gitignore_version = '.thexp.{}'.format(__VERSION__)
 
 
 class _TEST_BUILTIN_STATE:
@@ -99,7 +101,7 @@ class _PLUGIN_KEY:
     class TRAINER:
         path = 'path'
         doc = 'doc'
-        module = 'module'
+        fn = 'module'
         class_name = 'class_name'
 
     class SAVER:

@@ -18,7 +18,6 @@ setup(
         'torch',
         'tensorboard', 'matplotlib', 'numpy', 'pandas',
         'fire',
-        'docopt',
         'gitpython',
     ],
     classifiers=[

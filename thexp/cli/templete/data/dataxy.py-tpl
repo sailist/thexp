@@ -1,30 +1,20 @@
 from typing import Dict, Callable, Tuple
 
 from PIL import Image
-from thexp import glob
-from thexp.base_classes.list import llist
+from thexp import globs
+from thexp.decorators import regist_func
+from thexp.base_classes import llist
 from torchvision.datasets.cifar import CIFAR10
 
-root = glob['datasets']
+# globs.add_value('datasets', 'path/to/all_datasets/', level=globs.LEVEL.globals)
+root = globs['datasets']
 
 datasets = {
     # 'cifar10': cifar10,
 }  # type:Dict[str,Callable[[bool],Tuple[llist,llist]]]
 
 
-def regist_dataset(name_=None):
-    def wrap(func):
-        if name_ is None:
-            name = func.__name__
-        else:
-            name = name_
-        datasets[name] = func
-        return func
-
-    return wrap
-
-
-@regist_dataset()
+@regist_func(datasets)
 def cifar10(train=True):
     dataset = CIFAR10(root=root, train=train)
     xs = llist(Image.fromarray(i) for i in dataset.data)

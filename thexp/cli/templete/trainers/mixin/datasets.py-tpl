@@ -3,8 +3,8 @@ from trainers import GlobalParams
 from thexp.torch.data import splits
 from thexp import DatasetBuilder
 
-from dataloaders.transforms import ToTensor
-from dataloaders.dataxy import datasets
+from data.transforms import ToTensor
+from data.dataxy import datasets
 
 toTensor = ToTensor()
 

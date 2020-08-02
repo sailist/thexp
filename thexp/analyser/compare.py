@@ -7,7 +7,7 @@ import pandas as pd
 from thexp.analyser.viewer import TestViewer
 from ..frame.params import BaseParams
 
-_ignore_key = {'eidx', 'idx', 'device','global_step'}
+_ignore_key = {'eidx', 'idx', 'device', 'global_step'}
 
 
 class Metric:
@@ -19,7 +19,7 @@ class Metric:
         Metric(dic['name'], dic.get('type', 'max'))
 
     @staticmethod
-    def guess(key:str, values):
+    def guess(key: str, values):
         type = None
         if 'loss' in key.lower():
             type = 'min'
@@ -36,9 +36,8 @@ class Metric:
 
 
 class Singleton:
-    def __init__(self,tv):
+    def __init__(self, tv):
         self.tv = tv
-
 
 
 class Comparer:
@@ -59,36 +58,16 @@ class Comparer:
     def params(self):
         return [tv.params for tv in self.tvs]
 
-    def statistics(self):
-        """统计传入bd的最大值、最小值、以及其他一些基本的数据"""
-        from .summary import ValueSummary
-        res = []
-        for bd in self.boards:
-            line = {}
-            for stag in bd.scalars_tags:
-                tattr = ValueSummary(stag, bd.get_scalars(stag).values).to_attr()
-                line.update(tattr.walk())
-            res.append(line)
-        return pd.DataFrame(res, index=[i.name for i in self.tvs])
-
-    def merge_statistics(self):
-        """
-        统计传入的bd的最大值、最小值、这些最大值、最小值的均值、方差
-        :return:
-        """
-        re = self.statistics()
-        return pd.DataFrame((re.max(), re.min(), re.mean(), re.std()), index=['max', 'min', 'mean', 'std']).T
-
     def curves_dict(self):
         res = {}
-        for bd,tv in zip(self.boards,self.tvs):
+        for bd, tv in zip(self.boards, self.tvs):
             for stag in bd.scalars_tags:
-                figure = res.setdefault(stag,{})
+                figure = res.setdefault(stag, {})
                 scalars = bd.get_scalars(stag)
                 figure[tv.name] = {
-                    'name':tv.name,
-                    'x':scalars.steps,
-                    'y':scalars.values,
+                    'name': tv.name,
+                    'x': scalars.steps,
+                    'y': scalars.values,
                 }
         return res
 

@@ -1,3 +1,24 @@
+"""
+This module aims to provide an easy and general method to generate series values, which can be used in
+ applying learning rate of optimizer or scaling a loss value as weight.
+
+To meet this demand, the concept 'schedule' is summarized as a periodic math function, which have
+left/right interval and  start/end value.
+
+Hence, a `Schedule` class is provided, it receives four base parameters: start, end, left, and right corresponding to
+the above concept respectively.
+
+This class provides some common methods. For example, when you have a schedule instance, you can apply learning rate by
+simple call `schedule.scale()` or `schedule.apply()` function.
+
+And, you can use `schedule.plot()` to plot a curve of the values in each step. The plot function use `matplotlib` as backend.
+
+If you don't want to create an instance, you can call classmethod `get(cls, cur, start=0, end=1, left=0, right=1)` to get
+value.
+
+Except for the base `Schedule` class, some other subclasses of `Schedule`  which may be general used is provided, too. All can
+ be easily understand by their names and plot curves.
+"""
 import numpy as np
 from thexp.base_classes.attr import attr
 
@@ -6,14 +27,11 @@ class Schedule(attr):
     """
     ratio 变化为从 1 - 0
     """
-    __schdule_name__ = None
+
+    # __schdule_name__ = None
 
     def __init__(self, start=0, end=1, left=0, right=1, *args, **kwargs):
         super().__init__()
-        schedule_name = self.__class__.__schdule_name__
-        if schedule_name is None:
-            schedule_name = self.__class__.__name__
-        self.schedule = schedule_name
         self.right = right
         self.left = left
         self.start = start
@@ -22,13 +40,23 @@ class Schedule(attr):
     def ratio(self, cur):
         return (cur - self.left) / (self.right - self.left)
 
-    def func(self, cur):
+    def __call__(self, cur):
         raise NotImplementedError()
 
-    def __call__(self, cur):
-        return self.func(cur)
-
     def plot(self, num=1000, left=None, right=None):
+        """
+        Plot a curve of the schedule.
+        Args:
+            num:
+            left:
+            right:
+
+        Returns:
+            plt.plot
+
+        Notes:
+            You may need to call `plt.show`() to show it.
+        """
         from matplotlib import pyplot as plt
         if left is None:
             left = self.left
@@ -41,19 +69,21 @@ class Schedule(attr):
 
     def scale(self, optimizer, cur):
         """
-        将当前得到的数值作为权重对 Optimzizer上的lr进行放缩
+        Scale the learning rate by current value. 'scale' means not apply the current schedule value directly to
+        the learning rate, but multiple the initial learning rate. You can use `schedule.apply()` to apply the schedule
+        value directly.
 
-        第一次应用时，会在 param_group 新建一个 _raw_lr 用于保存初始学习率
+        Notes:
+        -------
+        When first apply scale function, a `_raw_lr` represent initial lr will be set in each param_group, then, the
+        learning rate(store in param_groups with key 'lr') will be calculated by `_raw_lr * schedule(cur)`.
 
-        之后每一次scale设置均为 raw_lr * ratio
-
-        适用于不同 param_group 学习率不同的情况
         Args:
-            optimizer:
-            cur:
+            optimizer: A pytorch optimizer instance.
+            cur: current step of this schedule.
 
         Returns:
-
+            Current schedule value.
         """
         ratio = self(cur)
         for param_group in optimizer.param_groups:  # type:dict
@@ -64,10 +94,11 @@ class Schedule(attr):
 
     def apply(self, optimizer, cur):
         """
-        将当前得到的数值作为学习率应用到 Optimizer上
+        Apply the learning rate with current schedule value.
+
         Args:
-            optimizer:
-            cur:
+            optimizer: A pytorch optimizer instance.
+            cur: current step of this schedule.
 
         Returns:
 
@@ -78,18 +109,16 @@ class Schedule(attr):
 
         return new_lr
 
-    def __str__(self):
-        return "{}(left={}, right={}, start={}, end={})".format(self.schedule,
-                                                                self.left,
-                                                                self.right,
-                                                                self.start,
-                                                                self.end)
+    @classmethod
+    def get(cls, cur, start=0, end=1, left=0, right=1, *args, **kwargs):
+        """get the current schedule value without create `schedule` instance. """
+        return cls(start=0, end=1, left=0, right=1, *args, **kwargs)(cur)
 
 
 class CosSchedule(Schedule):
-    """Cos 权重"""
+    """one cycle cosine functoin"""
 
-    def func(self, cur):
+    def __call__(self, cur):
         if cur < self.left:
             return self.start
         elif cur > self.right:
@@ -101,8 +130,11 @@ class CosSchedule(Schedule):
 
 
 class PeriodCosSchedule(Schedule):
+    """
+    periodic cosine schedule
+    """
 
-    def func(self, cur):
+    def __call__(self, cur):
         cur = float(cur - self.left) % (self.right - self.left)
         ratio = self.ratio(cur + self.left)
         cos_ratio = 0.5 * (1 + np.cos(ratio * np.pi * 2))
@@ -110,8 +142,11 @@ class PeriodCosSchedule(Schedule):
 
 
 class HalfPeriodCosSchedule(Schedule):
+    """
+    half periodic cosine schedule
+    """
 
-    def func(self, cur):
+    def __call__(self, cur):
         cur = float(cur - self.left) % (self.right - self.left)
         ratio = self.ratio(cur + self.left)
         cos_ratio = 0.5 * (1 + np.cos(ratio * np.pi))
@@ -119,9 +154,9 @@ class HalfPeriodCosSchedule(Schedule):
 
 
 class LinearSchedule(Schedule):
-    """线性权重"""
+    """linear schedule"""
 
-    def func(self, cur):
+    def __call__(self, cur):
         if cur < self.left:
             return self.start
         elif cur > self.right:

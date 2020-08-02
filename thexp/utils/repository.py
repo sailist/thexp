@@ -6,12 +6,14 @@ from typing import List
 from uuid import uuid4
 
 from git import Git, Repo
-
+from thexp import __VERSION__
 from thexp.utils.paths import renormpath
 from .dates import curent_date
 from ..globals import _GITKEY, _OSENVI, _FNAME
 
-thexp_gitignores = ['.thexp/', _FNAME.repo, _FNAME.expsdirs, '.idea/']
+torch_file = ['*.pth', '*.npy', '*.ckpt', '*.thexp.*']
+thexp_gitignores = ['.thexp/', _FNAME.repo, _FNAME.expsdirs, '.idea/'] + torch_file
+
 py_gitignore = "\n".join(['# Byte-compiled / optimized / DLL files', '__pycache__/', '*.py[cod]',
                           '*$py.class', '', '# C extensions', '*.so', '', '# Distribution / packaging',
                           '.Python', 'build/', 'develop-eggs/', 'dist/', 'downloads/', 'eggs/', '.eggs/',
@@ -99,8 +101,19 @@ def git_config(repo: Repo):
 
 def check_gitignore(repo: Repo, force=False):
     rp = os.path.join(repo.working_dir, _FNAME.expsdirs)
-    if os.path.exists(rp) and not force:
+
+    version_mark = os.path.join(repo.working_dir, _FNAME.gitignore_version)
+    if os.path.exists(rp) and os.path.exists(version_mark) and not force:
         return
+
+    old_marks = [f for f in os.listdir(repo.working_dir) if f.startswith('.thexp.')]
+    for old_mark in old_marks:
+        mark_fn = os.path.join(repo.working_dir, old_mark)
+        if os.path.isfile(mark_fn):
+            os.remove(mark_fn)
+
+    with open(version_mark, 'w') as w:
+        pass
 
     ignorefn = os.path.join(repo.working_dir, _FNAME.gitignore)
     if not os.path.exists(ignorefn):
@@ -118,7 +131,8 @@ def check_gitignore(repo: Repo, force=False):
         if amend:
             with open(ignorefn, 'w', encoding='utf-8') as w:
                 w.write('\n'.join(lines))
-        return amend
+
+    return amend
 
 
 def git_config_syntax(value: str):

@@ -5,7 +5,8 @@ if __name__ == '__main__':
     import os
     import sys
 
-    chdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    chdir = os.path.dirname(os.path.abspath(__file__))
+    chdir = os.path.dirname(chdir)
     sys.path.append(chdir)
 
 import torch
@@ -16,12 +17,13 @@ from trainers import GlobalParams
 from trainers.mixin import *
 
 
-class BaseTrainer(callbacks.CBMixin,
-                  datasets.BaseDatasetMixin,
-                  models.ModelMixin,
-                  acc.ClassifyAccMixin,
-                  losses.Loss,
-                  Trainer):
+class MyTrainer(callbacks.BaseCBMixin,
+                datasets.BaseDatasetMixin,
+                models.ModelMixin,
+                acc.ClassifyAccMixin,
+                losses.Loss,
+                tricks.TrickMixin,
+                Trainer):
 
     def train_batch(self, eidx, idx, global_step, batch_data, params: GlobalParams, device: torch.device):
         super().train_batch(eidx, idx, global_step, batch_data, params, device)
@@ -31,6 +33,8 @@ class BaseTrainer(callbacks.CBMixin,
         logits = self.to_logits(xs)
 
         meter.Lce = F.cross_entropy(logits, ys)
+
+        self.any_()
 
         # self.optim.zero_grad()
         # meter.Lce.backward()
@@ -49,6 +53,6 @@ if __name__ == '__main__':
     # params.device = 'cuda:0'
     params.from_args()
 
-    trainer = BaseTrainer(params)
+    trainer = MyTrainer(params)
     trainer.train()
     trainer.save_model()
