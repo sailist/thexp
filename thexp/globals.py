@@ -1,15 +1,16 @@
 """
-这一部分定义了一些全局字符串，防止出现命名错误的情况
+define some global string variables in case name mistakes
 """
+from thexp import __VERSION__
 
 
-class REPOJ_:
+class _REPOJ:
     repopath = 'repopath'
     exps = 'exps'
     exp_root = 'exp_root'
 
 
-class INFOJ_:
+class _INFOJ:
     repo = 'repo'
     argv = 'argv'
     test_name = 'test_name'
@@ -26,13 +27,13 @@ class INFOJ_:
     end_code = 'end_code'
 
 
-class CONFIGL_:
+class _CONFIGL:
     running = 'user'
     globals = 'globals'
     repository = 'repository'
 
 
-class GITKEY_:
+class _GITKEY:
     thexp = 'thexp'
     projname = 'projname'
     expsdir = 'expsdir'
@@ -42,29 +43,30 @@ class GITKEY_:
     commit_key = 'thexp-commit'
 
 
-class FNAME_:
+class _FNAME:
     Exception = 'Exception'
-    info = 'info.json'
-    repo = 'repo.json'
-    params = 'params.json'
+    info = 'info.v1.json'
+    repo = 'repo.v1.json'
+    params = 'params.v1.json'
     repopath = '.repopath'
     expsdirs = '.expsdirs'
     gitignore = ".gitignore"
+    gitignore_version = '.thexp.{}'.format(__VERSION__)
 
 
-class TEST_BUILTIN_STATE_:
+class _TEST_BUILTIN_STATE:
     hide = 'hide'
     fav = 'fav'
 
 
-class ML_:
+class _ML:
     train = 'train'
     test = 'test'
     eval = 'eval'
     cuda = 'cuda'
 
 
-class BUILTIN_PLUGIN_:
+class _BUILTIN_PLUGIN:
     trainer = 'trainer'
     params = 'params'
     writer = 'writer'
@@ -73,34 +75,55 @@ class BUILTIN_PLUGIN_:
     rnd = 'rnd'
 
 
-class PLUGIN_DIRNAME_:
+class _PLUGIN_DIRNAME:
     writer = 'board'
     writer_tmp = 'board_tmp'
     saver = 'modules'
     rnd = 'rnd'
 
 
-class PLUGIN_WRITER_:
-    log_dir = 'log_dir'
-    filename_suffix = 'filename_suffix'
-    dir_name = 'board'
+class _PLUGIN_KEY:
+    class WRITER:
+        log_dir = 'log_dir'
+        filename_suffix = 'filename_suffix'
+        dir_name = 'board'
+
+    class LOGGER:
+        log_dir = 'log_dir'
+        fn = 'fn'
+
+    class RND:
+        save_dir = 'save_dir'
+
+    class PARAMS:
+        param_hash = 'param_hash'
+
+    class TRAINER:
+        path = 'path'
+        doc = 'doc'
+        fn = 'module'
+        class_name = 'class_name'
+
+    class SAVER:
+        max_to_keep = 'max_to_keep'
+        ckpt_dir = 'ckpt_dir'
 
 
-class OSENVI_:
+class _OSENVI:
     ignore_repo = 'ignore_repo'
 
 
-class INDENT_:
+class _INDENT:
     tab = '  '
     ttab = '    '
     tttab = '      '
 
 
-class DLEVEL_:
+class _DLEVEL:
     proj = 'proj'
     exp = 'exp'
     test = 'test'
 
 
-class OS_ENV_:
+class _OS_ENV:
     CUDA_VISIBLE_DEVICES = 'CUDA_VISIBLE_DEVICES'

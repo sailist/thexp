@@ -6,7 +6,7 @@ import sys
 import warnings
 from collections import namedtuple
 
-from thexp.globals import CONFIGL_, GITKEY_, FNAME_
+from thexp.globals import _CONFIGL, _GITKEY, _FNAME
 from thexp.utils.dates import curent_date
 
 from .configs import globs
@@ -19,9 +19,9 @@ class Experiment:
     """
     用于目录管理和常量配置管理
     """
-    user_level = CONFIGL_.running
-    exp_level = CONFIGL_.globals
-    repo_level = CONFIGL_.repository
+    user_level = _CONFIGL.running
+    exp_level = _CONFIGL.globals
+    repo_level = _CONFIGL.repository
     count = 0
     whole_tests = []
 
@@ -61,7 +61,7 @@ class Experiment:
             self._regist_exp()
 
             # 目录下所有thexp项目
-            git_commit(self.repo, GITKEY_.commit_key, branch_name=GITKEY_.thexp_branch)
+            git_commit(self.repo, _GITKEY.commit_key, branch_name=_GITKEY.thexp_branch)
 
             self._write()
         else:
@@ -79,7 +79,7 @@ class Experiment:
 
         # 在全局添加 项目下实验存储路径与相应repo的关系，由此可以存储所有的实验存储目录
         from thexp.utils.paths import home_dir
-        global_repofn = os.path.join(home_dir(), FNAME_.repo)
+        global_repofn = os.path.join(home_dir(), _FNAME.repo)
         if os.path.exists(global_repofn):
             with open(global_repofn, 'r', encoding='utf-8') as r:
                 res = json.load(r)
@@ -90,12 +90,12 @@ class Experiment:
             json.dump(res, w)
 
         # 在项目级别的实验存储目录下写下相应 repo ，用于方便获取
-        local_repofn = os.path.join(self.project_dir, FNAME_.repopath)
+        local_repofn = os.path.join(self.project_dir, _FNAME.repopath)
         with open(local_repofn, 'w', encoding='utf-8') as w:
             w.write(self.repo.working_dir)
 
         # 在repo目录下记录所用过的实验存储路径到 .expsdirs，方便回溯
-        repo_expdirfn = os.path.join(self.repo.working_dir, FNAME_.expsdirs)
+        repo_expdirfn = os.path.join(self.repo.working_dir, _FNAME.expsdirs)
         if os.path.exists(repo_expdirfn):
             with open(repo_expdirfn, 'r', encoding='utf-8') as r:
                 _expsdirs = [i.strip() for i in r.readlines()]
@@ -115,7 +115,7 @@ class Experiment:
             返回是否修改，如有修改，可能需要重新提交保证最新
         """
         # 在 exp_dir 下存储对应的 repo 路径
-        local_repofn = os.path.join(self.exp_dir, FNAME_.repopath)
+        local_repofn = os.path.join(self.exp_dir, _FNAME.repopath)
         with open(local_repofn, 'w', encoding='utf-8') as w:
             w.write(self.repo.working_dir)
 
@@ -157,7 +157,7 @@ class Experiment:
     @property
     def commit(self):
         from thexp.utils.repository import commit as git_commit
-        return git_commit(self.repo, GITKEY_.commit_key, branch_name=GITKEY_.thexp_branch)
+        return git_commit(self.repo, _GITKEY.commit_key, branch_name=_GITKEY.thexp_branch)
 
     @property
     def test_hash(self) -> str:
@@ -178,12 +178,12 @@ class Experiment:
 
     @property
     def project_name(self) -> str:
-        return self[GITKEY_.projname]
+        return self[_GITKEY.projname]
 
     @property
     def projkey(self) -> str:
         # return self[_CONFIGL]
-        return '{}.{}'.format(self.project_name, self[GITKEY_.uuid])
+        return '{}.{}'.format(self.project_name, self[_GITKEY.uuid])
 
     @property
     def expsdir(self) -> str:
@@ -192,7 +192,7 @@ class Experiment:
         Returns:
 
         """
-        return self[GITKEY_.expsdir].rstrip('\\/')
+        return self[_GITKEY.expsdir].rstrip('\\/')
 
     @property
     def project_dir(self) -> str:
@@ -218,7 +218,7 @@ class Experiment:
         if self._exp_dir is None:
             self._exp_dir = os.path.join(self.project_dir, self._exp_name)
             os.makedirs(self._exp_dir, exist_ok=True)
-            with open(os.path.join(self._exp_dir, FNAME_.repopath), 'w', encoding='utf-8') as w:
+            with open(os.path.join(self._exp_dir, _FNAME.repopath), 'w', encoding='utf-8') as w:
                 w.write(self.repo.working_dir)
         return self._exp_dir
 
@@ -259,7 +259,7 @@ class Experiment:
 
     @property
     def test_info_fn(self) -> str:
-        return os.path.join(self.test_dir, FNAME_.info)
+        return os.path.join(self.test_dir, _FNAME.info)
 
     @property
     def plugins(self) -> dict:
@@ -312,7 +312,7 @@ class Experiment:
         :return:
         """
         import traceback
-        with open(os.path.join(self.test_dir, FNAME_.Exception), 'w', encoding='utf-8') as w:
+        with open(os.path.join(self.test_dir, _FNAME.Exception), 'w', encoding='utf-8') as w:
             w.write("".join(traceback.format_exception(exc_type, exc_val, exc_tb)))
         self.end(
             end_code=1,
@@ -351,7 +351,7 @@ class Experiment:
         """
         return self._config.items()
 
-    def add_config(self, key, value, level=CONFIGL_.globals):
+    def add_config(self, key, value, level=_CONFIGL.globals):
 
         """
         添加配置

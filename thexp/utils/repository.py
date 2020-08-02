@@ -6,12 +6,14 @@ from typing import List
 from uuid import uuid4
 
 from git import Git, Repo
-
+from thexp import __VERSION__
 from thexp.utils.paths import renormpath
 from .dates import curent_date
-from ..globals import GITKEY_, OSENVI_, FNAME_
+from ..globals import _GITKEY, _OSENVI, _FNAME
 
-thexp_gitignores = ['.thexp/', FNAME_.repo, FNAME_.expsdirs, '.idea/']
+torch_file = ['*.pth', '*.npy', '*.ckpt', '*.thexp.*']
+thexp_gitignores = ['.thexp/', _FNAME.repo, _FNAME.expsdirs, '.idea/'] + torch_file
+
 py_gitignore = "\n".join(['# Byte-compiled / optimized / DLL files', '__pycache__/', '*.py[cod]',
                           '*$py.class', '', '# C extensions', '*.so', '', '# Distribution / packaging',
                           '.Python', 'build/', 'develop-eggs/', 'dist/', 'downloads/', 'eggs/', '.eggs/',
@@ -47,20 +49,20 @@ def _set_default_config(repo: Repo, names: List[str]):
     def _expsdir(repo):
         from .paths import global_config
         config = global_config()
-        expsdir = config.get(GITKEY_.expsdir, renormpath(os.path.join(repo.working_dir, '.thexp/experiments')))
+        expsdir = config.get(_GITKEY.expsdir, renormpath(os.path.join(repo.working_dir, '.thexp/experiments')))
         return expsdir
 
     _default = {
-        GITKEY_.uuid: lambda *args: uuid4().hex[:2],
-        GITKEY_.expsdir: lambda repo: _expsdir(repo),
-        GITKEY_.projname: lambda repo: renormpath(os.path.basename(repo.working_dir))
+        _GITKEY.uuid: lambda *args: uuid4().hex[:2],
+        _GITKEY.expsdir: lambda repo: _expsdir(repo),
+        _GITKEY.projname: lambda repo: renormpath(os.path.basename(repo.working_dir))
     }
 
     writer = repo.config_writer()
     res = {}
     for name in names:
         value = _default[name](repo)
-        writer.add_value(GITKEY_.section_name, name, value)
+        writer.add_value(_GITKEY.section_name, name, value)
         res[name] = value
 
     writer.write()
@@ -71,8 +73,8 @@ def _set_default_config(repo: Repo, names: List[str]):
 
 def _check_section(repo: Repo):
     writer = repo.config_writer()
-    if not writer.has_section(GITKEY_.section_name):
-        writer.add_section(GITKEY_.section_name)
+    if not writer.has_section(_GITKEY.section_name):
+        writer.add_section(_GITKEY.section_name)
     writer.write()
     writer.release()
 
@@ -80,16 +82,16 @@ def _check_section(repo: Repo):
 @lru_cache()
 def git_config(repo: Repo):
     reader = repo.config_reader()
-    if not reader.has_section(GITKEY_.section_name):
+    if not reader.has_section(_GITKEY.section_name):
         _check_section(repo)
         reader = repo.config_reader()
     reader.read()
     try:
-        config = {k: v for k, v in reader.items(GITKEY_.section_name)}
+        config = {k: v for k, v in reader.items(_GITKEY.section_name)}
     except:
         config = {}
 
-    lack_names = [i for i in {GITKEY_.expsdir, GITKEY_.uuid, GITKEY_.projname} if i not in config]
+    lack_names = [i for i in {_GITKEY.expsdir, _GITKEY.uuid, _GITKEY.projname} if i not in config]
     _updates = _set_default_config(repo, lack_names)
 
     config.update(_updates)
@@ -98,11 +100,22 @@ def git_config(repo: Repo):
 
 
 def check_gitignore(repo: Repo, force=False):
-    rp = os.path.join(repo.working_dir, FNAME_.expsdirs)
-    if os.path.exists(rp) and not force:
+    rp = os.path.join(repo.working_dir, _FNAME.expsdirs)
+
+    version_mark = os.path.join(repo.working_dir, _FNAME.gitignore_version)
+    if os.path.exists(rp) and os.path.exists(version_mark) and not force:
         return
 
-    ignorefn = os.path.join(repo.working_dir, FNAME_.gitignore)
+    old_marks = [f for f in os.listdir(repo.working_dir) if f.startswith('.thexp.')]
+    for old_mark in old_marks:
+        mark_fn = os.path.join(repo.working_dir, old_mark)
+        if os.path.isfile(mark_fn):
+            os.remove(mark_fn)
+
+    with open(version_mark, 'w') as w:
+        pass
+
+    ignorefn = os.path.join(repo.working_dir, _FNAME.gitignore)
     if not os.path.exists(ignorefn):
         with open(ignorefn, 'w', encoding='utf-8') as w:
             w.write(py_gitignore)
@@ -118,7 +131,8 @@ def check_gitignore(repo: Repo, force=False):
         if amend:
             with open(ignorefn, 'w', encoding='utf-8') as w:
                 w.write('\n'.join(lines))
-        return amend
+
+    return amend
 
 
 def git_config_syntax(value: str):
@@ -214,7 +228,7 @@ def load_repo(dir='./') -> Repo:
     path = git_root(dir)
 
     if path is None:
-        if OSENVI_.ignore_repo not in os.environ:
+        if _OSENVI.ignore_repo not in os.environ:
             print("fatal: not a git repository (or any of the parent directories)")
             print("-----------------------")
             path = input("type root path to init this project, \n(default: {}, type '!' to ignore".format(os.getcwd()))
@@ -237,7 +251,7 @@ def load_repo(dir='./') -> Repo:
         res = Repo(path)
         amend = check_gitignore(repo=res, force=False)
         if amend:
-            res.git.add(FNAME_.gitignore)
+            res.git.add(_FNAME.gitignore)
             res.index.commit('fix gitignore')
     return res
 
@@ -245,7 +259,7 @@ def load_repo(dir='./') -> Repo:
 _commits_map = {}
 
 
-def commit(repo: Repo, key=None, branch_name=GITKEY_.thexp_branch):
+def commit(repo: Repo, key=None, branch_name=_GITKEY.thexp_branch):
     """
 
     Args:

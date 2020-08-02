@@ -18,3 +18,11 @@ class DataLoader(_DataLoader):
 
     def set_batch_size(self, batch_size):
         self.batch_sampler.batch_size = batch_size
+
+    def DataBundler(self, add=True, name=None):
+        from thexp import DataBundler
+        bundler = DataBundler()
+        if add:
+            return bundler.add(self, name)
+        else:
+            return bundler.cycle(self, name)

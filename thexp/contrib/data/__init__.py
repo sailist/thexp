@@ -3,4 +3,4 @@
 """
 
 from .dataloader import DataLoader
-from .dataset import splits
+from . import splits

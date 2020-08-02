@@ -15,6 +15,7 @@ viewer.tests().last() -> TestViewer
 
 """
 import json
+import warnings
 import os
 from itertools import chain
 from pprint import pformat
@@ -23,11 +24,11 @@ from datetime import datetime, timedelta
 import pandas as pd
 
 from thexp.base_classes.list import llist
-from thexp.globals import FNAME_
+from thexp.globals import _FNAME
 from thexp.utils.paths import home_dir
 from .reader import BoardReader
 from ..utils.iters import is_same_type
-from ..globals import BUILTIN_PLUGIN_
+from ..globals import _BUILTIN_PLUGIN
 
 # 虽然好像没什么用但还是设置上了
 pd.set_option('display.max_colwidth', 160)
@@ -53,18 +54,29 @@ class Query:
 
     @property
     def projs_list(self):
-        global_repofn = os.path.join(home_dir(), FNAME_.repo)
+        global_repofn = os.path.join(home_dir(), _FNAME.repo)
         if not os.path.exists(global_repofn):
             res = {}
         else:
             with open(global_repofn, 'r', encoding='utf-8') as r:
                 res = json.load(r)
 
+        re_write = False
+
         repos = []
         projs = []
         for k, v in res.items():  # log_dir(proj level), repopath
+            if not os.path.exists(k):  # 不仅需要日志记录，还需要该试验目录确实存在
+                re_write = True
+                continue
+
             repos.append(v)
             projs.append(k)
+
+        if re_write:
+            with open(global_repofn, 'w', encoding='utf-8') as w:
+                json.dump({k: v for k, v in zip(projs, repos)}, w)
+
         return projs, repos
 
 
@@ -174,6 +186,10 @@ class ReposQuery:
         from .viewer import ProjViewer
         return [ProjViewer(i) for i in self.projs]
 
+    def delete(self):
+        for viewer in self.to_viewers():
+            viewer.delete()
+
 
 class ExpsQuery:
     def __init__(self, exp_dirs):
@@ -278,7 +294,7 @@ class ExpsQuery:
 
 class BoardQuery():
     def __init__(self, board_readers: List[BoardReader], test_names: List[str]):
-        self.board_readers = llist(board_readers)
+        self.board_readers = llist(board_readers)  # type:llist[BoardReader]
         self.test_names = llist(test_names)
 
     def __and__(self, other):
@@ -337,7 +353,7 @@ class BoardQuery():
         from operator import and_
 
         scalars_tags = [set(i.scalars_tags) for i in self.board_readers]
-        return reduce(and_, set(scalars_tags))
+        return reduce(and_, scalars_tags)
 
     def has_scalar_tags(self, tag):
         res = []
@@ -352,7 +368,7 @@ class BoardQuery():
             try:
                 val = reader.get_scalars(tag)
                 if not with_step:
-                    res.append(val.value)
+                    res.append(val.values)
             except:
                 res.append(None)
         return res
@@ -373,6 +389,9 @@ class BoardQuery():
             raise NotImplementedError(backend)
         else:
             return plot_func()
+
+    def parallel(self, backend='matplotlib'):
+        pass
 
 
 class TestsQuery:
@@ -446,7 +465,12 @@ class TestsQuery:
         return df
 
     def boards(self):
-        return BoardQuery([i.board_reader for i in self.to_viewers()], self.test_names)
+        from thexp.base_classes.errors import NoneWarning
+        boards = [i.board_reader for i in self.to_viewers()]
+        if not all(boards):
+            boards = [i for i in boards if i is not None]
+            warnings.warn('Some tests have no board, they will be removed.', NoneWarning)
+        return BoardQuery(boards, self.test_names)
 
     @property
     def empty(self):
@@ -466,13 +490,15 @@ class TestsQuery:
             return TestViewer(self.test_dirs[0])
         raise ValueError('only one test_dirs contains can be converted to TestViewer')
 
+    """filter tests"""
+
     def first(self):
         return self[0]
 
     def last(self):
         return self[-1]
 
-    def range(self, left_time=None, right_time=None):
+    def time_range(self, left_time=None, right_time=None):
         """
         筛选 start_time 位于某时间区间内的 test
         Args:
@@ -498,6 +524,15 @@ class TestsQuery:
                     res.append(i)
 
         return self[res]
+
+    def in_time(self,
+                minutes=0,
+                hours=0,
+                days=0,
+                weeks=0,
+                seconds=0):
+        delta = timedelta(minutes=minutes, days=days, hours=hours, weeks=weeks, seconds=seconds)
+        return self.time_range(left_time=datetime.now() - delta)
 
     def success(self):
         res = []
@@ -537,53 +572,84 @@ class TestsQuery:
         return self[res]
 
     def has_board(self, toggle=True):
-        return self.has_plugin(BUILTIN_PLUGIN_.writer, toggle)
+        return self.has_plugin(_BUILTIN_PLUGIN.writer, toggle)
 
     def has_log(self, toggle=True):
-        return self.has_plugin(BUILTIN_PLUGIN_.logger, toggle)
+        return self.has_plugin(_BUILTIN_PLUGIN.logger, toggle)
 
     def has_modules(self, toggle=True):
-        return self.has_plugin(BUILTIN_PLUGIN_.saver, toggle)
+        return self.has_plugin(_BUILTIN_PLUGIN.saver, toggle)
 
     def has_params(self, toggle=True):
-        return self.has_plugin(BUILTIN_PLUGIN_.params, toggle)
+        return self.has_plugin(_BUILTIN_PLUGIN.params, toggle)
 
     def has_trainer(self, toggle=True):
-        return self.has_plugin(BUILTIN_PLUGIN_.trainer, toggle)
+        return self.has_plugin(_BUILTIN_PLUGIN.trainer, toggle)
 
-    def in_time(self,
-                minutes=0,
-                hours=0,
-                days=0,
-                weeks=0,
-                seconds=0):
-        delta = timedelta(minutes=minutes, days=days, hours=hours, weeks=weeks, seconds=seconds)
-        return self.range(left_time=datetime.now() - delta)
+    def has_dir(self, dir: str, toggle=True):
+        res = []
+        for i, viewer in enumerate(self.to_viewers()):
+            if viewer.has_dir(dir):
+                if toggle: res.append(i)
+            else:
+                if not toggle: res.append(i)
+        return self[res]
+
+    def has_state(self, state_name: str, toggle=True):
+        res = []
+        for i, viewer in enumerate(self.to_viewers()):
+            if viewer.has_state(state_name):
+                if toggle: res.append(i)
+            else:
+                if not toggle: res.append(i)
+        return self[res]
+
+    def params_filter(self, **kwargs):
+        pass # todo 应该不仅仅要满足相等条件，满足大于小于条件应该也是可以的
+
+    """update test state"""
 
     def delete(self):
         for viewer in self.to_viewers():
             viewer.delete()
 
-    def delete_board(self):
-        for viewer in self.has_board(True).to_viewers():
-            viewer.delete_board()
-
-    def delete_log(self):
-        for viewer in self.has_log(True).to_viewers():
-            viewer.delete_log()
-
     def delete_modules(self):
-        pass  # TODO
+        for viewer in self.to_viewers():
+            viewer.delete_modules()
 
     def delete_keypoints(self):
-        pass  # TODO
+        for viewer in self.to_viewers():
+            viewer.delete_keypoints()
 
     def delete_checkpoints(self):
-        pass  # TODO
+        for viewer in self.to_viewers():
+            viewer.delete_checkpoints()
 
-    def delete_models(self):
-        pass  # TODO
+    def toggle_state(self, state_name: str, toggle=None):
+        for viewer in self.to_viewers():
+            viewer.toggle_state(state_name, toggle)
+
+    def mark(self, state_name: str):
+        self.toggle_state(state_name, True)
+
+    def unmark(self, state_name: str):
+        self.toggle_state(state_name, False)
+
+    def hide(self):
+        for viewer in self.to_viewers():
+            viewer.hide()
+
+    def show(self):
+        for viewer in self.to_viewers():
+            viewer.show()
+
+    def fav(self):
+        for viewer in self.to_viewers():
+            viewer.fav()
+
+    def unfav(self):
+        for viewer in self.to_viewers():
+            viewer.unfav()
 
 
 Q = Query()
-

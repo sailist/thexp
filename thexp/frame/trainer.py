@@ -19,7 +19,7 @@ from .meter import AvgMeter, Meter
 from .params import Params
 from .saver import Saver
 from ..base_classes.metaclasses import Merge
-from ..globals import BUILTIN_PLUGIN_, FNAME_, PLUGIN_DIRNAME_
+from ..globals import _BUILTIN_PLUGIN, _FNAME, _PLUGIN_DIRNAME, _PLUGIN_KEY
 
 
 class BaseTrainer(metaclass=Merge):
@@ -122,21 +122,25 @@ class BaseTrainer(metaclass=Merge):
         import inspect
         from .experiment import Experiment
         # from ..utils.gitutils import locate_cls
-        pre = self.__class__.__module__.split('.')[-1]
-        self.experiment = Experiment("{}.{}".format(self.__exp_name__, pre))
+        pre = os.path.splitext(os.path.basename(inspect.getfile(self.__class__)))[0]
+        self.experiment = Experiment("{}.{}".format(pre, self.__exp_name__))
 
-        self.params.to_json(os.path.join(self.experiment.test_dir, FNAME_.params))
+        self.params.to_json(os.path.join(self.experiment.test_dir, _FNAME.params))
 
-        self.experiment.add_plugin(BUILTIN_PLUGIN_.params, {
-            'param_hash': self.params.hash(),
-        })
+        kwargs = {
+            _PLUGIN_KEY.PARAMS.param_hash: self.params.hash(),
+        }
 
-        self.experiment.add_plugin(BUILTIN_PLUGIN_.trainer, {
-            'path': inspect.getfile(self.__class__),
-            'doc': self.__class__.__doc__,
-            'module': self.__class__.__module__,
-            'class': self.__class__.__name__
-        })
+        self.experiment.add_plugin(_BUILTIN_PLUGIN.params, kwargs)
+
+        trainer_kwargs = {
+            _PLUGIN_KEY.TRAINER.path: inspect.getfile(self.__class__),
+            _PLUGIN_KEY.TRAINER.doc: self.__class__.__doc__,
+            _PLUGIN_KEY.TRAINER.fn: pre,
+            _PLUGIN_KEY.TRAINER.class_name: self.__class__.__name__
+        }
+
+        self.experiment.add_plugin(_BUILTIN_PLUGIN.trainer, trainer_kwargs)
 
         # self.reporter = Reporter(self.experiment.makedir("plot"))
         self.models(self.params)
@@ -196,7 +200,7 @@ class BaseTrainer(metaclass=Merge):
     def train_epoch(self, eidx, params):
         avg = AvgMeter()
         self.change_mode(True)
-        for idx, batch_data in enumerate(self.train_dataloader): # 复现多线程下 Keyboard Interupt，尝试通过Try解决
+        for idx, batch_data in enumerate(self.train_dataloader):  # 复现多线程下 Keyboard Interupt，尝试通过Try解决
             meter = self.train_batch(eidx, idx, self.params.global_step, batch_data, params, self.device)
             avg.update(meter)
 
@@ -313,13 +317,12 @@ class BaseTrainer(metaclass=Merge):
             A SummaryWriter instance
         """
         from torch.utils.tensorboard import SummaryWriter
-        from ..globals import PLUGIN_WRITER_
-        d = self.experiment.makedir(PLUGIN_DIRNAME_.writer)
+        d = self.experiment.makedir(_PLUGIN_DIRNAME.writer)
         kwargs = {
-            PLUGIN_WRITER_.log_dir: d,
-            PLUGIN_WRITER_.filename_suffix: '.bd'
+            _PLUGIN_KEY.WRITER.log_dir: d,
+            _PLUGIN_KEY.WRITER.filename_suffix: '.bd'
         }
-        self.experiment.add_plugin(BUILTIN_PLUGIN_.writer, kwargs)
+        self.experiment.add_plugin(_BUILTIN_PLUGIN.writer, kwargs)
 
         res = SummaryWriter(**kwargs)
 
@@ -336,32 +339,35 @@ class BaseTrainer(metaclass=Merge):
         from .logger import Logger
         logger = Logger()
         fn = logger.add_log_dir(self.experiment.test_dir)
-        self.experiment.add_plugin(BUILTIN_PLUGIN_.logger, dict(
-            log_dir=self.experiment.test_dir,
-            fn=fn,
-        ))
+        kwargs = {
+            _PLUGIN_KEY.LOGGER.log_dir: self.experiment.test_dir,
+            _PLUGIN_KEY.LOGGER.fn: fn,
+        }
+        self.experiment.add_plugin(_BUILTIN_PLUGIN.logger, kwargs)
         return logger
 
     @property
     @lru_cache()
     def saver(self):
-        d = self.experiment.makedir(PLUGIN_DIRNAME_.saver)
-        kwargs = dict(
-            max_to_keep=3,
-            ckpt_dir=d
-        )
-        self.experiment.add_plugin(BUILTIN_PLUGIN_.saver, kwargs)
+        d = self.experiment.makedir(_PLUGIN_DIRNAME.saver)
+
+        kwargs = {
+            _PLUGIN_KEY.SAVER.max_to_keep: 3,
+            _PLUGIN_KEY.SAVER.ckpt_dir: d
+        }
+        self.experiment.add_plugin(_BUILTIN_PLUGIN.saver, kwargs)
         return Saver(**kwargs)
 
     @property
     @lru_cache()
     def rnd(self):
         from .rndmanager import RndManager
-        d = self.experiment.make_exp_dir(PLUGIN_DIRNAME_.rnd)
-        kwargs = dict(
-            save_dir=d,
-        )
-        self.experiment.add_plugin(BUILTIN_PLUGIN_.rnd, kwargs)
+        d = self.experiment.make_exp_dir(_PLUGIN_DIRNAME.rnd)
+
+        kwargs = {
+            _PLUGIN_KEY.RND.save_dir: d
+        }
+        self.experiment.add_plugin(_BUILTIN_PLUGIN.rnd, kwargs)
         return RndManager(**kwargs)
 
     @property

@@ -363,7 +363,7 @@ class DatasetBuilder(Dataset):
                                 batch_sampler=None, num_workers=0, collate_fn=None,
                                 pin_memory=False, drop_last=False, timeout=0,
                                 worker_init_fn=None, multiprocessing_context=None):
-        from torch.utils.data import DataLoader
+        from thexp.contrib.data import DataLoader
         return DataLoader(dataset=dataset,
                           batch_size=batch_size,
                           shuffle=shuffle,
@@ -381,7 +381,7 @@ class DatasetBuilder(Dataset):
                    batch_sampler=None, num_workers=0, collate_fn=None,
                    pin_memory=False, drop_last=False, timeout=0,
                    worker_init_fn=None, multiprocessing_context=None):
-        from torch.utils.data import DataLoader
+        from thexp.contrib.data import DataLoader
         return DataLoader(dataset=self,
                           batch_size=batch_size,
                           shuffle=shuffle,

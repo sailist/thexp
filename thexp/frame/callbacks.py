@@ -10,7 +10,7 @@ from .meter import AvgMeter
 from .meter import Meter
 from .params import Params
 from ..base_classes.trickitems import NoneItem, AvgItem
-from ..globals import ML_
+from ..globals import _ML
 from ..utils.timeit import format_second
 from .trainer import Trainer
 
@@ -401,7 +401,7 @@ class AutoRecord(TrainCallback):
     def on_test_end(self, trainer: Trainer, func, params: Params, meter: Meter, *args, **kwargs):
         if isinstance(meter, Meter):
             for k, v in meter.numeral_items():
-                if k in self._ignore_dict[ML_.test]:
+                if k in self._ignore_dict[_ML.test]:
                     continue
                 trainer.writer.add_scalar(self._key_name("test", k), v, params.eidx)
 
@@ -411,14 +411,14 @@ class AutoRecord(TrainCallback):
     def on_eval_end(self, trainer: Trainer, func, params: Params, meter: Meter, *args, **kwargs):
         if isinstance(meter, Meter):
             for k, v in meter.numeral_items():
-                if k in self._ignore_dict[ML_.eval]:
+                if k in self._ignore_dict[_ML.eval]:
                     continue
                 trainer.writer.add_scalar(self._key_name("evel", k), v, params.eidx)
 
     def on_train_epoch_end(self, trainer: Trainer, func, params: Params, meter: AvgMeter, *args, **kwargs):
         if isinstance(meter, Meter):
             for k, v in meter.numeral_items():
-                if k in self._ignore_dict[ML_.train]:
+                if k in self._ignore_dict[_ML.train]:
                     continue
                 trainer.writer.add_scalar(self._key_name("train", k), v, params.eidx)
 

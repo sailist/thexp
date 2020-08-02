@@ -2,7 +2,7 @@
 
 """
 
-__VERSION__ = "1.4.1"
+__VERSION__ = "1.4.1.11"
 
 from .frame import (
     Logger,
@@ -20,3 +20,5 @@ from .frame import (
     globs)
 
 from .analyser import Q
+
+import thexp.calculate

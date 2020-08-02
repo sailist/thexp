@@ -47,14 +47,14 @@ class ParamGrouper:
                 params.append(param)
         return params
 
-    def kernel_params(self, with_norm=True):
+    def kernel_params(self, with_norm=False):
         params = []
         for module, name, param in walk_module(self.module):
             if 'weight' in name and (with_norm or not isinstance(module, (_BatchNorm, nn.LayerNorm))):
                 params.append(param)
         return params
 
-    def bias_params(self, with_norm=True):
+    def bias_params(self, with_norm=False):
         params = []
         for module, name, param in walk_module(self.module):
             if 'bias' in name and (with_norm or not isinstance(module, (_BatchNorm, nn.LayerNorm))):
