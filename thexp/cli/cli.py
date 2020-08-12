@@ -57,7 +57,8 @@ def _board_with_logdir(logdir, *args, **kwargs):
     tmpdir = os.path.join(os.path.dirname(logdir), 'board_tmp')
     os.makedirs(tmpdir, exist_ok=True)
     try:
-        subprocess.check_call(['tensorboard', '--logdir={}'.format(logdir), *['--{}={}' for k, v in kwargs.items()]],
+        subprocess.check_call(['tensorboard', '--logdir={}'.format(logdir),
+                               *['--{}={}'.format(k, v) for k, v in kwargs.items()]],
                               env=dict(os.environ, TMPDIR=tmpdir))
     except KeyboardInterrupt as k:
         print('bye.')
