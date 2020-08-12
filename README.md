@@ -1,3 +1,5 @@
+**包含文档所提功能的 1.5 stable version 将于九月份 release，如想提前使用请通过 git clone & install 来使用**
+
 # thexp
 
 工欲善其事，必先利其器。而 `thexp` 或许是目前最好用的用于 **深度学习 Research** 的 Pytorch 实验框架。
