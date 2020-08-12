@@ -113,13 +113,13 @@ bd.parallel(C.meter.top1_test_,  # 绘制平行图，对比的变量有 记录�
             C.param["optim.args.lr"],  # 超参数中的学习率
             C.param.epoch)  # 超参数中运行的 epoch
 ```
-> <img :src="/img/query_parallel.png" alt="平行图">
+> <img src="/img/query_parallel.png" alt="平行图">
 
 以及绘制曲线图：
 ```python
 bd.boards().line('top1_test_')
 ```
-> <img :src="/img/query_line.png" alt="线图">
+> <img src="/img/query_line.png" alt="线图">
 
 ## Contribute
 
