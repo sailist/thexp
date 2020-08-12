@@ -2,6 +2,8 @@
 
 工欲善其事，必先利其器。而 `thexp` 或许是目前最好用的用于 **深度学习 Research** 的 Pytorch 实验框架。
 
+关于该项目的文档可以查看 [Document](https://sailist.github.io/thexp/)
+
 关于该项目的下一步开发进度可以查看 [thexp-plan](https://github.com/sailist/thexp/projects/1)
 
 ## Install
