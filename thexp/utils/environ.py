@@ -1,5 +1,25 @@
+"""
+runtime environment constant.
+
+Pycharm debug mode currently has a bug that can't run next step after a breakpoint when have multithread(num_workers>0).
+
+So the parameter can be conditional set as:
+
+```python
+from thexp import ENV
+num_workers = 0 is ENV.IS_PYCHARM_DEBUG else 4
+```
+
+The class ENVIRON_ is also embeded as a class variable named `ENV` in class Params, means you can use like:
+
+```python
+from thexp import Params
+Params.ENV.IS_PYCHARM_DEBUG
+```
+"""
 import os
 from sys import platform
+
 
 class ENVIRON_:
     IS_WIN = (platform == "win32")

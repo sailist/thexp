@@ -2,7 +2,7 @@ import copy
 from typing import List, Optional
 
 
-# from thexp.analyser.query import make_hashable
+# from thexp.analyse.query import make_hashable
 
 
 class Node:

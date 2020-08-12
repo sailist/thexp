@@ -2,7 +2,7 @@
 
 """
 
-from thexp.utils.markdown_writer import Markdown
+from thexp.utils.markdown import Markdown
 
 if __name__ == '__main__':
     md = Markdown()

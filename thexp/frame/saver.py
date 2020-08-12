@@ -13,8 +13,6 @@ import torch
 ckpt_tuple = namedtuple("Checkpoint", ["checkpoint", 'info'])
 
 
-# TOOD save 有多种，load只需要一个就可以了，就是直接通过路径load
-
 class Saver:
     _ckpt_fn_templete = "{}{:06d}.ckpt"
     _model_fn_templete = "model.{}{:06d}.pth"
@@ -150,7 +148,7 @@ class Saver:
             return ckpt_tuple(None, None)
         return self.load_state_dict(fs[-1])
 
-    def load_state_dict(self, fn:str) -> ckpt_tuple:
+    def load_state_dict(self, fn: str) -> ckpt_tuple:
         """
 
         Args:
@@ -175,14 +173,14 @@ class Saver:
 
         return ckpt_tuple(ckpt, info)
 
-    def _guess_abs_path(self, fn:str)->str:
+    def _guess_abs_path(self, fn: str) -> str:
         if os.path.basename(fn) == fn:
             path = os.path.join(self.ckpt_dir, fn)
         else:
             path = fn
         return path
 
-    def check_remove(self, fn:str, with_json=True):
+    def check_remove(self, fn: str, with_json=True):
         if os.path.exists(fn):
             os.remove(fn)
         if with_json:

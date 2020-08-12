@@ -11,10 +11,15 @@ def fix_seed(seed=10):
     torch.random.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
+    fix_cuda()
+    return get_state()
+
+
+def fix_cuda():
+    if torch.cuda.is_available():
         torch.backends.cudnn.benchmark = False
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.enabled = True
-    return get_state()
 
 
 def get_state():
@@ -36,6 +41,4 @@ def set_state(state_dict):
         else:
             import warnings
             warnings.warn("Don't have torch.cuda random state")
-        torch.backends.cudnn.benchmark = False
-        torch.backends.cudnn.deterministic = True
-        torch.backends.cudnn.enabled = True
+    fix_cuda()

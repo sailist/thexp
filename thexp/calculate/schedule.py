@@ -22,6 +22,8 @@ Except for the base `Schedule` class, some other subclasses of `Schedule`  which
 import numpy as np
 from thexp.base_classes.attr import attr
 
+from typing import List
+
 
 class Schedule(attr):
     """
@@ -32,18 +34,26 @@ class Schedule(attr):
 
     def __init__(self, start=0, end=1, left=0, right=1, *args, **kwargs):
         super().__init__()
-        self.right = right
         self.left = left
+        self.right = right
         self.start = start
         self.end = end
+        self.constant = False
+
+    def toggle_constant(self, toggle=True):
+        """fix the schedule as the first value"""
+        self.constant = toggle
+        return self
 
     def ratio(self, cur):
+        if self.constant:
+            return 0
         return (cur - self.left) / (self.right - self.left)
 
     def __call__(self, cur):
         raise NotImplementedError()
 
-    def plot(self, num=1000, left=None, right=None):
+    def plot(self, num=1000, left=None, right=None, show=True):
         """
         Plot a curve of the schedule.
         Args:
@@ -65,7 +75,11 @@ class Schedule(attr):
             right = self.right
         x = np.linspace(left, right, num)
         y = [self(i) for i in x]
-        return plt.plot(x, y)
+
+        res = plt.plot(x, y)
+        if show:
+            plt.show()
+        return res
 
     def scale(self, optimizer, cur):
         """
@@ -110,7 +124,7 @@ class Schedule(attr):
         return new_lr
 
     @classmethod
-    def get(cls, cur, start=0, end=1, left=0, right=1, *args, **kwargs):
+    def get_val(cls, cur, start=0, end=1, left=0, right=1, *args, **kwargs):
         """get the current schedule value without create `schedule` instance. """
         return cls(start=0, end=1, left=0, right=1, *args, **kwargs)(cur)
 
@@ -119,6 +133,9 @@ class CosSchedule(Schedule):
     """one cycle cosine functoin"""
 
     def __call__(self, cur):
+        if self.constant:
+            return self.start
+
         if cur < self.left:
             return self.start
         elif cur > self.right:
@@ -157,6 +174,9 @@ class LinearSchedule(Schedule):
     """linear schedule"""
 
     def __call__(self, cur):
+        if self.constant:
+            return self.start
+
         if cur < self.left:
             return self.start
         elif cur > self.right:
@@ -164,3 +184,39 @@ class LinearSchedule(Schedule):
 
         linear_ratio = self.ratio(cur)
         return self.start * (1 - linear_ratio) + self.end * linear_ratio
+
+
+class ScheduleList(attr):
+    def __init__(self, schedules=None, bound='left'):
+        super().__init__()
+        if schedules is None:
+            schedules = []
+        self.bound = bound
+        # assert len(schedules) > 0
+        if bound == 'left':
+            self.schedules = sorted(schedules, key=lambda x: x.left)
+        elif bound == 'right':
+            self.schedules = sorted(schedules, key=lambda x: x.right)
+        else:
+            assert False
+        self.left = self.schedules[0].left
+        self.right = self.schedules[-1].right
+        # super().__init__(None, None, left, right, *args, **kwargs)
+
+    def __call__(self, cur):
+        if self.bound == 'left':
+            for i, schedule in enumerate(self.schedules):
+                if i + 1 < len(self.schedules):
+                    if cur < self.schedules[i + 1].left:
+                        return schedule(cur)
+                    else:
+                        continue
+                else:
+                    return schedule(cur)
+        elif self.bound == 'right':
+            for i, schedule in enumerate(self.schedules):
+                if cur < self.schedules[i].right:
+                    return schedule(cur)
+            return schedule(cur)
+        else:
+            assert False

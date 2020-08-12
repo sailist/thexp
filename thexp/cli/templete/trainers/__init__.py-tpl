@@ -11,6 +11,7 @@ class GlobalParams(Params):
                                        momentum=0.9,
                                        weight_decay=5e-4,
                                        nesterov=True)
+
         self.dataset = self.choice('dataset', 'cifar10', 'cifar100', 'mnist', 'fashionmnist', 'svhn')
         self.n_classes = 10
         self.topk = [1, 2, 3, 4]
@@ -20,5 +21,6 @@ class GlobalParams(Params):
 
         self.ema = True
         self.ema_alpha = 0.999
+
 
 

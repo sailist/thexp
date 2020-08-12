@@ -11,6 +11,7 @@ class GlobalParams(Params):
                                        momentum=0.9,
                                        weight_decay=5e-4,
                                        nesterov=True)
+
         self.dataset = self.choice('dataset', 'cifar10', 'cifar100', 'mnist', 'fashionmnist', 'svhn')
         self.n_classes = 10
         self.topk = [1, 2, 3, 4]
@@ -21,4 +22,9 @@ class GlobalParams(Params):
         self.ema = True
         self.ema_alpha = 0.999
 
+        self.val_size = 10000
 
+    def initial(self):
+        self.lr_sche = self.SCHE.Cos(start=self.optim.args.lr,
+                                     end=0.00001,
+                                     right=self.epoch)

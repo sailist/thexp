@@ -6,12 +6,12 @@ from thexp import Trainer, Params, callbacks
 import random
 
 
-class myTrainer(Trainer, callbacks.TrainCallback):
-    pass
-
-
+# class myTrainer(Trainer, callbacks.TrainCallback):
+#     pass
 #
-trainer_ = myTrainer(Params())
+#
+# #
+# trainer_ = myTrainer(Params())
 #
 # for i in range(50):
 #     trainer.logger.info(i)
@@ -88,8 +88,10 @@ class MyTrainer(Trainer):
 
 
 params = Params()
-params.epoch = 20
-params.lr = 0.01
+params.epoch = 5
+params.lr = 0.1
+
+params.dataset = 'svhn'
 
 trainer = MyTrainer(params)
 trainer.train()

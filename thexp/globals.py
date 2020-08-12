@@ -28,7 +28,7 @@ class _INFOJ:
 
 
 class _CONFIGL:
-    running = 'user'
+    running = 'running'
     globals = 'globals'
     repository = 'repository'
 
@@ -109,10 +109,6 @@ class _PLUGIN_KEY:
         ckpt_dir = 'ckpt_dir'
 
 
-class _OSENVI:
-    ignore_repo = 'ignore_repo'
-
-
 class _INDENT:
     tab = '  '
     ttab = '    '
@@ -127,3 +123,5 @@ class _DLEVEL:
 
 class _OS_ENV:
     CUDA_VISIBLE_DEVICES = 'CUDA_VISIBLE_DEVICES'
+    THEXP_COMMIT_DISABLE = 'THEXP_COMMIT_DISABLE'
+    IGNORE_REPO = 'THEXP_IGNORE_REPO'

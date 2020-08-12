@@ -1,9 +1,19 @@
 """
-程序运行期间全局配置，分为三个级别：
+thexp provides an easy git-like config system.
 
-globals : 所有repo可以共用的配置
-repository : 当前 git root 下的config
-running：仅运行期间的临时配置
+globals : can be used in all repository.
+repository : only used in each repository.
+running : only used in current run-time.
+
+A global instance is exposed, here is some examples:
+
+```python
+from thexp import globs
+globs.add_value('dataset','path/to/dataset/root/',globs.LEVEL.globals)
+root = globs['dataset']
+```
+
+you can get all config by use `globs.items()`
 """
 from pprint import pformat
 from typing import Any
@@ -50,14 +60,16 @@ class Globals:
             assert False, 'level name error {}'.format(level)
 
     def get_value(self, key, level=_CONFIGL.globals, default=None):
-        if level == _CONFIGL.globals:
-            return self._configs[2][key]
-        elif level == _CONFIGL.repository:
-            return self._configs[1][key]
-        elif level == _CONFIGL.running:
-            return self._configs[0][key]
-        else:
-            assert False, 'level name error {}'.format(level)
+        try:
+            if level == _CONFIGL.globals:
+                return self._configs[2][key]
+            elif level == _CONFIGL.repository:
+                return self._configs[1][key]
+            elif level == _CONFIGL.running:
+                return self._configs[0][key]
+        except:
+            return default
+        assert False, 'level name error {}'.format(level)
 
     def items(self):
         return {
@@ -73,6 +85,18 @@ class Globals:
             _CONFIGL.repository: self._configs[1].items(),
             _CONFIGL.running: self._configs[2].items(),
         }))
+
+    @property
+    def runtime_config(self):
+        return self._configs[0]
+
+    @property
+    def repository_config(self):
+        return self._configs[1]
+
+    @property
+    def globals_config(self):
+        return self._configs[2]
 
 
 class Config:
@@ -134,7 +158,7 @@ class Config:
         key = str(key)
         if self._config_level == _CONFIGL.globals:
             self._config_dict[key] = value
-            write_global_config(self._repo)
+            write_global_config(self._config_dict)
         elif self._config_level == _CONFIGL.repository:
             from thexp.utils.repository import git_config_syntax
             value = git_config_syntax(value)

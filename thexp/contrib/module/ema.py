@@ -9,12 +9,12 @@ from typing import Generic, TypeVar
 Module = TypeVar('Module', nn.Module, str)
 
 
-def EMA(model: Module, alpha_=0.999) -> Module:
+def EMA(model: Module, alpha=0.999) -> Module:
     """
     Exponential Moving Average for nn.Module
     Args:
         model:
-        alpha_:
+        alpha:
 
     Returns:
 
@@ -22,18 +22,18 @@ def EMA(model: Module, alpha_=0.999) -> Module:
     ema_model = deepcopy(model)
     [i.detach_() for i in ema_model.parameters()]
 
-    def step(alpha=None):
+    def step(alpha_=None):
 
-        if alpha is None:
-            alpha = alpha_
+        if alpha_ is None:
+            alpha_ = alpha
 
         with torch.no_grad():
             for (_, ema_param), (_, param) in zip(ema_model.state_dict().items(), model.state_dict().items()):
                 ema_param.to(param.device)
                 if not isinstance(param, (LongTensor, CLongTensor)):
-                    ema_param.data.mul_(alpha).add_(1 - alpha, param.data)
+                    ema_param.data.mul_(alpha_).add_(1 - alpha_, param.data)
                 else:
-                    ema_param.data.copy_(alpha * ema_param + (1 - alpha) * param)
+                    ema_param.data.copy_(alpha_ * ema_param + (1 - alpha_) * param)
 
     forward_ = ema_model.forward
 

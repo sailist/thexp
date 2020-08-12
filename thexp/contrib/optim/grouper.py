@@ -1,16 +1,21 @@
-from typing import Tuple
+from typing import Tuple, Union, List
 
 from torch import nn
 from torch.nn.modules.batchnorm import _BatchNorm
 
 
-def walk_module(module: nn.Module) -> Tuple[nn.Module, str, nn.Parameter]:
-    for name, submodule in module.named_children():
-        for ssubmodule, subname, subparam in walk_module(submodule):
-            yield ssubmodule, subname, subparam
+def walk_module(module: Union[Tuple[nn.Module,...], nn.Module]) -> Tuple[nn.Module, str, nn.Parameter]:
+    if isinstance(module, (tuple, list)):
+        for item in module:
+            for ssubmodule, subname, subparam in walk_module(item):
+                yield ssubmodule, subname, subparam
+    else:
+        for name, submodule in module.named_children():
+            for ssubmodule, subname, subparam in walk_module(submodule):
+                yield ssubmodule, subname, subparam
 
-    for pname, param in module.named_parameters(recurse=False):
-        yield module, pname, param
+        for pname, param in module.named_parameters(recurse=False):
+            yield module, pname, param
 
 
 class ParamGrouper:
@@ -37,7 +42,7 @@ class ParamGrouper:
 
     """
 
-    def __init__(self, module: nn.Module):
+    def __init__(self, *module: nn.Module):
         self.module = module
 
     def params(self, with_norm=True):

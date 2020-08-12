@@ -7,21 +7,16 @@ import torch
 import numpy as np
 from collections import OrderedDict
 
-from typing import Any
+from typing import Any, Iterable
+from thexp.base_classes.trickitems import _ContainWrap
+from thexp.base_classes.metaclasses import meta_attr
 
 _attr_clss = {}
 
 
-class meta_attr(type):
-    def __new__(cls, *args: Any, **kwargs: Any):
-        cls = type.__new__(cls, *args, **kwargs)
-        _attr_clss[cls.__name__] = cls
-        return cls
-
-
 class attr(OrderedDict, metaclass=meta_attr):
     """
-    和EasyDict类似，相比于EasyDict，更好的地方在于参数是有序的，可能会在某些情况下更方便一些
+    An ordered dict
     """
 
     def __new__(cls, *args: Any, **kwargs: Any):
@@ -47,14 +42,28 @@ class attr(OrderedDict, metaclass=meta_attr):
         self[name] = value
 
     def __getitem__(self, k):
+        cwk = k
+        if isinstance(k, _ContainWrap):
+            k = k.value
+
         k = str(k)
         ks = k.split(".")
         if len(ks) == 1:
-            return super().__getitem__(ks[0])
+            if isinstance(cwk, _ContainWrap):
+                return super().__getitem__(ks[0])
+
+            try:
+                return super().__getitem__(ks[0])
+            except:
+                self[ks[0]] = attr()
+                return self[ks[0]]
 
         cur = self
         for tk in ks:
-            cur = cur.__getitem__(tk)
+            if isinstance(cwk, _ContainWrap):
+                cur = cur.__getitem__(_ContainWrap(tk))
+            else:
+                cur = cur.__getitem__(tk)
         return cur
 
     def __setitem__(self, k, v):
@@ -72,7 +81,7 @@ class attr(OrderedDict, metaclass=meta_attr):
 
     def __contains__(self, o: object) -> bool:
         try:
-            _ = self[o]
+            _ = self[_ContainWrap(o)]
             return True
         except:
             return False
@@ -107,14 +116,26 @@ class attr(OrderedDict, metaclass=meta_attr):
         import numbers
         res = dict()
         for k, v in self.raw_items():
-            if isinstance(v, (numbers.Number, str, bool)):
-                res[k] = v
-            elif isinstance(v, (set, list)):
-                v = [vv for vv in v if isinstance(vv, (numbers.Number, str, bool))]
+            if isinstance(v, (numbers.Number, str)):
                 res[k] = v
             elif isinstance(v, attr):
                 v = v.jsonify()
                 res[k] = v
+            elif isinstance(v, (Iterable)):
+                nv = []
+                for vv in v:
+                    if isinstance(vv, (numbers.Number, str)):
+                        nv.append(vv)
+                    elif isinstance(vv, dict):
+                        if isinstance(vv, attr):
+                            nv.append(vv.jsonify())
+                        else:
+                            nv.append(attr.from_dict(vv).jsonify())
+                    else:  # set,list
+                        _tmp = attr()
+                        _tmp['tmp'] = vv
+                        nv.append(_tmp.jsonify()['tmp'])
+                res[k] = nv
 
         return res
 
@@ -140,7 +161,7 @@ class attr(OrderedDict, metaclass=meta_attr):
             warnings.warn('{} not found, will use class attr to receive values.'.format(cls_name),
                           AttrTypeNotFoundWarning)
         else:
-            res = _attr_clss[cls_name]()
+            res = _attr_clss[cls_name].__new__(_attr_clss[cls_name])
 
         if '_class_name' in dic:
             dic.pop('_class_name')
@@ -162,7 +183,10 @@ class attr(OrderedDict, metaclass=meta_attr):
             return item.copy()
         elif isinstance(item, list):
             return list(attr._copy_iters(i) for i in item)
+        elif isinstance(item, set):
+            return set(attr._copy_iters(i) for i in item)
         elif isinstance(item, tuple):
             return tuple(attr._copy_iters(i) for i in item)
-        else:
-            return copy.copy(item)
+        elif isinstance(item, dict):
+            return attr.from_dict(item)
+        return copy.copy(item)

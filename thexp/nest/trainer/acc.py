@@ -1,3 +1,6 @@
+"""
+for calculating and recording accuracy.
+"""
 import torch
 from thexp import Meter, Params
 

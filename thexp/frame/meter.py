@@ -1,5 +1,5 @@
 """
-
+Used for recording data
 """
 from collections import OrderedDict
 from numbers import Number
@@ -169,7 +169,6 @@ class Meter:
         return self
 
     def map_update(self, items: Iterable, names: Iterable):
-        from itertools import zip_longest
         items, names = list(items), list(names)
         assert len(items) == len(names), 'length of items and names not match'
         for item, name in zip(items, names):
@@ -178,6 +177,10 @@ class Meter:
 
 
 class AvgMeter(Meter):
+    """
+
+    """
+
     def __init__(self):
         super().__init__()
 
@@ -193,12 +196,15 @@ class AvgMeter(Meter):
             elif isinstance(value, float) and name not in self._format_dict:
                 self.float(name)
 
-            if isinstance(value, (float)):
+            if name in self._meter_dict and isinstance(self._meter_dict[name], AvgItem):
+                self._meter_dict[name].update(value)
+            elif isinstance(value, (float)):
                 if name not in self._meter_dict:
                     self._meter_dict[name] = AvgItem()
                 self._meter_dict[name].update(value)
-            elif isinstance(value, torch.Tensor):
-                value = value.detach().cpu().numpy()
+            elif isinstance(value, (torch.Tensor, np.ndarray)):
+                if isinstance(value, torch.Tensor):
+                    value = value.detach().cpu().numpy()
                 if len(value.shape) == 0 or sum(value.shape) == 1:
                     if name not in self._meter_dict:
                         self._meter_dict[name] = AvgItem()
@@ -219,6 +225,9 @@ class AvgMeter(Meter):
         self._format_dict.update(meter._format_dict)
         self._convert_type.extend(meter._convert_type)
 
+    def average(self, k):
+        self[k] = AvgItem()
+
     def serialize(self):
         log_dict = OrderedDict()
         for k, v in self._meter_dict.items():
@@ -235,7 +244,7 @@ class AvgMeter(Meter):
                 yield k, v.avg
 
     def numeral_items(self):
-        """纯可被记录的数字"""
+        """"""
         for k, v in self._meter_dict.items():
             if isinstance(v, (int, float)):
                 yield k, v
@@ -251,3 +260,34 @@ class AvgMeter(Meter):
                     continue
             elif isinstance(v, AvgItem):
                 yield k, v.avg
+
+    @property
+    def meter(self):
+        """try to get newest value"""
+        return _InMeter(self)
+
+    @property
+    def avg(self):
+        """try to get average value"""
+        return _InMeter(self, mode='avg')
+
+
+class _InMeter():
+    def __init__(self, avgmeter: AvgMeter, mode='newest'):
+        self._avg = avgmeter
+        self._mode = mode
+
+    def __getattr__(self, item):
+        if item not in self._avg._meter_dict:
+            raise AttributeError(item)
+        res = self._avg._meter_dict[item]
+        if isinstance(res, AvgItem):
+            if self._mode == 'newest':
+                res = res._item
+            else:
+                res = res.avg
+
+        return res
+
+    def __getitem__(self, item: str):
+        return self.__getattr__(item)

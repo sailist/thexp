@@ -4,6 +4,9 @@
 
 from typing import Any
 
+
+
+
 class Merge(type):
     """
     元类，用于将子类和父类共有字典，集合时，子类的覆盖行为改为合并父类的字典，集合
@@ -35,4 +38,16 @@ class Merge(type):
                     v.update(value)
 
         return type.__new__(cls, name, bases, dict(attrs))
+
+
+class meta_attr(type):
+    """用于记录所有attr子类的类名和类信息，用于序列化和反序列化"""
+
+    def __new__(cls, *args: Any, **kwargs: Any):
+        from thexp.base_classes.attr import _attr_clss
+        cls = type.__new__(cls, *args, **kwargs)
+        _attr_clss[cls.__name__] = cls
+        return cls
+
+
 

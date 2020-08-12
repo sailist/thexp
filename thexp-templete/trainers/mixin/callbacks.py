@@ -11,6 +11,10 @@ class __CB(callbacks.TrainCallback):
 class BaseCBMixin(Trainer):
     def callbacks(self, params: GlobalParams):
         from thexp import callbacks
-        callbacks.LoggerCallback().hook(self)
-        callbacks.EvalCallback(1, 1).hook(self)
-        callbacks.AutoRecord().hook(self)
+        callbacks.LoggerCallback().hook(self)  # auto log in screen and file
+        callbacks.EvalCallback(5, 10).hook(self)  # auto eval/test per 5/10 epoch
+        callbacks.AutoRecord().hook(self)  # auto record meter by SummaryWritter
+
+        callbacks.LRSchedule()  # auto get params.lr_sche to apply lr rate
+        if params.ema:
+            callbacks.EMAUpdate()  # auto update module named with prefix `ema`

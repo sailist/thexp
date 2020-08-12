@@ -1,3 +1,6 @@
+"""
+for calculating and recording loss.
+"""
 from typing import List
 
 from torch.nn import functional as F
@@ -71,3 +74,12 @@ class L2Loss(Loss):
         if meter is not None:
             meter[name] = loss
         return loss
+
+
+# class TripletLoss(Loss):
+    # def loss_l2_reg_(self, tensors: List[torch.Tensor], w_l2=1,
+    #                  meter: Meter = None, name: str = 'Lreg'):
+    #     loss = sum([(tensor ** 2).sum(dim=-1).mean() for tensor in tensors]) * w_l2
+    #     if meter is not None:
+    #         meter[name] = loss
+    #     return loss

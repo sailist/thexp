@@ -15,17 +15,24 @@ import torch
 
 from ..base_classes.attr import attr
 from ..base_classes.errors import BoundCheckError, NewParamWarning
-from ..base_classes.params_vars import ParamsFactory, OptimParams,OptimMixin
+from ..base_classes.params_vars import ParamsFactory, OptimParams, OptimMixin
 from ..utils.environ import ENVIRON_
+from ..calculate import schedule
 
 
 class BaseParams(OptimMixin):
     ENV = ENVIRON_
 
+    class SCHE:
+        Cos = schedule.CosSchedule
+        PeriodCos = schedule.PeriodCosSchedule
+        Linear = schedule.LinearSchedule
+        HalfPeriodCos = schedule.HalfPeriodCosSchedule
+        List = schedule.ScheduleList
+
     def __init__(self):
         self._param_dict = attr()
-        self._copy = attr()
-        self._exp_name = None
+        self._repeat = None
         self._bound = {}
         self._lock = False
         self._bind = defaultdict(list)
@@ -60,7 +67,10 @@ class BaseParams(OptimMixin):
                 self._param_dict[name] = value
             if name in self._bind:
                 for _v, _bind_k, _bind_v in self._bind[name]:
-                    if _v == value:
+                    if callable(_v):
+                        _bind_v = _v(value)
+                        self.__setattr__(_bind_k, _bind_v)
+                    elif _v == value:
                         self.__setattr__(_bind_k, _bind_v)
 
     def __getattr__(self, item):
@@ -94,18 +104,25 @@ class BaseParams(OptimMixin):
         if name in self._bound:
             self._bound[name](value)
 
+    def initial(self):
+        pass
+
     def arange(self, k, default, left=float("-inf"), right=float("inf")):
         """
-        约束 key 的选择范围（连续）
-        如果有多段连续，请使用 lambda_bound() 方法
+        constrain value within a continuous interval.
         Args:
-            k: 要约束的键
-            default: 默认值
-            left:
-            right:
+            k: key of the value
+            default: default value
+            left: left interval
+            right: right interval
 
         Returns:
+            default value
 
+        Notes:
+        ---------
+        you can directly call this function to create the key with the constrained value, but it's better to
+        receive this value so that IDE can recognizes it and provides auto-complete.
         """
 
         def check(x):
@@ -118,13 +135,13 @@ class BaseParams(OptimMixin):
 
     def choice(self, k, *choices):
         """
-        约束 key 的选择范围（离散）
-
+        constrain value within a discrete set.
         Args:
-            k: 要约束的键
-            *choices: 要选择的常量，第一个将作为默认值
+            k: key of the value
+            *choices: value can be used for key
 
         Returns:
+            the first value of choices
 
         """
 
@@ -136,61 +153,65 @@ class BaseParams(OptimMixin):
         self[k] = choices[0]
         return choices[0]
 
-    def bind(self, k, v, bind_k, bind_v):
-        """
-        k 变化到 v 后，让相应的 bind_k 的值变化到 bind_v
-        """
-        self._bind[k].append((v, bind_k, bind_v))
-
     def lambda_bound(self, k, default, check_lmd):
-        """
-        约束 key 符合 check_lmd 的要求
-        Args:
-            k:
-            default:
-            check_lmd: 一个函数，接受一个参数，为 key 接受新值时的 value
-            该函数若返回None，则表明异常会在检查过程中抛出，若返回值为任意可以判断真值的类型，则根据真值类型判断
-                为假则抛出 BoundCheckError
-
-        Returns:
-
-        """
+        """"""
         self._bound[k] = check_lmd
         self[k] = default
         return default
 
+    def bind(self, k, v, bind_k, bind_v):
+        """
+        Link the change in the value of one key with another.
+        When params[k] is set to v, params[bind_k] will be set to bind_v automatic
+        """
+        self._bind[k].append((v, bind_k, bind_v))
+
+    def dynamic_bind(self, k, bind_k, dynamic_func):
+        self._bind[k].append((dynamic_func, bind_k, None))
+
     def grid_search(self, key, iterable: Iterable):
-        """
-
-        Args:
-            key:
-            iterable:
-
-        Returns:
-
-        """
-        snapshot = copy.copy(self._param_dict)
+        """"""
         for v in iterable:
-            for sk, sv in snapshot.items():
-                self[sk] = sv
-            self[key] = v
-            yield self
+            res = self._copy()
+            res[key] = v
+            yield res
+
+    def _copy(self):
+        res = BaseParams()
+        res._param_dict = copy.copy(self._param_dict)
+        res._repeat = copy.copy(self._repeat)
+        res._bound = copy.copy(self._bound)
+        res._lock = copy.copy(self._lock)
+        res._bind = copy.copy(self._bind)
+        return res
 
     def grid_range(self, count):
-        snapshot = copy.copy(self._param_dict)
         for i in range(count):
-            for sk, sv in snapshot.items():
-                self[sk] = sv
-            yield self
+            res = self._copy()
+            res._repeat = i
+            yield res
 
     def from_args(self):
         """
         从命令行参数中设置参数值
+
+        可选参数：
+            _json, 接收一个json来作为该params的参数
+            _help, 输出该Params已设置的参数
+
         Returns:
 
         """
 
         def func(**kwargs):
+            if '_help' in kwargs:
+                print(self)
+                return
+
+            if '_json' in kwargs:
+                self.from_json(kwargs['_json'])
+                return
+
             for k, v in kwargs.items():
                 try:
                     self[k]
@@ -319,8 +340,6 @@ class BaseParams(OptimMixin):
         return self
 
 
-
-
 class Params(BaseParams):
     Attr = attr
 
@@ -334,6 +353,7 @@ class Params(BaseParams):
         self.dataset = None
         self.architecture = None
         self.optim = None  # type:OptimParams
+        self.git_commit = True
 
     def dataloader(self):
         pass
@@ -343,8 +363,9 @@ class Params(BaseParams):
 
 
 if __name__ == '__main__':
-
     from torch.optim.sgd import SGD
     from torch.optim.sparse_adam import SparseAdam
     from torch.optim import adam, adamw, adamax, adagrad, adadelta, asgd, sparse_adam, sgd, lr_scheduler, lbfgs, \
         optimizer, rmsprop, rprop
+
+    p = Params().SCHE.CosSchedule()

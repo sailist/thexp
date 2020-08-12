@@ -15,11 +15,16 @@ viewer.tests().last() -> TestViewer
 
 """
 import json
+import numbers
+
 import warnings
+import numpy as np
 import os
 from itertools import chain
+from collections import OrderedDict
+from ..base_classes.trickitems import NoneItem
 from pprint import pformat
-from typing import List, Iterator
+from typing import List, Iterator, Set
 from datetime import datetime, timedelta
 import pandas as pd
 
@@ -27,8 +32,10 @@ from thexp.base_classes.list import llist
 from thexp.globals import _FNAME
 from thexp.utils.paths import home_dir
 from .reader import BoardReader
+from .viewer import TestViewer
 from ..utils.iters import is_same_type
 from ..globals import _BUILTIN_PLUGIN
+from .constrain import Constrain, ParamConstrain, MeterConstrain
 
 # 虽然好像没什么用但还是设置上了
 pd.set_option('display.max_colwidth', 160)
@@ -155,8 +162,8 @@ class ReposQuery:
             res.append((os.path.basename(proj), repo))
         return pd.DataFrame(res, columns=['name', 'Repo path'])
 
-    def tests(self):
-        return self.exps().tests()
+    def tests(self, *items):
+        return self.exps().tests(*items)
 
     def exps(self, *items):
         if len(items) == 0:
@@ -166,7 +173,7 @@ class ReposQuery:
                 exp_dirs.extend(viewer.exp_dirs)
             return ExpsQuery(exp_dirs)
         else:
-            return self[items].exps()
+            return self.exps()[items]
 
     @property
     def empty(self):
@@ -293,36 +300,36 @@ class ExpsQuery:
 
 
 class BoardQuery():
-    def __init__(self, board_readers: List[BoardReader], test_names: List[str]):
+    def __init__(self, board_readers: List[BoardReader], test_viewers: List[TestViewer]):
         self.board_readers = llist(board_readers)  # type:llist[BoardReader]
-        self.test_names = llist(test_names)
+        self.test_viewers = llist(test_viewers)  # type:llist[TestViewer]
 
     def __and__(self, other):
         if isinstance(other, BoardQuery):
-            combine = set(self.test_names) & set(other.test_names)
+            combine = set(self.test_viewers) & set(other.test_viewers)
             readers = []
-            test_names = []
-            for reader, test_name in chain(zip(self.board_readers, self.test_names),
-                                           zip(other.board_readers, other.test_names)):
-                if test_name in combine:
-                    combine.remove(test_name)
+            test_viewers = []
+            for reader, test_viewer in chain(zip(self.board_readers, self.test_viewers),
+                                             zip(other.board_readers, other.test_viewers)):
+                if test_viewer in combine:
+                    combine.remove(test_viewer)
                     readers.append(reader)
-                    test_names.append(test_name)
-            return BoardQuery(readers, test_names)
+                    test_viewers.append(test_viewer)
+            return BoardQuery(readers, test_viewers)
         raise TypeError(self, other)
 
     def __or__(self, other):
         if isinstance(other, BoardQuery):
-            combine = set(self.test_names) | set(other.test_names)
+            combine = set(self.test_viewers) | set(other.test_viewers)
             readers = []
-            test_names = []
-            for reader, test_name in chain(zip(self.board_readers, self.test_names),
-                                           zip(other.board_readers, other.test_names)):
-                if test_name in combine:
-                    combine.remove(test_name)
+            test_viewers = []
+            for reader, test_viewer in chain(zip(self.board_readers, self.test_viewers),
+                                             zip(other.board_readers, other.test_viewers)):
+                if test_viewer in combine:
+                    combine.remove(test_viewer)
                     readers.append(reader)
-                    test_names.append(test_name)
-            return BoardQuery(readers, test_names)
+                    test_viewers.append(test_viewer)
+            return BoardQuery(readers, test_viewers)
         raise TypeError(self, other)
 
     def __getitem__(self, items):
@@ -332,22 +339,30 @@ class BoardQuery():
             for item in items:
                 if isinstance(item, int):
                     res.append(item)
-            return BoardQuery(self.board_readers[res], self.test_names[res])  # do not have type error
+            return BoardQuery(self.board_readers[res], self.test_viewers[res])  # do not have type error
         elif isinstance(items, int):
             res.append(items)
-            return BoardQuery(self.board_readers[res], self.test_names[res])  # do not have type error
+            return BoardQuery(self.board_readers[res], self.test_viewers[res])  # do not have type error
         elif isinstance(items, str):
             return self.__getitem__([items])
         elif isinstance(items, slice):
-            return BoardQuery(self.board_readers[items], self.test_names[items])  # do not have type error
+            return BoardQuery(self.board_readers[items], self.test_viewers[items])  # do not have type error
 
     def __repr__(self):
-        return pformat(self.test_names)
+        return pformat(self.test_viewers)
 
     __str__ = __repr__
 
     @property
-    def scalar_tags(self):
+    def param_keys(self):
+        res = set()
+        for tv in self.test_viewers:  # type:TestViewer
+            for k, v in tv.params.inner_dict.walk():
+                res.add(k)
+        return res
+
+    @property
+    def scalar_tags(self) -> Set[str]:
         """返回所有board reader 重合的tags"""
         from functools import reduce
         from operator import and_
@@ -373,25 +388,100 @@ class BoardQuery():
                 res.append(None)
         return res
 
-    def curve(self, tag, backend='matplotlib'):
+    def parallel_dicts(self, *constrains: Constrain):
+        """
+        构建 平行图的字典，返回一个字典，包含了每个 tag 对应的所有试验的N个记录
+
+        Args:
+            *constrains:
+            backend:
+
+        Returns:
+
+        """
+        tag_dict = {}
+
+        for constrain in constrains:
+            tag = constrain._name
+            if isinstance(constrain, ParamConstrain):
+                tag_values = list()
+                for tv in self.test_viewers:  # type:TestViewer
+                    params = tv.params
+
+                    for k, v in params.inner_dict.walk():
+                        # check name
+                        if k != tag:
+                            continue
+
+                        # check constrain conditoin
+                        if constrain._constrain != None and not constrain._constrain(v, constrain._value):
+                            continue
+
+                        if isinstance(v, (numbers.Number, str)):  # include int, float, bool
+                            tag_values.append(v)
+
+                tag_dict[tag] = tag_values
+
+            elif isinstance(constrain, MeterConstrain):
+                if constrain._name not in self.scalar_tags:
+                    warnings.warn('{} can not found in this query, and will be ignored.'.format(constrain))
+                    continue
+
+                constrain_func = constrain._constrain
+                values_lis = self.values(tag)
+                assert all([len(values) > 0 for values in values_lis])
+
+                if constrain_func is None:  # 自动判断约束类型
+                    # 判断方式：tag中 loss 那么取最小值，有 acc 那么取最大值，否则根据初始值和末尾值的大小关系进行判断
+                    if 'loss' in tag:
+                        constrain_func = np.min
+                    elif 'acc' in tag:
+                        constrain_func = np.max
+                    else:
+                        for values in values_lis:
+                            if values[0] > values[-1]:
+                                constrain_func = np.min
+                            else:
+                                constrain_func = np.max
+                            break
+
+                evalue = [constrain_func(values) for values in values_lis]
+
+                tag_dict[tag] = evalue
+
+        return tag_dict
+
+    def line(self, tag, backend='matplotlib'):
+        """曲线图"""
         from .charts import Curve
         figure = {}
-        for bd, test_name in zip(self.board_readers, self.test_names):
+        for bd, test_viewer in zip(self.board_readers, self.test_viewers):
+            test_name = test_viewer.name
+
             scalars = bd.get_scalars(tag)
             figure[test_name] = {
                 'name': test_name,
                 'x': scalars.steps,
                 'y': scalars.values,
             }
-        curve = Curve(figure)
+        curve = Curve(figure, title=tag)
         plot_func = getattr(curve, backend, None)
         if plot_func is None:
             raise NotImplementedError(backend)
         else:
             return plot_func()
 
-    def parallel(self, backend='matplotlib'):
-        pass
+    def parallel(self, *constrains: Constrain, backend='matplotlib'):
+        """平行图"""
+        tag_dict = self.parallel_dicts(*constrains)
+        from .charts import Parallel
+        parallel = Parallel([i.name for i in self.test_viewers], tag_dict)
+
+        plot_func = getattr(parallel, backend, None)
+        if plot_func is None:
+            raise NotImplementedError(backend)
+        else:
+            return plot_func()
 
 
 class TestsQuery:
@@ -464,13 +554,29 @@ class TestsQuery:
                           index=self.test_names)
         return df
 
+    def params_df(self):
+        params_lis = [vw.params for vw in self.to_viewers()]
+        res = []
+        for params in params_lis:
+            dic = OrderedDict()
+            for k, v in params.inner_dict.walk():
+                dic[k] = v
+            res.append(dic)
+
+        df = pd.DataFrame(res, index=[vw.name for vw in self.to_viewers()]).T
+        return df
+
     def boards(self):
         from thexp.base_classes.errors import NoneWarning
-        boards = [i.board_reader for i in self.to_viewers()]
-        if not all(boards):
-            boards = [i for i in boards if i is not None]
-            warnings.warn('Some tests have no board, they will be removed.', NoneWarning)
-        return BoardQuery(boards, self.test_names)
+        viewers = []
+        boards = []
+        for vw in self.to_viewers():
+            if vw.board_reader is None:
+                warnings.warn('{} have no board, they will be removed.'.format(vw.name), NoneWarning)
+                continue
+            viewers.append(vw)
+            boards.append(vw.board_reader)
+        return BoardQuery(boards, viewers)
 
     @property
     def empty(self):
@@ -481,10 +587,12 @@ class TestsQuery:
         return len(self.test_dirs) == 1
 
     def to_viewers(self):
+        """convert testquery to  testviewer list"""
         from .viewer import TestViewer
         return [TestViewer(i) for i in self.test_dirs]
 
     def to_viewer(self):
+        """convert testquery to single testviewer if there is only one test in queryset"""
         if self.isitem:
             from .viewer import TestViewer
             return TestViewer(self.test_dirs[0])
@@ -577,7 +685,7 @@ class TestsQuery:
     def has_log(self, toggle=True):
         return self.has_plugin(_BUILTIN_PLUGIN.logger, toggle)
 
-    def has_modules(self, toggle=True):
+    def has_saver(self, toggle=True):
         return self.has_plugin(_BUILTIN_PLUGIN.saver, toggle)
 
     def has_params(self, toggle=True):
@@ -604,8 +712,41 @@ class TestsQuery:
                 if not toggle: res.append(i)
         return self[res]
 
-    def params_filter(self, **kwargs):
-        pass # todo 应该不仅仅要满足相等条件，满足大于小于条件应该也是可以的
+    def filter_params(self, *constrains: ParamConstrain):
+        """
+        Query test with param constrains.
+
+        Args:
+            *constrains: a ParamConstrain instance.
+
+        Returns:
+
+        """
+        if len(constrains) == 0:
+            return self
+
+        res = []
+        params_lis = [vw.params for vw in self.to_viewers()]
+        for i, params in enumerate(params_lis):
+            feasible = True
+            for constrain in constrains:
+                if params is None:
+                    feasible = False
+                    break
+
+                left = params.get(constrain._name, NoneItem())
+                if isinstance(left, NoneItem) and not constrain._allow_none:
+                    feasible = False
+                    break
+
+                right = constrain._value
+                if not constrain._constrain(left, right):
+                    feasible = False
+                    break
+            if feasible:
+                res.append(i)
+
+        return self[res]
 
     """update test state"""
 

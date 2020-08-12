@@ -22,7 +22,7 @@ class DataBundler:
 
     效果等价于::
 
-        for (imgs,chains) in chain(cifar_dataloader,svhn_dataloader):
+        for (imgs,labels) in chain(cifar_dataloader,svhn_dataloader):
             ...
 
     另外还支持
@@ -31,10 +31,11 @@ class DataBundler:
     class DataBundler(OrderedDict):
         pass
 
-    def __init__(self):
+    def __init__(self, device=None, to_device_fn=to_device):
         self.dataloaders = DataBundler.DataBundler()
         self.iter_mode = "chain"
-        self.device = None
+        self.device = device
+        self._to_device_fn = to_device_fn
 
     def set_batch_size(self, batch_size):
         from torch.utils.data import DataLoader
@@ -111,7 +112,6 @@ class DataBundler:
 
     def __iter__(self):
         loaders = self._func_loader()
-        from thexp.utils.timeit import timeit
         if len(loaders) == 1:
             iter = loaders[0]
             # for batch in loaders[0]:
@@ -124,15 +124,12 @@ class DataBundler:
         else:
             assert False
 
-        timeit.mark("get_data_start")
         for batch_data in iter:
             # from .utils import to_device
-            timeit.mark("get_data_start")
             if self.device is not None:
-                yield to_device(batch_data, self.device)
+                yield self._to_device_fn(batch_data, self.device)
             else:
                 yield batch_data
-            timeit.mark("get_data_over")
 
     def to(self, device: torch.device):
         assert isinstance(device, torch.device)

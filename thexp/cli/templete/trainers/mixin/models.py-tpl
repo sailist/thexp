@@ -1,12 +1,16 @@
+from torch import nn
+from thexp import Trainer
+
+import arch
 from .. import GlobalParams
 
 
-class ModelMixin():
+class ModelMixin(Trainer):
 
     def models(self, params: GlobalParams):
-        raise NotImplementedError()
+        self.model = nn.Linear(2, 2)
+        self.optim = params.optim.build(self.model.parameters())
+        self.to(self.device)
 
     def predict(self, xs):
         raise NotImplementedError()
-
-

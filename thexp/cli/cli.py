@@ -54,8 +54,11 @@ def _board_with_logdir(logdir, *args, **kwargs):
     import os
     import subprocess
 
+    tmpdir = os.path.join(os.path.dirname(logdir), 'board_tmp')
+    os.makedirs(tmpdir, exist_ok=True)
+
     subprocess.check_call(['tensorboard', '--logdir={}'.format(logdir)],
-                          env=dict(os.environ))
+                          env=dict(os.environ, TMPDIR=tmpdir))
 
 
 def _board_with_test_name(test_name, *args, **kwargs):

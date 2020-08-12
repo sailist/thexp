@@ -12,8 +12,8 @@
       <paths name="ilearn">
         <serverdata>
           <mappings>
-            <mapping local="$PROJECT_DIR$/../thexp-demo" web="/" />
             <mapping deploy="/jupyter_data/thexp" local="$PROJECT_DIR$" web="/" />
+            <mapping local="" />
           </mappings>
         </serverdata>
       </paths>

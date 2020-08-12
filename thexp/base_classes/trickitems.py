@@ -37,10 +37,10 @@ class NoneItem:
         return 0 - other
 
     def __truediv__(self, other):
-        return 1/other
+        return 1 / other
 
     def __floordiv__(self, other):
-        return 1/other
+        return 1 / other
 
     def __repr__(self):
         return "NoneItem()"
@@ -82,6 +82,7 @@ class AvgItem:
     avg.avg = 2 #(average item)
     avg.sum = 6
     """
+
     def __init__(self, weight=1) -> None:
         super().__init__()
         self._sum = 0
@@ -99,14 +100,16 @@ class AvgItem:
         self._item = other
 
     @property
+    def item(self):
+        return self._item
+
+    @property
     def avg(self):
         if self._count == 0:
             return 0
         return self._sum / self._count
 
     def __repr__(self) -> str:
-        if self._item == self.avg:
-            return str(self._item)
         return str("{}({})".format(self._item, self.avg))
 
     def __getattribute__(self, name: str) -> Any:
@@ -116,7 +119,16 @@ class AvgItem:
         return getattr(self._item, item)
 
     def __format__(self, format_spec):
-        return "{{:{}}}({{:{}}})".format(format_spec,format_spec).format(self._item, self.avg)
+        return "{{:{}}}({{:{}}})".format(format_spec, format_spec).format(self._item, self.avg)
 
     def __getitem__(self, item):
         return self._item[item]
+
+
+class _ContainWrap():
+    """
+    用于 attr 内部，区分关键词 in 的判断行为发起的 __getitem__ 和平时的attr['some'] 发起的__getitem__ 的不同。
+    """
+
+    def __init__(self, value):
+        self.value = value

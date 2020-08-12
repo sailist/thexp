@@ -2,13 +2,13 @@
 
 """
 
-__VERSION__ = "1.4.1.11"
+__VERSION__ = "1.4.1.17"
 
 from .frame import (
     Logger,
     Meter,
     AvgMeter,
-    Params,
+    Params, BaseParams,
     Saver,
     RndManager,
     Delegate,
@@ -19,7 +19,7 @@ from .frame import (
     Experiment,
     globs)
 
-from .analyser import Q
+from .analyse import Q, C
 from .utils.environ import ENVIRON_ as ENV
 
-import thexp.calculate # initialize schedule attr classes
+import thexp.calculate  # initialize schedule attr classes

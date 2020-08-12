@@ -1,5 +1,5 @@
 """
-
+Methods about files/paths/hash
 """
 import hashlib
 import json
@@ -36,6 +36,7 @@ def _create_home_dir(path):
 
 @lru_cache(1)
 def home_dir():
+    """dir for storing global record"""
     path = os.path.expanduser("~/.thexp")
     if not os.path.exists(path):
         _create_home_dir(path)
@@ -45,16 +46,24 @@ def home_dir():
 
 @lru_cache(1)
 def config_path():
+    """global config file path"""
     return os.path.join(home_dir(), "config.json")
 
 
-def write_global_config(dumpsrc):
+def write_global_config(dumpsrc: dict):
+    """
+    write global config
+    Notes:
+    ------
+    User should not call this method directly
+    """
     path = config_path()
     with open(path, "w") as w:
         return json.dump(dumpsrc, w, indent=2)
 
 
 def global_config() -> dict:
+    """load global config"""
     path = config_path()
     if not os.path.exists(path):
         write_global_config(_default_config())
@@ -63,66 +72,38 @@ def global_config() -> dict:
 
 
 def file_atime_hash(file):
+    """
+    calculate hash of given file's atime
+    atime : time of last access
+    """
     return string_hash(str(os.path.getatime(file)))
 
 
 def string_hash(*str):
+    """calculate hash of given string list"""
     hl = hashlib.md5()
     for s in str:
         hl.update(s.encode(encoding='utf-8'))
     return hl.hexdigest()[:16]
 
 
-def file_hash(file):
+def file_hash(file: str) -> str:
+    """calculate hash of given file path"""
     hl = hashlib.md5()
-    with open(file, encoding="utf-8") as r:
-        s = "".join(r.readlines())
-        hl.update(s.encode(encoding='utf-8'))
+    with open(file, 'rb') as r:
+        hl.update(r.read())
     return hl.hexdigest()[:16]
 
 
-def path_equal(p1: str, p2: str) -> bool:
-    """
-    判断两个路径是否相同  TODO（疑似在linux下不好用）
-    Args:
-        p1:
-        p2:
-
-    Returns:
-
-    """
-    return os.path.normcase(p1) == os.path.normcase(p2)
-
-
-def path_in(sub: str, all: str) -> bool:
-    """
-    判断某路径是另一路径的子路径
-    Args:
-        sub:
-        all:
-
-    Returns:
-
-    """
-    return os.path.normcase(sub) in os.path.normcase(all)
-
-
-def filter_filename(title, substr='-'):
-    """
-    过滤非法字符
-    Args:
-        title:
-        substr:
-
-    Returns:
-
-    """
+def filter_filename(title: str, substr='-'):
+    """replace invalid string of given file path by `substr`"""
     import re
     title = re.sub('[\/:*?"<>|]', substr, title)  # 去掉非法字符
     return title
 
 
 def hash(value) -> str:
+    """try to calculate hash of any given object"""
     import hashlib
     from collections.abc import Iterable
     from numbers import Number

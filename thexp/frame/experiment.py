@@ -6,7 +6,7 @@ import sys
 import warnings
 from collections import namedtuple
 
-from thexp.globals import _CONFIGL, _GITKEY, _FNAME
+from thexp.globals import _CONFIGL, _GITKEY, _FNAME, _OS_ENV, _PLUGIN_KEY, _BUILTIN_PLUGIN, _PLUGIN_DIRNAME
 from thexp.utils.dates import curent_date
 
 from .configs import globs
@@ -61,7 +61,8 @@ class Experiment:
             self._regist_exp()
 
             # 目录下所有thexp项目
-            git_commit(self.repo, _GITKEY.commit_key, branch_name=_GITKEY.thexp_branch)
+            if _OS_ENV.THEXP_COMMIT_DISABLE not in os.environ:
+                git_commit(self.repo, _GITKEY.commit_key, branch_name=_GITKEY.thexp_branch)
 
             self._write()
         else:
@@ -332,17 +333,104 @@ class Experiment:
         self._tags[name] = plugins
         self._write()
 
-    def add_plugin(self, key, value=None):
+    def add_plugin(self, key: str, value: dict = None):
         """
         注册试验中使用的插件。
-        :param key: 插件名
-        :param value: 若为空，则为空字典
-        :return:
+
+
+        Args:
+            key: 插件名
+            value: 若为空，则为空字典
+
+        Returns:
+
         """
         if value is None:
             value = {}
         self._plugins[key] = value
         self._write()
+
+    def add_params(self, params):
+        """
+        ```python
+        from thexp import Params
+        p = Params()
+        exp.add_params(p)
+        ```
+        """
+        kwargs = {
+            _PLUGIN_KEY.PARAMS.param_hash: params.hash(),
+        }
+        self.add_plugin(_BUILTIN_PLUGIN.params, kwargs)
+        params.to_json(os.path.join(self.test_dir, _FNAME.params))
+
+    def add_logger(self, fn: str):
+        """
+        Examples:
+
+        ```python
+        from thexp import Logger
+        logger = Logger()
+        fn = logger.add_log_dir(self.experiment.test_dir)
+        exp.add_logger(fn)
+        ```
+        """
+        kwargs = {
+            _PLUGIN_KEY.LOGGER.log_dir: self.test_dir,
+            _PLUGIN_KEY.LOGGER.fn: fn,
+        }
+        self.add_plugin(_BUILTIN_PLUGIN.logger, kwargs)
+
+    def add_board(self):
+        """
+        Examples:
+        ```python
+        from torch.utils.tensorboard import SummaryWriter
+
+        kwargs = exp.add_board()
+        res = SummaryWriter(**kwargs)
+        ```
+        """
+        d = self.makedir(_PLUGIN_DIRNAME.writer)
+        kwargs = {
+            _PLUGIN_KEY.WRITER.log_dir: d,
+            _PLUGIN_KEY.WRITER.filename_suffix: '.bd'
+        }
+        self.add_plugin(_BUILTIN_PLUGIN.writer, kwargs)
+        return kwargs
+
+    def add_saver(self):
+        """
+        ```python
+        from thexp import Saver
+        kwargs = self.experiment.add_saver()
+        Saver(**kwargs)
+        ```
+        """
+        d = self.makedir(_PLUGIN_DIRNAME.saver)
+
+        kwargs = {
+            _PLUGIN_KEY.SAVER.max_to_keep: 3,
+            _PLUGIN_KEY.SAVER.ckpt_dir: d
+        }
+        self.add_plugin(_BUILTIN_PLUGIN.saver, kwargs)
+        return kwargs
+
+    def add_rndmanager(self):
+        """
+        ```python
+        from thexp import RndManager
+        kwargs = exp.add_rndmanager()
+        return RndManager(**kwargs)
+        ```
+        """
+        d = self.make_exp_dir(_PLUGIN_DIRNAME.rnd)
+
+        kwargs = {
+            _PLUGIN_KEY.RND.save_dir: d
+        }
+        self.add_plugin(_BUILTIN_PLUGIN.rnd, kwargs)
+        return kwargs
 
     def config_items(self):
         """

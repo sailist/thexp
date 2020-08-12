@@ -3,24 +3,27 @@
 """
 
 import os
-import warnings
 from functools import wraps
 
+from ..calculate.schedule import Schedule
 from .meter import AvgMeter
 from .meter import Meter
 from .params import Params
+from .trainer import Trainer
 from ..base_classes.trickitems import NoneItem, AvgItem
 from ..globals import _ML
-from ..utils.timeit import format_second
-from .trainer import Trainer
+from ..utils.timing import format_second
+
 
 class BaseCallback():
     """
-    回调基类，实现了基本的回调接口
+    base callback class
 
-    因为绑定的方法只会调用on_begin()和on_end()，因此对于具体的方法需要进行判断进行方法的分流
+    only have two methods `on_begin()` and `on_end()`.
+
+    for simpler using, see TrainCallback.
     """
-    priority = 0  # 所有内部实现的Callback优先级均在 [0-100] 以内
+    priority = 0  # type:int # All callbacks in thexp will have priority in range 0-100
 
     def __new__(cls, *_, **__):
         self = super().__new__(cls)
@@ -205,7 +208,7 @@ class LoggerCallback(TrainCallback):
         self.start = 0
 
     def on_train_begin(self, trainer: Trainer, func, params: Params, *args, **kwargs):
-        from ..utils.timeit import TimeIt
+        from ..utils.timing import TimeIt
 
         self.start = params.eidx
         self.traintime = TimeIt()
@@ -221,7 +224,7 @@ class LoggerCallback(TrainCallback):
         trainer.logger.info("train time: {}".format(format_second(self.traintime["use"])))
 
     def on_train_epoch_begin(self, trainer: Trainer, func, params: Params, *args, **kwargs):
-        from ..utils.timeit import TimeIt
+        from ..utils.timing import TimeIt
 
         if self.avg:
             self.meter = AvgMeter()
@@ -423,63 +426,37 @@ class AutoRecord(TrainCallback):
                 trainer.writer.add_scalar(self._key_name("train", k), v, params.eidx)
 
 
-class BoardRecord(TrainCallback):
-    """
-    手动选择训练过程中产生的指标进行记录
-    """
+class EMAUpdate(TrainCallback):
+    def on_train_batch_end(self, trainer: Trainer, func, params: Params, meter: Meter, *args, **kwargs):
+        super().on_train_batch_end(trainer, func, params, meter, *args, **kwargs)
+        for k, v in trainer.model_dict:
+            if k.lower().startswith('ema'):
+                v.step()
 
-    def __init__(self, unit="epoch", empty_mode="zero"):
-        """
-        :param unit: epoch or global_step
-        :param empty_mode: 'zero': default = 0 or 'ignore' :not record
-        """
-        self.watch_dict = dict(
-            train=dict(),
-            test=dict(),
-            eval=dict(),
-        )
-        self.unit = unit
-        self.empty_mode = empty_mode
 
-    def watch_scalar(self, mode, name, tag):
-        assert tag not in self.watch_dict[mode], "{} exists in {} watch dict".format(tag, mode)
-        self.watch_dict[mode][tag] = name
+class LRSchedule(TrainCallback):
+    def __init__(self, schedule: Schedule = None, apply=True, use_eidx=True):
+        self.schedule = schedule
+        self.apply = apply
+        self.use_eidx = use_eidx
 
-    def _find_value(self, meter: Meter, key):
-        if isinstance(meter[key], AvgItem):
-            return meter[key].avg
-        elif isinstance(meter[key], NoneItem):
-            if self.empty_mode == "zero":
-                return 0
-            else:
-                return None
-        elif isinstance(meter[key], (str)):
-            warnings.warn("tensorboard scalar types can't be str, but meter.{} is".format(key))
-            return None
-        return meter[key]
+    def on_hooked(self, trainer: Trainer, params: Params):
+        super().on_hooked(trainer, params)
+        if self.schedule is None:
+            assert 'lr_sche' in params
+            self.schedule = params.lr_sche
 
     def on_train_epoch_end(self, trainer: Trainer, func, params: Params, meter: Meter, *args, **kwargs):
-        self.update(trainer, meter, params, "train")
-
-    def update(self, trainer, meter, params, mode):
-        from ..utils.iters import iter2pair
-        step = params.eidx if self.unit == "epoch" else params.global_step
-
-        for tag, names in self.watch_dict[mode].items():
-            if isinstance(names, str):
-                val = self._find_value(meter, names)
-                if val is not None:
-                    trainer.writer.add_scalar(tag, val, step)
+        super().on_train_epoch_end(trainer, func, params, meter, *args, **kwargs)
+        for k, v in trainer.optimizer_dict:
+            if self.use_eidx:
+                step = params.eidx
             else:
-                scalar_dict = {}
-                for k, v in iter2pair(names):
-                    val = self._find_value(meter, k)
-                    if val is not None:
-                        scalar_dict[v] = val
-                trainer.writer.add_scalars(tag, scalar_dict, step)
+                step = params.global_step
 
-    def on_eval_end(self, trainer: Trainer, func, params: Params, meter: Meter, *args, **kwargs):
-        self.update(trainer, meter, params, "eval")
-
-    def on_test_end(self, trainer: Trainer, func, params: Params, meter: Meter, *args, **kwargs):
-        self.update(trainer, meter, params, "test")
+            if self.apply:
+                new_lr = self.schedule.apply(v, step)
+                trainer.logger.info('{}.lr = {}'.format(k, new_lr))
+            else:
+                ratio = self.schedule.scale(v, step)
+                trainer.logger.info('lr scale ratio = {}'.format(k, ratio))

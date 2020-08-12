@@ -1,6 +1,7 @@
 """
-
+used for logging
 """
+
 import os
 from collections import namedtuple
 from datetime import datetime
@@ -26,7 +27,7 @@ class Logger:
             return Logger._instance
         return super().__new__(cls)
 
-    def __init__(self, adddate=True, datefmt: str = '%y-%m-%d %H:%M:%S', sep: str = " | ", stdout=True):
+    def __init__(self, adddate=True, datefmt: str = '%y-%m-%d %H:%M:%S', sep: str = " | ", use_stdout: bool = True):
         if Logger._instance is not None:
             return
 
@@ -37,11 +38,11 @@ class Logger:
         self.sep = sep
         self.return_str = ""
         self.listener = []
-        self.stdout = stdout
+        self.use_stdout = use_stdout
         Logger._instance = self
 
-    def format(self, *values, inline=False, fix=0, raw=False, append=False):
-        """根据初始化设置 格式化 前缀和LogMeter"""
+    def _format(self, *values, inline=False, fix=0, raw=False, append=False):
+        """"""
         if self.adddate and not raw:
             cur_date = datetime.now().strftime(self.datefmt)
         else:
@@ -76,52 +77,50 @@ class Logger:
             return loginfo("{}\n".format(space), 0)
 
     def inline(self, *values, fix=0, append=False):
-        """在一行内输出 前缀 和 LogMeter"""
-        logstr, fix = self.format(*values, inline=True, fix=fix, append=append)
+        """Log a message with severity 'INFO' inline"""
+        logstr, fix = self._format(*values, inline=True, fix=fix, append=append)
         self.handle(logstr, fix=fix)
 
     def info(self, *values):
-        """以行为单位输出 前缀 和 LogMeter"""
-        logstr, fix = self.format(*values, inline=False)
+        """Log a message with severity 'INFO'"""
+        logstr, fix = self._format(*values, inline=False)
         self.handle(logstr, level=Logger.V_INFO, fix=fix)
 
     def raw(self, *values, inline=False, fix=0, level=0, append=False):
-        """不输出日期前缀"""
-        logstr, fix = self.format(*values, inline=inline, fix=fix, raw=True, append=append)
+        """Log a message with severity 'INFO' withou datetime prefix"""
+        logstr, fix = self._format(*values, inline=inline, fix=fix, raw=True, append=append)
         self.handle(logstr, level=level)
 
     def debug(self, *values):
-        """debug 级别的 info"""
-        logstr, fix = self.format("DEBUG", *values, inline=False)
+        """Log a message with severity 'DEBUG'"""
+        # TODO 添加红色前景
+        logstr, fix = self._format("DEBUG", *values, inline=False)
         self.handle(logstr, level=Logger.V_DEBUG, fix=fix)
 
     def warn(self, *values):
-        """warn 级别的 info"""
-        logstr, fix = self.format("WARN", *values, inline=False)
+        """Log a message with severity 'WARN'"""
+        # TODO 添加黄色前景
+        logstr, fix = self._format("WARN", *values, inline=False)
         self.handle(logstr, level=Logger.V_WARN, fix=fix)
 
     def error(self, *values):
-        """error 级别的 info"""
-        logstr, fix = self.format("ERROR", *values, inline=False)
+        """Log a message with severity 'ERROR'"""
+        # TODO 添加黄色背景
+        logstr, fix = self._format("ERROR", *values, inline=False)
         self.handle(logstr, level=Logger.V_ERROR, fix=fix)
 
     def fatal(self, *values):
-        """fatal 级别的 info"""
-        logstr, fix = self.format("FATAL", *values, inline=False)
+        """Log a message with severity 'FATAL'"""
+        # TODO 添加红色背景
+        logstr, fix = self._format("FATAL", *values, inline=False)
         self.handle(logstr, level=Logger.V_FATAL, fix=fix)
 
     def newline(self):
-        """换行"""
+        """"""
         self.handle("")
 
     def handle(self, logstr, end="", level=0, **kwargs):
-        """
-        handle log stinrg，以指定的方式输出
-        :param logstr:
-        :param _:
-        :param end:
-        :return:
-        """
+        """handle log stinrg"""
         for listener in self.listener:
             listener(logstr, end, level)
 
@@ -146,15 +145,16 @@ class Logger:
             self.return_str = ""
 
     def print(self, *args, end='\n'):
-        if self.stdout:
+        """built-in print function"""
+        if self.use_stdout:
             print(*args, end=end, flush=True)
 
-    def toggle_stdout(self, val):
-        """控制 logger 是否向标准输出流输出"""
-        self.stdout = val
+    def toggle_stdout(self, val:bool):
+        """"""
+        self.use_stdout = val
 
     def add_log_dir(self, dir):
-        """添加一个输出到文件的管道"""
+        """add a file output pipeline"""
         if dir in self.pipe_key:
             self.info("Add pipe {}, but already exists".format(dir))
             return None
@@ -174,16 +174,10 @@ class Logger:
         return fni
 
     def add_log_listener(self, func: Callable[[str, str, int], Any]):
-        """
-        添加输出回调
-        Args:
-            func:  func(logstr, end='\n', level)
-        Returns:
-
-        """
+        """add a log event handler"""
         self.listener.append(func)
 
     @staticmethod
     def set_verbose(verbose=0):
-        """设置日志的输出级别"""
+        """"""
         Logger.VERBOSE = verbose

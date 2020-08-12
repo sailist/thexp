@@ -5,12 +5,15 @@ import os
 
 from ..base_classes.defaults import draw_dict
 from ..utils.dates import curent_date
+from ..decorators import deprecated
 
 
+@deprecated('1.4.0', '1.5.0')
 class Reporter():
     """
     记录并生成 markdown 格式的报告
     """
+
     def __init__(self, pltf_dir, exts=None):
 
         self.base_dir = pltf_dir
@@ -86,7 +89,7 @@ class Reporter():
     def report(self, every=20, otherinfo=None):
         every = max(every, 1)
 
-        from thexp.utils.markdown_writer import Markdown
+        from thexp.utils.markdown import Markdown
         md = Markdown()
         md.add_title(curent_date('%y-%m-%d-%H:%M:%S'))
         with md.code() as code:

@@ -96,16 +96,8 @@ def cartesian_product(left: torch.Tensor, right: torch.Tensor = None) -> Tuple[t
 
 def cat_then_split(op: Callable[[torch.Tensor], torch.Tensor], tensors: List[torch.Tensor]) -> List[torch.Tensor]:
     """
-    先 cat，然后执行某函数，随后再split
-
-    Args:
-        op:
-        tensors:
-
-    Returns:
-
     Examples:
-    >>> ta,tb,tc = cat_then_split(lambda x:x.to(device),[ta,tb,tc])
+    >>> ta,tb,tc = cat_then_split(lambda x:model(x),[ta,tb,tc])
     >>> alogits,blogits,clogits = cat_then_split(model,[ta,tb,tc])
     """
 

@@ -4,12 +4,12 @@
 
 import sys
 sys.path.insert(0,"../../")
-from thexp.utils.screen import ScreenStr
 import time
 
+from thexp.utils.screen import ScreenStr
 s = "\rLong Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text;Long Text"
+print(ScreenStr(s,leftoffset=10),end="")
 for i in range(100):
-    print(ScreenStr(s,leftoffset=10),end="")
     time.sleep(0.2)
 
 

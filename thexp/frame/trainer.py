@@ -12,6 +12,7 @@ import torch
 from functools import lru_cache
 from functools import wraps
 from torch.utils.data.dataloader import DataLoader
+from torch.optim.optimizer import Optimizer
 from typing import Any, Union, List, Dict
 from collections.abc import Iterator
 from .databundler import DataBundler
@@ -19,7 +20,7 @@ from .meter import AvgMeter, Meter
 from .params import Params
 from .saver import Saver
 from ..base_classes.metaclasses import Merge
-from ..globals import _BUILTIN_PLUGIN, _FNAME, _PLUGIN_DIRNAME, _PLUGIN_KEY
+from ..globals import _BUILTIN_PLUGIN, _FNAME, _PLUGIN_DIRNAME, _PLUGIN_KEY, _OS_ENV
 
 
 class BaseTrainer(metaclass=Merge):
@@ -91,8 +92,8 @@ class BaseTrainer(metaclass=Merge):
         return self
 
     def __init__(self, params: Params = None):
-        self._model_dict = {}
-        self._optim_dict = {}
+        self._model_dict = {}  # type:Dict[str,torch.nn.Module]
+        self._optim_dict = {}  # type:Dict[str,Optimizer]
         self._other_state_dict = {}
         self._vector_dict = {}
         self._checkpoint_plug = {}
@@ -113,36 +114,38 @@ class BaseTrainer(metaclass=Merge):
                     self.regist_device(params.device)
                 else:
                     warnings.warn("Unknown type for params.device.")
-
+        else:
+            self.params = Params()
         self.initial()
 
     def initial(self):
-        """
-        """
+        """initial the trainer"""
         import inspect
         from .experiment import Experiment
-        # from ..utils.gitutils import locate_cls
+        # build experiment
+        self.params.initial()
+
         pre = os.path.splitext(os.path.basename(inspect.getfile(self.__class__)))[0]
+
+        if not self.params.get('git_commit', True):
+            os.environ[_OS_ENV.THEXP_COMMIT_DISABLE] = '1'
+
         self.experiment = Experiment("{}.{}".format(pre, self.__exp_name__))
 
-        self.params.to_json(os.path.join(self.experiment.test_dir, _FNAME.params))
+        # rigist and save params of this training procedure
+        self.experiment.add_params(self.params)
 
-        kwargs = {
-            _PLUGIN_KEY.PARAMS.param_hash: self.params.hash(),
-        }
-
-        self.experiment.add_plugin(_BUILTIN_PLUGIN.params, kwargs)
-
+        # regist trainer info
         trainer_kwargs = {
             _PLUGIN_KEY.TRAINER.path: inspect.getfile(self.__class__),
             _PLUGIN_KEY.TRAINER.doc: self.__class__.__doc__,
             _PLUGIN_KEY.TRAINER.fn: pre,
             _PLUGIN_KEY.TRAINER.class_name: self.__class__.__name__
         }
-
         self.experiment.add_plugin(_BUILTIN_PLUGIN.trainer, trainer_kwargs)
 
-        # self.reporter = Reporter(self.experiment.makedir("plot"))
+        # initial model data and callbacks
+
         self.models(self.params)
         self.datasets(self.params)
         self.callbacks(self.params)
@@ -164,14 +167,11 @@ class BaseTrainer(metaclass=Merge):
                            eval: Union[DataBundler, DataLoader] = None,
                            test: Union[DataBundler, DataLoader] = None):
         """
-        注册 DataLoader
+        regist train/eval/test dataloader
+
         Args:
-            train:
-            eval:
-            test:
-
-        Returns:
-
+            train / eval / test: DataBundler in thexp, or DataLoader in pytorch
+                if None, the corresponding train/eval/test methods will be ignored when call them.
         """
         if train is not None:
             self._regist_databundler("train", train)
@@ -183,9 +183,13 @@ class BaseTrainer(metaclass=Merge):
         self.logger.info(self._databundler_dict)
 
     def stop_train(self):
+        """stop current training procedure"""
         self.train_toggle = True
 
     def stop_current_epoch(self):
+        """stop current training epoch, if current epoch doesn't reach the end,
+        the next epoch will be started and the releated callback methods will be called.
+        """
         self.train_epoch_toggle = True
 
     def train(self):
@@ -197,7 +201,7 @@ class BaseTrainer(metaclass=Merge):
                 self.train_toggle = False
                 break
 
-    def train_epoch(self, eidx, params):
+    def train_epoch(self, eidx: int, params: Params):
         avg = AvgMeter()
         self.change_mode(True)
         for idx, batch_data in enumerate(self.train_dataloader):  # 复现多线程下 Keyboard Interupt，尝试通过Try解决
@@ -215,13 +219,13 @@ class BaseTrainer(metaclass=Merge):
 
     def train_step(self, steps) -> Union[AvgMeter, Meter]:
         """
-        训练特定的步数
+        train specific steps
         Args:
-            steps:
+            steps: int
 
         Returns:
-            训练过程中的 AvgMeter
-            若 steps = 1 则只返回 Meter
+            if steps > 1, will return a AveMeter instance.
+            if steps = 1, will return a Meter object.
 
         """
         param = self.params
@@ -243,12 +247,13 @@ class BaseTrainer(metaclass=Merge):
 
     def feed_batchdata(self, batch_data=None) -> Meter:
         """
-        只训练一个 batch，用于测试或者用于干什么...
+        train a step for testing or some other purpose.
         Args:
-            batch_data:
+            batch_data: the batch_data used in training procedure.
+                if None, batch_data will be fetched from train_datasetloader.
 
         Returns:
-            Meter
+            a Meter.
         """
         if batch_data is None:
             return self.train_step(1)
@@ -272,6 +277,7 @@ class BaseTrainer(metaclass=Merge):
 
     @property
     def safe_writer(self):
+        """see trainer.writer"""
         import tensorflow as tf
         import tensorboard as tb
         tf.io.gfile = tb.compat.tensorflow_stub.io.gfile
@@ -317,13 +323,8 @@ class BaseTrainer(metaclass=Merge):
             A SummaryWriter instance
         """
         from torch.utils.tensorboard import SummaryWriter
-        d = self.experiment.makedir(_PLUGIN_DIRNAME.writer)
-        kwargs = {
-            _PLUGIN_KEY.WRITER.log_dir: d,
-            _PLUGIN_KEY.WRITER.filename_suffix: '.bd'
-        }
-        self.experiment.add_plugin(_BUILTIN_PLUGIN.writer, kwargs)
 
+        kwargs = self.experiment.add_board()
         res = SummaryWriter(**kwargs)
 
         def close(*args):
@@ -336,46 +337,34 @@ class BaseTrainer(metaclass=Merge):
     @property
     @lru_cache()
     def logger(self):
+        """see thexp.frame.Logger"""
         from .logger import Logger
         logger = Logger()
         fn = logger.add_log_dir(self.experiment.test_dir)
-        kwargs = {
-            _PLUGIN_KEY.LOGGER.log_dir: self.experiment.test_dir,
-            _PLUGIN_KEY.LOGGER.fn: fn,
-        }
-        self.experiment.add_plugin(_BUILTIN_PLUGIN.logger, kwargs)
+        self.experiment.add_logger(fn)
         return logger
 
     @property
     @lru_cache()
     def saver(self):
-        d = self.experiment.makedir(_PLUGIN_DIRNAME.saver)
-
-        kwargs = {
-            _PLUGIN_KEY.SAVER.max_to_keep: 3,
-            _PLUGIN_KEY.SAVER.ckpt_dir: d
-        }
-        self.experiment.add_plugin(_BUILTIN_PLUGIN.saver, kwargs)
+        """see thexp.frame.Saver"""
+        kwargs = self.experiment.add_saver()
         return Saver(**kwargs)
 
     @property
     @lru_cache()
     def rnd(self):
+        """see thexp.frame.RndManager"""
         from .rndmanager import RndManager
-        d = self.experiment.make_exp_dir(_PLUGIN_DIRNAME.rnd)
-
-        kwargs = {
-            _PLUGIN_KEY.RND.save_dir: d
-        }
-        self.experiment.add_plugin(_BUILTIN_PLUGIN.rnd, kwargs)
+        kwargs = self.experiment.add_rndmanager()
         return RndManager(**kwargs)
 
     @property
-    def model_dict(self):
+    def model_dict(self) -> Dict[str, torch.nn.Module]:
         return self._model_dict
 
     @property
-    def optimizer_dict(self):
+    def optimizer_dict(self) -> Dict[str, Optimizer]:
         return self._optim_dict
 
     @property
@@ -711,6 +700,9 @@ class BaseTrainer(metaclass=Merge):
             self._vector_dict[name] = value
         elif callable(getattr(value, "state_dict", None)) and callable(getattr(value, "load_state_dict", None)):
             self._other_state_dict[name] = value
+
+    def __setitem__(self, key: str, value: Any):
+        self.__setattr__(key, value)
 
     def train_batch(self, eidx, idx, global_step, batch_data, params: Params, device: torch.device):
         raise NotImplementedError()

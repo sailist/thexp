@@ -2,7 +2,7 @@
 
 """
 
-from thexp.utils.timeit import TimeIt
+from thexp.utils.timing import TimeIt
 import time
 
 if __name__ == '__main__':

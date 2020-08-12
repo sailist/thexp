@@ -8,7 +8,7 @@ class __CB(callbacks.TrainCallback):
     pass
 
 
-class CBMixin(Trainer):
+class BaseCBMixin(Trainer):
     def callbacks(self, params: GlobalParams):
         from thexp import callbacks
         callbacks.LoggerCallback().hook(self)

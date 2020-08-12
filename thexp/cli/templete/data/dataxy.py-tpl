@@ -21,3 +21,4 @@ def cifar10(train=True):
     ys = llist(int(i) for i in dataset.targets)
 
     return xs, ys
+

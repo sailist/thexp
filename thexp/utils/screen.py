@@ -1,5 +1,5 @@
 """
-该部分提供一些用于向标准输出进行输出的方法
+Methods about screen single line outputs.
 """
 import collections
 import os
@@ -11,7 +11,7 @@ import numpy as np
 
 
 def get_consolo_width():
-    return shutil.get_terminal_size().columns - 1
+    return shutil.get_terminal_size().columns - 1 # -1 for windows consolo
 
 
 def support_multiline():
@@ -23,10 +23,10 @@ def support_multiline():
 
 class ScreenStr():
     """
-    该方法用于长期输出在同一行（如batch级别的loss输出）时，控制屏幕输出位于同一行，支持中英文混合
-    该方法效率比较低，需要经过一次调用系统命令，两次对文本的编码解码和（最多）三次嵌套异常处理，
+    A ScreenStr start with '\r' won't overflow, any string outside the screen width will be cut.
 
-    TODO 滚动是否要添加，是否有好的可视性比较高的滚动函数
+    Notes:
+    If output consolo support multiline(like pycharm or jupyter notebook) return, all string will be represented.
     """
     t = 0
     dt = 0.7
@@ -52,29 +52,29 @@ class ScreenStr():
     def tostr(self):
         return self.content
 
-    @staticmethod
-    def set_speed(dt: float = 0.05):
-        ScreenStr.dt = dt
+    @classmethod
+    def set_speed(cls,dt: float = 0.05):
+        cls.dt = dt
 
-    @staticmethod
-    def deltatime():
-        if ScreenStr.last == 0:
-            ScreenStr.last = time.time()
+    @classmethod
+    def deltatime(cls):
+        if cls.last == 0:
+            cls.last = time.time()
             return 0
         else:
             end = time.time()
-            res = end - ScreenStr.last
-            ScreenStr.last = end
+            res = end - cls.last
+            cls.last = end
             return res
 
-    @staticmethod
-    def cacu_offset_(out_width):
+    @classmethod
+    def cacu_offset_(cls,out_width):
 
-        delta = ScreenStr.deltatime()
-        ScreenStr.t += delta * ScreenStr.dt
+        delta = cls.deltatime()
+        cls.t += delta * cls.dt
 
         # pi = 2*math.pi
-        t = ScreenStr.t
+        t = cls.t
         # k = 2 * out_width / pi
         k = 10
         pi = 2 * out_width / k
@@ -86,15 +86,15 @@ class ScreenStr():
 
     a = 1
 
-    @staticmethod
-    def cacu_offset(h):
+    @classmethod
+    def cacu_offset(cls,h):
         """_/-\_"""
-        delta = ScreenStr.deltatime()
-        ScreenStr.t += delta * ScreenStr.dt
+        delta = cls.deltatime()
+        cls.t += delta * cls.dt
 
-        t = ScreenStr.t
+        t = cls.t
         k = 10
-        a = ScreenStr.a
+        a = cls.a
         b = h / k
         period = 2 * (a + b)
         return 0
@@ -132,11 +132,11 @@ class ScreenStr():
 
         return txt
 
-    @staticmethod
-    def refresh():
-        ScreenStr.t = 0
-        ScreenStr.dt = abs(ScreenStr.dt)
-        ScreenStr.last = 0
+    @classmethod
+    def refresh(cls):
+        cls.t = 0
+        cls.dt = abs(cls.dt)
+        cls.last = 0
 
     @staticmethod
     def consolo_width():
@@ -154,7 +154,7 @@ class ScreenStr():
                 return txt[:len - 1], txt[len - 1:]
 
     def _screen_str(self, margin="..."):
-        width = ScreenStr.consolo_width()
+        width = self.consolo_width()
 
         txt = self.content.encode("gbk").strip()
         textlen = len(txt)
@@ -162,11 +162,11 @@ class ScreenStr():
         if textlen <= width:
             return self.content
 
-        left, right = ScreenStr.split(txt, ScreenStr.left)
+        left, right = self.split(txt, self.left)
         if len(left) >= width:
             return left[:width]
 
-        offset = ScreenStr.cacu_offset(len(right) - (width))
+        offset = self.cacu_offset(len(right) - (width))
 
         offright = width - len(left) + offset - len(margin)
 
