@@ -60,6 +60,10 @@ python -m pytest # or python3 -m pytest
  - 了解使用频率最高的用于训练流程的 [超参数声明 (Params) ](https://sailist.github.io/thexp/params) 、[变量记录 (Meter)](https://sailist.github.io/thexp/meter) 、[日志输出 (Logger) ](https://sailist.github.io/thexp/logger) 、[数据集整合 (DataBundler) ](https://sailist.github.io/thexp/bundler) 和将其整合在一起的 [训练流程抽象 (Trainer) ](https://sailist.github.io/thexp/trainer)
  - 了解用于对实验进行分析的 [全局配置 (Config) ](https://sailist.github.io/thexp/exp#全局配置) 和 [实验管理 (Experiment) ](https://sailist.github.io/thexp/exp)
  - 了解面向部份需求的 [随机种子管理 (RndManager)](https://sailist.github.io/thexp/rnd) 、[数据集形式构建 (DatasetBuilder)](https://sailist.github.io/thexp/builder)
+ 
+ 在对这些内容都有所了解后，您可以通过 [Cookbook](https://sailist.github.io/thexp/cookbook/) 查看关于 [实验模板](https://sailist.github.io/thexp/structure) 的使用和其他 [细节](https://sailist.github.io/thexp/details)
+
+ 
 ## Examples
 
 在正式开始前，你可以通过下面一些简单的例子来了解`thexp`中的一些非常好用的功能。
