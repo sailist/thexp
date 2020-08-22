@@ -125,12 +125,15 @@ class BaseTrainer(metaclass=Merge):
         # build experiment
         self.params.initial()
 
-        pre = os.path.splitext(os.path.basename(inspect.getfile(self.__class__)))[0]
+        file = inspect.getfile(self.__class__)
+        dirname = os.path.basename(os.path.dirname(file))
+
+        pre = os.path.splitext(os.path.basename(file))[0]
 
         if not self.params.get('git_commit', True):
             os.environ[_OS_ENV.THEXP_COMMIT_DISABLE] = '1'
 
-        self.experiment = Experiment("{}.{}".format(pre, self.__exp_name__))
+        self.experiment = Experiment("{}.{}".format(pre, dirname))
 
         # rigist and save params of this training procedure
         self.experiment.add_params(self.params)
