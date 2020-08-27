@@ -109,6 +109,9 @@ class Delegate:
     def __call__(self, index, builder=None) -> Union[X, Y, ID, None, Iterable[_Value]]:
         raise NotImplementedError()
 
+    def subset(self, indices):
+        pass
+
 
 class _placehold:
     """用于DatasetBuilder内部"""
@@ -331,6 +334,9 @@ class DatasetBuilder(Dataset):
         # self.d
         if name is None:
             name = 'delegate_{}'.format(len(self._delegates))
+        if self._indices is not None:
+            delegate.subset(self._indices)
+
         self._check_delegate_name(name)
         self._check_len(delegate)
         self._delegates.append(_delegate_placehold(delegate, transform, target_transform, name))
@@ -346,6 +352,8 @@ class DatasetBuilder(Dataset):
 
     def subset(self, indices):
         self._indices = indices
+        for delegate in self._delegates:
+            delegate.delegate.subset(indices)
         return self
 
     def virtual_sample(self, sample_num: int):
