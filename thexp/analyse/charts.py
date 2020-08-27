@@ -89,7 +89,9 @@ class Curve(Chart):
         axes = plt.axes()
 
         names = []
-        for _, v in self.curve_values.items():
+
+        for v in sorted(self.curve_values.values(), key=lambda x: x[self.name_key]):
+            # for _, v in self.curve_values.items():
             plt.plot(v[self.x_key], v[self.y_key])
             names.append(v[self.name_key])
 
@@ -175,7 +177,7 @@ class Parallel(Chart):
         test_key_vals, min_max = self._matplotlib_data()
         key_size = len(min_max)
         host = plt.axes()
-        # fig, host = plt.subplots(figsize=(20,10))
+        # img, host = plt.subplots(figsize=(20,10))
 
         axes = [host] + [host.twinx() for _ in range(key_size - 1)]
         for i, ((k, v), ax) in enumerate(zip(min_max.items(), axes)):
