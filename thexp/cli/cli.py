@@ -14,6 +14,13 @@ Usage:
  thexp archive <test_name>
  thexp archive --test=<test_name>
  thexp archive --test_name=<test_name>
+ 
+ thexp delete <test_name>
+ thexp delete --test=<test_name>
+ thexp delete --test_name=<test_name>
+ 
+ thexp log <test_name>
+ thexp params <test_name>
 """
 import sys
 from thexp import __VERSION__
@@ -122,6 +129,50 @@ def archive(*args, **kwargs):
     exp = query.to_viewer().archive()
 
     print('archive {} to {}'.format(test_name, exp.plugins['archive']['file']))
+
+
+@regist_func(func_map)
+def delete(*args, **kwargs):
+    test_name = _find_test_name(*args, **kwargs)
+    query = Q.tests(test_name)
+    if query.empty:
+        print("can't find test {}".format(test_name))
+        exit(1)
+
+    query.to_viewer().delete()
+    print('success delete {}.'.format(test_name))
+
+
+@regist_func(func_map)
+def log(*args, **kwargs):
+    test_name = _find_test_name(*args, **kwargs)
+    query = Q.tests(test_name)
+    if query.empty:
+        print("can't find test {}".format(test_name))
+        exit(1)
+
+    vw = query.to_viewer()
+    if not vw.has_log():
+        print("can't find log file of [{}]".format(test_name))
+        exit(1)
+    print(vw.log_fn)
+
+
+@regist_func(func_map)
+def params(*args, **kwargs):
+    test_name = _find_test_name(*args, **kwargs)
+    query = Q.tests(test_name)
+    if query.empty:
+        print("can't find test {}".format(test_name))
+        exit(1)
+
+    vw = query.to_viewer()
+    p = vw.params
+    if p is not None:
+        print(p)
+    else:
+        print("can't find param object of [{}]".format(test_name))
+        exit(1)
 
 
 def main(*args, **kwargs):
