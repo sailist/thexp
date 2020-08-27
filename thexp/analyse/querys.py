@@ -44,9 +44,6 @@ pd.set_option('colheader_justify', 'center')
 
 class Query:
 
-    def __init__(self):
-        pass
-
     def tests(self, *items):
         return self.repos().exps().tests(*items)
 
@@ -151,6 +148,9 @@ class ReposQuery:
 
     __str__ = __repr__
 
+    def __len__(self):
+        return len(self.repos)
+
     def _repr_html_(self):
         with pd.option_context('display.max_colwidth', 0):
             with pd.option_context('colheader_justify', 'center'):
@@ -228,16 +228,14 @@ class ExpsQuery:
     def __getitem__(self, items):
         res = []
         if isinstance(items, (Iterator, list, tuple)):
+            if len(items) == 0:
+                return self
             assert is_same_type(items)
-            for item in items:
-                if isinstance(item, str):
-                    try:
-                        idx = self.exp_names.index(item)
-                        res.append(idx)
-                    except:
-                        raise IndexError(item)
-                elif isinstance(item, int):
-                    res.append(item)
+            for i, exp in enumerate(self.exp_names):
+                if isinstance(items[0], str) and exp in items:
+                    res.append(i)
+                elif isinstance(items[0], int) and i in items:
+                    res.append(i)
             return ExpsQuery(self.exp_dirs[res])  # do not have type error
         elif isinstance(items, int):
             res.append(items)
@@ -255,6 +253,9 @@ class ExpsQuery:
         return self.df().__repr__()
 
     __str__ = __repr__
+
+    def __len__(self):
+        return len(self.exp_names)
 
     def _repr_html_(self):
         if self.empty:
@@ -335,10 +336,13 @@ class BoardQuery():
     def __getitem__(self, items):
         res = []
         if isinstance(items, (Iterator, list, tuple)):
-            assert is_same_type(items, int)
+            assert is_same_type(items)
+            names = [i.name for i in self.test_viewers]
             for item in items:
                 if isinstance(item, int):
                     res.append(item)
+                elif isinstance(item, str):
+                    res.append(names.index(item))
             return BoardQuery(self.board_readers[res], self.test_viewers[res])  # do not have type error
         elif isinstance(items, int):
             res.append(items)
@@ -352,6 +356,9 @@ class BoardQuery():
         return pformat(self.test_viewers)
 
     __str__ = __repr__
+
+    def __len__(self):
+        return len(self.board_readers)
 
     @property
     def param_keys(self):
@@ -384,6 +391,8 @@ class BoardQuery():
                 val = reader.get_scalars(tag)
                 if not with_step:
                     res.append(val.values)
+                else:
+                    res.append(val)
             except:
                 res.append(None)
         return res
@@ -471,8 +480,42 @@ class BoardQuery():
         else:
             return plot_func()
 
+    def tvalues(self, tags: List[str], with_step=False):
+        """get tags of one test"""
+        assert len(self.board_readers) == 1
+        res = []
+        for tag in tags:
+            try:
+                val = self.board_readers[0].get_scalars(tag)
+                if not with_step:
+                    res.append(val.values)
+                else:
+                    res.append(val)
+            except:
+                res.append(None)
+        return res
+
+    def tline(self, tags: List[str], backend='matplotlib'):
+        """line of multi-tags of one test"""
+        assert len(self.board_readers) == 1
+        from .charts import Curve
+        figure = {}
+        for tag in tags:
+            scalars = self.board_readers[0].get_scalars(tag)
+            figure[tag] = {
+                'name': tag,
+                'x': scalars.steps,
+                'y': scalars.values,
+            }
+        curve = Curve(figure, title=self.test_viewers[0].name)
+        plot_func = getattr(curve, backend, None)
+        if plot_func is None:
+            raise NotImplementedError(backend)
+        else:
+            return plot_func()
+
     def parallel(self, *constrains: Constrain, backend='matplotlib'):
-        """平行图"""
+        """draw parallel with the constrains to compare tests"""
         tag_dict = self.parallel_dicts(*constrains)
         from .charts import Parallel
         parallel = Parallel([i.name for i in self.test_viewers], tag_dict)
@@ -482,6 +525,20 @@ class BoardQuery():
             raise NotImplementedError(backend)
         else:
             return plot_func()
+
+    def summary(self):
+        from collections import defaultdict
+        res = defaultdict(list)
+        for br, tv in zip(self.board_readers, self.test_viewers):  # type:BoardReader,TestViewer
+            for tag in br.scalars_tags:
+                res[tag].append(tv.name)
+
+        print('Scalar tags:')
+        for k, v in res.items():
+            if len(v) == len(self.board_readers):
+                print('{} (all)'.format(k))
+            else:
+                print('{} ({})'.format(k, v))
 
 
 class TestsQuery:
@@ -548,6 +605,9 @@ class TestsQuery:
 
     __str__ = __repr__
 
+    def __len__(self):
+        return len(self.test_names)
+
     def df(self):
         df = pd.DataFrame([viewer.df_info() for viewer in self.to_viewers()],
                           columns=self[0].to_viewer().df_columns(),
@@ -603,8 +663,14 @@ class TestsQuery:
     def first(self):
         return self[0]
 
+    def head(self, num=5):
+        return self[:5]
+
     def last(self):
         return self[-1]
+
+    def tail(self, num=5):
+        return self[-5:]
 
     def time_range(self, left_time=None, right_time=None):
         """
