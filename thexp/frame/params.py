@@ -28,6 +28,8 @@ class BaseParams(OptimMixin):
         PeriodCos = schedule.PeriodCosSchedule
         Linear = schedule.LinearSchedule
         HalfPeriodCos = schedule.HalfPeriodCosSchedule
+        Log = schedule.LogSchedule
+        Exp = schedule.ExpSchedule
         List = schedule.ScheduleList
 
     def __init__(self):
@@ -355,17 +357,5 @@ class Params(BaseParams):
         self.optim = None  # type:OptimParams
         self.git_commit = True
 
-    def dataloader(self):
-        pass
-
     def optimizer(self):
         return self.optim.args
-
-
-if __name__ == '__main__':
-    from torch.optim.sgd import SGD
-    from torch.optim.sparse_adam import SparseAdam
-    from torch.optim import adam, adamw, adamax, adagrad, adadelta, asgd, sparse_adam, sgd, lr_scheduler, lbfgs, \
-        optimizer, rmsprop, rprop
-
-    p = Params().SCHE.CosSchedule()
