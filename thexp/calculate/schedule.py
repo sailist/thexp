@@ -32,7 +32,7 @@ class Schedule(attr):
 
     # __schdule_name__ = None
 
-    def __init__(self, start=0, end=1, left=0, right=1, *args, **kwargs):
+    def __init__(self, start=0., end=1., left=0, right=1, *args, **kwargs):
         super().__init__()
         self.left = left
         self.right = right
@@ -146,6 +146,13 @@ class CosSchedule(Schedule):
         return self.start * cos_ratio + self.end * (1 - cos_ratio)
 
 
+class ConstantSchedule(Schedule):
+    def __init__(self, value=0.5, *args, **kwargs):
+        super().__init__(start=value, end=value, *args, **kwargs)
+
+        self.constant = True
+
+
 class PeriodCosSchedule(Schedule):
     """
     periodic cosine schedule
@@ -184,6 +191,45 @@ class LinearSchedule(Schedule):
 
         linear_ratio = self.ratio(cur)
         return self.start * (1 - linear_ratio) + self.end * linear_ratio
+
+
+class ExpSchedule(Schedule):
+    """slow to quick"""
+
+    def __call__(self, cur):
+        if self.constant:
+            return self.start
+
+        if cur < self.left:
+            return self.start
+        elif cur > self.right:
+            return self.end
+
+        ratio = self.ratio(cur)
+        residual = np.exp(-5)
+
+        exp_ratio = np.exp((ratio - 1) * 5) - residual * (1 - ratio)
+        return self.start * (1 - exp_ratio) + self.end * exp_ratio
+
+
+class LogSchedule(Schedule):
+    """quick to slow"""
+
+    def __call__(self, cur):
+        if self.constant:
+            return self.start
+
+        if cur < self.left:
+            return self.start
+        elif cur > self.right:
+            return self.end
+
+        ratio = self.ratio(cur)
+
+        residual = np.exp(-5)
+
+        log_ratio = 1 - np.exp(-ratio * 5) + residual * ratio
+        return self.start * (1 - log_ratio) + self.end * log_ratio
 
 
 class ScheduleList(attr):
