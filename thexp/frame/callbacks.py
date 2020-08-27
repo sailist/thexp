@@ -5,7 +5,7 @@
 import os
 from functools import wraps
 
-from ..calculate.schedule import Schedule
+from ..calculate.schedule import Schedule, ScheduleList
 from .meter import AvgMeter
 from .meter import Meter
 from .params import Params
@@ -460,3 +460,34 @@ class LRSchedule(TrainCallback):
             else:
                 ratio = self.schedule.scale(v, step)
                 trainer.logger.info('lr scale ratio = {}'.format(k, ratio))
+
+
+class SuccessQuery(TrainCallback):
+    """allow you exit by type KeyboardInterupt in success mode"""
+
+    def on_first_exception(self, trainer: Trainer, func, params: Params, e: BaseException, *args, **kwargs):
+        super().on_first_exception(trainer, func, params, e, *args, **kwargs)
+        if isinstance(e, (KeyboardInterrupt)):
+            tp = input("success?(Y/N, default N)")
+            if tp.lower() == 'y':
+                trainer.experiment.end()
+                trainer.stop_train()
+                trainer.stop_current_epoch()
+                return True
+            else:
+                return False
+
+
+class ReportSche(TrainCallback):
+    def on_hooked(self, trainer: Trainer, params: Params):
+        self.sche_lis = []
+        for k, v in params.items():
+            if isinstance(v, (Schedule, ScheduleList)):
+                self.sche_lis.append((k, v))
+
+    def on_train_epoch_end(self, trainer: Trainer, func, params: Params, meter: Meter, *args, **kwargs):
+        super().on_train_epoch_end(trainer, func, params, meter, *args, **kwargs)
+        m = Meter()
+        for k, v in self.sche_lis:
+            m[k] = v(params.eidx)
+        trainer.logger.info(m)
