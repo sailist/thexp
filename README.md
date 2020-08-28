@@ -53,15 +53,15 @@ python -m pytest # or python3 -m pytest
 接下来我们可以简单的看一下 `thexp` 能帮你完成什么，以及它是否能够让您满意。
 
 
-您可以通过 [Tutorial](https://sailist.github.io/thexp//tutorial/) 部份来了解该框架的基本使用；随后，在您有更具体的需求时， [Cookbook](https://sailist.github.io/thexp/cookbook/) 部份的介绍会让您更好的了解该框架的细节。
+您可以通过 [Tutorial](https://sailist.github.io/thexp/zh/tutorial/) 部份来了解该框架的基本使用；随后，在您有更具体的需求时， [Cookbook](https://sailist.github.io/thexp/zh/cookbook/) 部份的介绍会让您更好的了解该框架的细节。
 
 您可以按照如下的顺序对本框架的功能进行学习和使用：
 
- - 了解使用频率最高的用于训练流程的 [超参数声明 (Params) ](https://sailist.github.io/thexp/params) 、[变量记录 (Meter)](https://sailist.github.io/thexp/meter) 、[日志输出 (Logger) ](https://sailist.github.io/thexp/logger) 、[数据集整合 (DataBundler) ](https://sailist.github.io/thexp/bundler) 和将其整合在一起的 [训练流程抽象 (Trainer) ](https://sailist.github.io/thexp/trainer)
- - 了解用于对实验进行分析的 [全局配置 (Config) ](https://sailist.github.io/thexp/exp#全局配置) 和 [实验管理 (Experiment) ](https://sailist.github.io/thexp/exp)
- - 了解面向部份需求的 [随机种子管理 (RndManager)](https://sailist.github.io/thexp/rnd) 、[数据集形式构建 (DatasetBuilder)](https://sailist.github.io/thexp/builder)
+ - 了解使用频率最高的用于训练流程的 [超参数声明 (Params) ](https://sailist.github.io/thexp/zh/params) 、[变量记录 (Meter)](https://sailist.github.io/thexp/zh/meter) 、[日志输出 (Logger) ](https://sailist.github.io/thexp/zh/logger) 、[数据集整合 (DataBundler) ](https://sailist.github.io/thexp/zh/bundler) 和将其整合在一起的 [训练流程抽象 (Trainer) ](https://sailist.github.io/thexp/zh/trainer)
+ - 了解用于对实验进行分析的 [全局配置 (Config) ](https://sailist.github.io/thexp/zh/exp#全局配置) 和 [实验管理 (Experiment) ](https://sailist.github.io/thexp/zh/exp)
+ - 了解面向部份需求的 [随机种子管理 (RndManager)](https://sailist.github.io/thexp/zh/rnd) 、[数据集形式构建 (DatasetBuilder)](https://sailist.github.io/thexp/zh/builder)
  
- 在对这些内容都有所了解后，您可以通过 [Cookbook](https://sailist.github.io/thexp/cookbook/) 查看关于 [实验模板](https://sailist.github.io/thexp/structure) 的使用和其他 [细节](https://sailist.github.io/thexp/details)
+ 在对这些内容都有所了解后，您可以通过 [Cookbook](https://sailist.github.io/thexp/zh/cookbook/) 查看关于 [实验模板](https://sailist.github.io/thexp/zh/structure) 的使用和其他 [细节](https://sailist.github.io/thexp/zh/details)
 
  
 ## Examples
@@ -81,7 +81,7 @@ params.from_args() # 从命令行读入
 ```
 ### 变量记录
 
-以及，在使用变量的同时完成记录变量，并以极少的代码代价更新记录变量的平均值，这极大的简化了变量的记录逻辑，该部分位于 [变量记录]([#变量记录](https://sailist.github.io/thexp/meter))。
+以及，在使用变量的同时完成记录变量，并以极少的代码代价更新记录变量的平均值，这极大的简化了变量的记录逻辑，该部分位于 [变量记录]([#变量记录](https://sailist.github.io/thexp/zh/meter))。
 ```python
 from thexp import Meter,AvgMeter
 
@@ -104,7 +104,7 @@ for j in range(500):
 
 ### 分析代码
 
-实验日志查询，以及对结果进行对比并绘制相应曲线。该部分位于 [实验管理 (Experiment) ](https://sailist.github.io/thexp/exp)
+实验日志查询，以及对结果进行对比并绘制相应曲线。该部分位于 [实验管理 (Experiment) ](https://sailist.github.io/thexp/zh/exp)
 
 
 ```python
@@ -138,10 +138,9 @@ bd.boards().line('top1_test_')
 
 我相信这是一个非常好的，能够对大多数深度学习科研工作者都有帮助的开源项目，但该项目仍然存在诸多不足，包括：
 
- - [Tutorial](https://sailist.github.io/thexp/tutorial/) 和 [Cookbook](https://sailist.github.io/thexp//cookbook/) 部份已经覆盖了大部分的使用说明。但由于开发者时间精力有限，因此本项目在很多细节的地方，**缺少更完善的使用指南**。
+ - [Tutorial](https://sailist.github.io/thexp/zh/tutorial/) 和 [Cookbook](https://sailist.github.io/thexp/zh/cookbook/) 部份已经覆盖了大部分的使用说明。但由于开发者时间精力有限，因此本项目在很多细节的地方，**缺少更完善的使用指南**。
  - **测试未覆盖全部代码**。部份关键部份存在测试用例，此外的所有已修复的 bug 均是在作者使用过程中不断迭代人肉修复的 Bug ，在长达几个月的不断完善中，理论上大部分的功能不存在致命的Bug，但仍然可能存在诸多没有发现的问题。此外，在不同电脑上的兼容情况可能也没有办法得到很好的保证。对于这部分，欢迎在 [issus](https://github.com/sailist/thexp/issues) 页面提出。
  - **缺少项目开发经验**。这不是一个工程项目，由于精力有限，以及没有实习经验，因此我没有比较好的基于 git 的开发方法和分支管理办法，也没有采用什么工程化的开发流程，版本号也定义的一塌糊涂，但这部分对于使用者而言可能并不重要。
- - **缺少i18n。** 开发过程中写出来的注释都是中英文混杂的 Orz，正在逐步补全相应的英文文档。
 
 因此，如果该库对你有帮助，或者你在使用过程中发现了问题，或者你希望该库更加的完善，那么希望你也可以参与到贡献中。仍然是由于精力问题，我不太懂贡献流程，因此除了代码问题、bug修复等，如果有人能贡献如何贡献的流程，或者贡献有人贡献出的如何贡献的流程（套娃禁止），也是非常有帮助的。
 
