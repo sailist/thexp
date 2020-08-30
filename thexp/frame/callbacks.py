@@ -416,7 +416,7 @@ class AutoRecord(TrainCallback):
             for k, v in meter.numeral_items():
                 if k in self._ignore_dict[_ML.eval]:
                     continue
-                trainer.writer.add_scalar(self._key_name("evel", k), v, params.eidx)
+                trainer.writer.add_scalar(self._key_name("eval", k), v, params.eidx)
 
     def on_train_epoch_end(self, trainer: Trainer, func, params: Params, meter: AvgMeter, *args, **kwargs):
         if isinstance(meter, Meter):
@@ -479,10 +479,15 @@ class SuccessQuery(TrainCallback):
 
 
 class ReportSche(TrainCallback):
+    """
+    log `schedule` in every epoch end
+    `schedule` means `Schedule` in Params and have `sche` in the name, which will have different value in every epoch
+    """
+
     def on_hooked(self, trainer: Trainer, params: Params):
         self.sche_lis = []
-        for k, v in params.items():
-            if isinstance(v, (Schedule, ScheduleList)):
+        for k, v in params.items():  # type:str, Any
+            if isinstance(v, (Schedule, ScheduleList)) and 'sche' in k.lower():
                 self.sche_lis.append((k, v))
 
     def on_train_epoch_end(self, trainer: Trainer, func, params: Params, meter: Meter, *args, **kwargs):
