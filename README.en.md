@@ -120,14 +120,14 @@ bd.parallel(C.meter.top1_test_,
             C.param["optim.args.lr"],  # learning rate
             C.param.epoch)
 ```
-> <img :src="$withBase('/img/query_parallel.png')" alt="parallel">
+> <img src="/img/query_parallel.png" alt="parallel">
 
 and 
 
 ```python
 bd.boards().line('top1_test_')
 ```
-> <img :src="$withBase('/img/query_line.png')" alt="curve">
+> <img src="/img/query_line.png" alt="line">
 
 ## Contribute
 
