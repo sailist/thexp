@@ -58,6 +58,8 @@ A suggested learning order may be：
 
 After learning above contents, you can view [Cookbook](https://sailist.github.io/thexp/cookbook/) to learn the use of [tempelet code](https://sailist.github.io/thexp/structure) and other [details](https://sailist.github.io/thexp/details).
 
+You can also view another repository [thexp-implement](https://github.com/thexp/thexp-implement) to see a bigger example, it will continuously reimplement papers I interested by using the templete provided in `thexp`. 
+
 ## Examples
 
 Before start, maybe you'd like to see some simple examples to learn what can `thexp` do.

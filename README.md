@@ -67,6 +67,7 @@ python -m pytest # or python3 -m pytest
  
  在对这些内容都有所了解后，您可以通过 [Cookbook](https://sailist.github.io/thexp/zh/cookbook/) 查看关于 [实验模板](https://sailist.github.io/thexp/zh/structure) 的使用和其他 [细节](https://sailist.github.io/thexp/zh/details)
 
+您也可以通过另外一个项目[thexp-implement](https://github.com/thexp/thexp-implement) 来了解如何使用，该项目基于 `thexp` 提供的模板对一些论文进行了复现，并会在随后陆续添加一些模型的 best result.
  
 ## Examples
 
