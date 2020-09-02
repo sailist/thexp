@@ -2,7 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../thexp-test" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../thexp-test2" vcs="Git" />
   </component>
 </project>

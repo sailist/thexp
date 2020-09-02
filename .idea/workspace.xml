@@ -44,33 +44,12 @@
       <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splittrainer/trainer/mnisttrainer.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splittrainer/tricks/__init__.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../thexp-demo/simple-splittrainer/tricks/ema.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/thexp/future/objectdetect.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/w.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../thexp-demo/.idea/thexp-test3.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../thexp-demo/.idea/thexp-test3.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../thexp-demo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../thexp-demo/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../thexp-demo/onefile.py" beforeDir="false" afterPath="$PROJECT_DIR$/../thexp-demo/simple/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/thexp.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/thexp.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.en.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.en.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/create_doc.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_doc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp-templete/trainers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp-templete/trainers/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/analyse/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/analyse/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/analyse/constrain.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/analyse/constrain.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/analyse/querys.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/analyse/querys.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/analyse/viewer.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/analyse/viewer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/cli/cli.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/cli/cli.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/cli/templete/trainers/__init__.py-tpl" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/cli/templete/trainers/__init__.py-tpl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/cli/templete/trainers/__trainer.py-tpl" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/cli/templete/trainers/_trainer.py-tpl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/cli/templete/trainers/mixin/callbacks.py-tpl" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/cli/templete/trainers/mixin/callbacks.py-tpl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/cli/templete/trainers/mixin/datasets.py-tpl" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/cli/templete/trainers/mixin/datasets.py-tpl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/cli/templete/trainers/mixin/models.py-tpl" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/cli/templete/trainers/mixin/models.py-tpl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/cli/templete/trainers/mixin/tricks.py-tpl" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/cli/templete/trainers/mixin/tricks.py-tpl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/contrib/module/ema.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/contrib/module/ema.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/contrib/module/shake.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/utils/colored.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/future/colored.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/utils/colored/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/future/colored/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/thexp/utils/colored/unicolor.py" beforeDir="false" afterPath="$PROJECT_DIR$/thexp/future/colored/unicolor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <list id="b3718b25-7204-4605-af22-7efa5eb0e45c" name="imporove" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -84,6 +63,17 @@
       <list>
         <option value="Python Script" />
       </list>
+    </option>
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
     </option>
   </component>
   <component name="Git.Settings">
@@ -112,7 +102,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/thexp/utils/colored" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -458,35 +448,7 @@
       <workItem from="1598574663607" duration="8614000" />
       <workItem from="1598777487003" duration="2908000" />
       <workItem from="1598839896339" duration="1923000" />
-      <workItem from="1599008990943" duration="998000" />
-    </task>
-    <task id="LOCAL-00001" summary="change">
-      <created>1589534271920</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1589534271920</updated>
-    </task>
-    <task id="LOCAL-00002" summary="change">
-      <created>1589534779281</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1589534779281</updated>
-    </task>
-    <task id="LOCAL-00003" summary="change">
-      <created>1589724204408</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1589724204408</updated>
-    </task>
-    <task id="LOCAL-00004" summary="change">
-      <created>1589724232390</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1589724232390</updated>
+      <workItem from="1599008990943" duration="1916000" />
     </task>
     <task id="LOCAL-00005" summary="change">
       <created>1589939036175</created>
@@ -796,7 +758,42 @@
       <option name="project" value="LOCAL" />
       <updated>1599018258851</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="fix tensorboard kwargs">
+      <created>1599018294859</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1599018294859</updated>
+    </task>
+    <task id="LOCAL-00050" summary="new big version">
+      <created>1599018365400</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1599018365401</updated>
+    </task>
+    <task id="LOCAL-00051" summary="commit">
+      <created>1599018377732</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1599018377732</updated>
+    </task>
+    <task id="LOCAL-00052" summary="update docs">
+      <created>1599018743012</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1599018743012</updated>
+    </task>
+    <task id="LOCAL-00053" summary="update docs">
+      <created>1599018921815</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1599018921815</updated>
+    </task>
+    <option name="localTasksCounter" value="54" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -815,8 +812,10 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="细节调整" />
-    <MESSAGE value="添加了数据集相关的方法和类用于编写操作" />
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/../thexp-test" />
+      <path value="$PROJECT_DIR$/../thexp-test2" />
+    </ignored-roots>
     <MESSAGE value="废弃该类" />
     <MESSAGE value="添加了强增广及其对应的一系列增广方法，RandAugment" />
     <MESSAGE value="添加了EMA模型、MetaNet和WRN，以后会持续添加可直接应用的模型结果" />
@@ -826,7 +825,6 @@
     <MESSAGE value="fix" />
     <MESSAGE value="add generic type hint" />
     <MESSAGE value="update imgs" />
-    <MESSAGE value="fix tensorboard kwargs" />
     <MESSAGE value="change version" />
     <MESSAGE value="change exp flags" />
     <MESSAGE value="fix log/exp schedule" />
@@ -839,6 +837,9 @@
     <MESSAGE value="update doc" />
     <MESSAGE value="update eng doc" />
     <MESSAGE value="fix spell error" />
+    <MESSAGE value="fix tensorboard kwargs" />
+    <MESSAGE value="new big version" />
+    <MESSAGE value="commit" />
     <MESSAGE value="update docs" />
     <option name="LAST_COMMIT_MESSAGE" value="update docs" />
   </component>
@@ -879,10 +880,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="806" y="418" key="#com.jetbrains.python.refactoring.move.PyMoveModuleMembersDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1596422003568" />
-    <state x="973" y="118" key="CommitChangelistDialog2" timestamp="1599018256840">
+    <state x="973" y="118" key="CommitChangelistDialog2" timestamp="1599018920588">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="973" y="118" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1599018256840" />
+    <state x="973" y="118" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1599018920588" />
     <state width="617" height="466" key="DebuggerActiveHint" timestamp="1596444608283">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -927,18 +928,18 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="286" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1597417640963" />
-    <state x="463" y="165" key="SettingsEditor" timestamp="1598575364212">
+    <state x="463" y="165" key="SettingsEditor" timestamp="1599018953487">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="463" y="165" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1598575364212" />
+    <state x="463" y="165" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1599018953487" />
     <state x="681" y="261" width="540" height="524" key="StructurePopup" timestamp="1593763881502">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="681" y="261" width="540" height="524" key="StructurePopup/0.0.1920.1040@0.0.1920.1040" timestamp="1593763881502" />
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1597220102669">
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1599018933754">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1597220102669" />
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1599018933754" />
     <state width="968" height="528" key="XDebugger.FullValuePopup" timestamp="1595936657112">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
