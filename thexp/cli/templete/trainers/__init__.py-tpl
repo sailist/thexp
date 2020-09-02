@@ -14,7 +14,7 @@ class GlobalParams(Params):
 
         self.dataset = self.choice('dataset', 'cifar10', 'cifar100', 'mnist', 'fashionmnist', 'svhn')
         self.n_classes = 10
-        self.topk = [1, 2, 3, 4]
+        self.topk = (1, 2, 3, 4)
 
         self.batch_size = 64
         self.num_workers = 4
@@ -24,7 +24,14 @@ class GlobalParams(Params):
 
         self.val_size = 10000
 
+
+
     def initial(self):
+        if self.dataset in {'cifar100'}:
+            self.n_classes = 100
+        if self.ENV.IS_PYCHARM_DEBUG:
+            self.num_workers = 0
+
         self.lr_sche = self.SCHE.Cos(start=self.optim.args.lr,
                                      end=0.00001,
                                      right=self.epoch)

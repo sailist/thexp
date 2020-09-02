@@ -11,10 +11,6 @@
     <orderEntry type="jdk" jdkName="Python 3.7" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="thexp-test" />
-    <orderEntry type="module" module-name="thexp-test" />
-    <orderEntry type="module" module-name="thexp-test" />
-    <orderEntry type="module" module-name="thexp-test" />
-    <orderEntry type="module" module-name="thexp-test" />
     <orderEntry type="module" module-name="thexp-test2" />
     <orderEntry type="module" module-name="thexp-test3" />
   </component>
