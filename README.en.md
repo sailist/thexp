@@ -2,7 +2,6 @@
 
 `thexp` is an open-source project, which mainly used to help you for your deep learning research. 
 
-
 ## Features
 
 `thexp` is designed for reducing difficulty of the frequent code modification in experiments and simplify the redundant code.

@@ -1,4 +1,4 @@
-**包含文档所提功能的 1.5 stable version 将于九月份 release，如想提前使用请通过 git clone & install 来使用**
+[English](https://github.com/sailist/thexp/blob/master/README.en.md)
 
 # thexp
 
@@ -6,6 +6,9 @@
 
 关于该项目的文档可以查看 [Document](https://sailist.github.io/thexp/zh/)
 
+
+
+> 当前版本 1.5，框架整体代码已经稳定，不会轻易修改，只会补充细节或额外功能。
 
 ## Features
 
@@ -31,6 +34,8 @@ git clone https://github.com/sailist/thexp
 
 python setup.py install
 ```
+
+
 
 ### 测试
 
