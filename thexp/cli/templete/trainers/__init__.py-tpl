@@ -22,5 +22,9 @@ class GlobalParams(Params):
         self.ema = True
         self.ema_alpha = 0.999
 
+        self.val_size = 10000
 
-
+    def initial(self):
+        self.lr_sche = self.SCHE.Cos(start=self.optim.args.lr,
+                                     end=0.00001,
+                                     right=self.epoch)

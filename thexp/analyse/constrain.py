@@ -28,11 +28,12 @@ class MeterConstrain(Constrain):
     A meter constrain, mainly used for Boardquery.parallel()
 
     Examples:
-    ----------
-    >>> from thexp import Q,C
-    >>> query = Q.tests().boards()
-    >>> print(query.scalar_tags)
-    >>> query.parallel(C.param.lr,C.param.epoch,C.meter.loss_train_,C.meter.acc_test_)
+    ```python
+    from thexp import Q,C
+    query = Q.tests().boards()
+    print(query.scalar_tags)
+    query.parallel(C.param.lr,C.param.epoch,C.meter.loss_train_,C.meter.acc_test_)
+    ```
     """
 
     def __init__(self):

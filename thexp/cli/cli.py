@@ -2,25 +2,31 @@ import fire
 
 doc = """
 Usage:
- thexp init
- thexp board [--logdir=<logdir>]
- thexp board [--test=<test_name>] # find test_name and tensorboard it 
- thexp board  # default open ./board
- 
- thexp reset <test_name>
- thexp reset --test=<test_name>
- thexp reset --test_name=<test_name>
- 
- thexp archive <test_name>
- thexp archive --test=<test_name>
- thexp archive --test_name=<test_name>
- 
- thexp delete <test_name>
- thexp delete --test=<test_name>
- thexp delete --test_name=<test_name>
- 
- thexp log <test_name>
- thexp params <test_name>
+# create templete directory 
+thexp init
+
+# easier way to open tensorboard 
+thexp board [--logdir=<logdir>]
+thexp board [--test=<test_name>] # find test_name and tensorboard it 
+thexp board  # default open ./board
+
+# restore code snapshot of some test
+thexp reset <test_name>
+
+
+# archive code snapshot of some test
+thexp archive <test_name>
+
+# delete some test directly
+thexp delete <test_name>
+
+# print log file
+thexp log <test_name>
+
+# print params of this test
+thexp params <test_name>
+
+# <test_name>/--test=<test_name>/--test_name=<test_name>
 """
 import sys
 from thexp import __VERSION__

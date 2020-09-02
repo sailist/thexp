@@ -17,13 +17,13 @@ from trainers import GlobalParams
 from trainers.mixin import *
 
 
-class MyTrainer(callbacks.BaseCBMixin,
-                datasets.BaseDatasetMixin,
-                models.ModelMixin,
-                acc.ClassifyAccMixin,
-                losses.Loss,
-                tricks.TrickMixin,
-                Trainer):
+class TempleteTrainer(callbacks.BaseCBMixin,
+                      datasets.TempleteDatasetMixin,
+                      models.TempleteModelMixin,
+                      acc.ClassifyAccMixin,
+                      losses.CELoss,
+                      tricks.TrickMixin,
+                      Trainer):
 
     def train_batch(self, eidx, idx, global_step, batch_data, params: GlobalParams, device: torch.device):
         super().train_batch(eidx, idx, global_step, batch_data, params, device)
@@ -32,20 +32,20 @@ class MyTrainer(callbacks.BaseCBMixin,
 
         logits = self.to_logits(xs)
 
-        meter.Lce = F.cross_entropy(logits, ys)
+        meter.Lall = meter.Lall + self.loss_ce_(logits, ys, meter=meter, name='Lce')
 
         self.any_()
 
-        # self.optim.zero_grad()
-        # meter.Lce.backward()
-        # self.optim.step()
+        self.optim.zero_grad()
+        meter.Lall.backward()
+        self.optim.step()
 
-        self.acc_precise_(logits, ys, meter, name='acc')
+        self.acc_precise_(logits.argmax(dim=1), ys, meter, name='acc')
 
         return meter
 
     def to_logits(self, xs) -> torch.Tensor:
-        raise NotImplementedError()
+        return self.model(torch.rand(xs.shape[0], params.n_classes))
 
 
 if __name__ == '__main__':
@@ -53,6 +53,6 @@ if __name__ == '__main__':
     # params.device = 'cuda:0'
     params.from_args()
 
-    trainer = MyTrainer(params)
+    trainer = TempleteTrainer(params)
     trainer.train()
     trainer.save_model()

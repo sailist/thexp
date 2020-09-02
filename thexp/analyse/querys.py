@@ -461,7 +461,7 @@ class BoardQuery():
         return tag_dict
 
     def line(self, tag, backend='matplotlib'):
-        """曲线图"""
+        """plot values of the tag of the tests selected"""
         from .charts import Curve
         figure = {}
         for bd, test_viewer in zip(self.board_readers, self.test_viewers):

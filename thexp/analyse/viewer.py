@@ -429,10 +429,6 @@ class TestViewer(_Viewer):
     def has_board(self):
         return self.has_plugin(_BUILTIN_PLUGIN.writer) and self.has_dir(_PLUGIN_DIRNAME.writer)
 
-    # def delete_board(self):
-    #     if self.has_board():
-    #         shutil.rmtree(os.path.join(self.root, PLUGIN_DIRNAME_.writer))
-
     """logger CRUD"""
 
     @property
@@ -445,10 +441,6 @@ class TestViewer(_Viewer):
         plugin_info = self.get_plugin(_BUILTIN_PLUGIN.logger)
         if plugin_info is not None:
             return os.path.exists(plugin_info[_PLUGIN_KEY.LOGGER.fn])
-
-    # def delete_log(self):
-    #     if self.has_log():
-    #         os.remove(self.log_fn)
 
     """saver CRUD"""
 
@@ -572,17 +564,17 @@ class TestViewer(_Viewer):
 
     def reset(self) -> Experiment:
         """
-            将工作目录中的文件恢复到某个commit
-            恢复快照的 git 流程：
-                git branch experiment
-                git add . & git commit -m ... // 保证文件最新，防止冲突报错，这一步由 Experiment() 代为完成
-                git checkout <commit-id> // 恢复文件到 <commit-id>
-                git checkout -b reset // 将当前状态附到新的临时分支 reset 上
-                git branch experiment // 切换回 experiment 分支
-                git add . & git commit -m ... // 将当前状态重新提交到最新
-                    // 此时experiment 中最新的commit 为恢复的<commit-id>
-                git branch -D reset  // 删除临时分支
-                git branch master // 最终回到原来分支，保证除文件变动外git状态完好
+        将工作目录中的文件恢复到某个commit
+        恢复快照的 git 流程:
+            git branch experiment
+            git add . & git commit -m ... // 保证文件最新，防止冲突报错，这一步由 Experiment() 代为完成
+            git checkout <commit-id> // 恢复文件到 <commit-id>
+            git checkout -b reset // 将当前状态附到新的临时分支 reset 上
+            git branch experiment // 切换回 experiment 分支
+            git add . & git commit -m ... // 将当前状态重新提交到最新
+                // 此时experiment 中最新的commit 为恢复的<commit-id>
+            git branch -D reset  // 删除临时分支
+            git branch master // 最终回到原来分支，保证除文件变动外git状态完好
         Returns:
             An Experiment represents this reset operation
         """

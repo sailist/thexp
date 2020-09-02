@@ -11,13 +11,16 @@ Module = TypeVar('Module', nn.Module, str)
 
 def EMA(model: Module, alpha=0.999) -> Module:
     """
-    Exponential Moving Average for nn.Module
+    Exponential Moving Average(EMA) for nn.Module
     Args:
-        model:
-        alpha:
+        model: nn.Module, An EMA wrapper of original model
+        alpha: float, default 0.999, decay ratio of EMA
 
     Returns:
+        A new cloned model that has a new method 'step'
 
+    Notes:
+        ema model will not generate gradient in its forward process
     """
     ema_model = deepcopy(model)
     [i.detach_() for i in ema_model.parameters()]

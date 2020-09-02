@@ -1,6 +1,6 @@
 from thexp import Trainer
 from trainers import GlobalParams
-from thexp.torch.data import splits
+from thexp.contrib.data import splits
 from thexp import DatasetBuilder
 
 from data.transforms import ToTensor
@@ -14,8 +14,8 @@ class DatasetMixin(Trainer):
         raise NotImplementedError()
 
 
-class BaseDatasetMixin(DatasetMixin):
-    """基本的有监督图片数据集"""
+class TempleteDatasetMixin(DatasetMixin):
+    """Templete"""
 
     def datasets(self, params: GlobalParams):
         dataset_fn = datasets[params.dataset]
@@ -23,7 +23,8 @@ class BaseDatasetMixin(DatasetMixin):
         test_x, testy = dataset_fn(False)
         train_x, train_y = dataset_fn(True)
 
-        train_idx, val_idx = splits.train_val_split(train_y)
+        train_idx, val_idx = splits.train_val_split(train_y,
+                                                    val_size=params.val_size)
 
         test_dataloader = (
             DatasetBuilder(test_x, testy)
@@ -48,4 +49,5 @@ class BaseDatasetMixin(DatasetMixin):
         self.regist_databundler(train=train_dataloader,
                                 eval=val_datalaoder,
                                 test=test_dataloader)
+
         self.to(self.device)
