@@ -2,17 +2,16 @@
 
 # thexp
 
-工欲善其事，必先利其器。而 `thexp` 或许是目前最好用的用于 **深度学习 Research** 的 Pytorch 实验框架。
+`thexp` 是一个开源项目，是一个主要用于**深度学习 Research** 的 Pytorch 实验框架。
 
-关于该项目的文档可以查看 [Document](https://sailist.github.io/thexp/)
+关于该项目的文档可以查看 [Document](https://sailist.github.io/thexp/zh/)
 
-关于该项目的下一步开发进度可以查看 [thexp-plan](https://github.com/sailist/thexp/projects/1)
 
 ## Features
 
-`thexp` 针对两个目的设计框架代码：Research 过程中试验设计多，代码修改频繁；深度学习除核心代码外冗余代码多，存在大量可简化代码。
+`thexp` 针对两个问题设计框架代码：Research 过程中试验设计多，代码修改频繁；深度学习除核心代码外冗余代码多，存在大量可简化代码。
 
-基于此，`thexp` 包含了以下 Features
+目前，`thexp` 包含了以下 Features
 
  - 大幅度简化包括 **超参数配置**、**数据集构建**、**模型保存**、**断点恢复**、**变量记录** 与 **日志输出** 等各方面的冗余代码。
  - 通过内置 Git 操作和 **随机种子管理**，用简单的命令行即可任意的 **重置（reset）** 和 **打包（archive）** 用该框架完成的任意实验。

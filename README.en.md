@@ -1,12 +1,13 @@
 # thexp
 
-Use better tools, do better things. You will see that `thexp`  helps a lot for your deep learning research. 
+`thexp` is an open-source project, which mainly used to help you for your deep learning research. 
+
 
 ## Features
 
 `thexp` is designed for reducing difficulty of the frequent code modification in experiments and simplify the redundant code.
 
-Consequently, here shows its features:
+At present, `thexp` has these features:
 
  - Simplest code for **Hyperparameter Configuration**、**Dataset Building**、**Module Checkpoint**、**Meter and Log**.
  - Include Git support and random seed management. You can **reset** and **archive** and **reimplement your experiments** by using simple console command.
