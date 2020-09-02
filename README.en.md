@@ -16,6 +16,8 @@ At present, `thexp` has these features:
 
 > Better use Pycharm.
 
+See [document](https://sailist.github.io/thexp/) for details. 
+
 
 ## Install
 ```bash
