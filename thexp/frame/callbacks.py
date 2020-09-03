@@ -174,10 +174,12 @@ class EvalCallback(TrainCallback):
         self.test_in_per_epoch = test_per_epoch
 
     def on_train_epoch_end(self, trainer: Trainer, func, params: Params, meter: Meter, *args, **kwargs):
-        if params.eidx % self.eval_in_per_epoch == self.eval_in_per_epoch - 1:
-            trainer.eval()
-        if params.eidx % self.test_in_per_epoch == self.test_in_per_epoch - 1:
-            trainer.test()
+        if self.eval_in_per_epoch is not None and self.eval_in_per_epoch > 0:
+            if params.eidx % self.eval_in_per_epoch == self.eval_in_per_epoch - 1:
+                trainer.eval()
+        if self.test_in_per_epoch is not None and self.test_in_per_epoch > 0:
+            if params.eidx % self.test_in_per_epoch == self.test_in_per_epoch - 1:
+                trainer.test()
 
     def on_train_end(self, trainer: Trainer, func, params: Params, meter: Meter, *args, **kwargs):
         if params.eidx % self.eval_in_per_epoch != self.eval_in_per_epoch - 1:
