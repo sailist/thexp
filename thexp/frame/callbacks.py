@@ -208,6 +208,7 @@ class LoggerCallback(TrainCallback):
         trainer.logger.info("Exp Trainer", trainer.__class__.__name__)
         trainer.logger.info("Exp Params", params)
         self.start = 0
+        self.cur = None
 
     def on_train_begin(self, trainer: Trainer, func, params: Params, *args, **kwargs):
         from ..utils.timing import TimeIt
@@ -238,7 +239,8 @@ class LoggerCallback(TrainCallback):
         self.traintime.mark("epoch")
         self.epochtime.end()
 
-        avg = self.traintime["use"] / (params.eidx - self.start + 1)
+        avg = self.traintime["use"] / (self.cur - self.start + 1)
+        self.cur += 1
         last = (params.epoch - params.eidx) * avg
 
         tm = Meter()
@@ -431,7 +433,7 @@ class AutoRecord(TrainCallback):
 class EMAUpdate(TrainCallback):
     def on_train_batch_end(self, trainer: Trainer, func, params: Params, meter: Meter, *args, **kwargs):
         super().on_train_batch_end(trainer, func, params, meter, *args, **kwargs)
-        for k, v in trainer.model_dict:
+        for k, v in trainer.model_dict.items():
             if k.lower().startswith('ema'):
                 v.step()
 
@@ -450,7 +452,7 @@ class LRSchedule(TrainCallback):
 
     def on_train_epoch_end(self, trainer: Trainer, func, params: Params, meter: Meter, *args, **kwargs):
         super().on_train_epoch_end(trainer, func, params, meter, *args, **kwargs)
-        for k, v in trainer.optimizer_dict:
+        for k, v in trainer.optimizer_dict.items():
             if self.use_eidx:
                 step = params.eidx
             else:
