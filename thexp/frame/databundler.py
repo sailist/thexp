@@ -3,7 +3,7 @@
 """
 from collections import OrderedDict
 from itertools import cycle, chain
-
+from typing import Optional, overload, Union
 import torch
 
 from thexp.contrib.device import to_device
@@ -34,8 +34,9 @@ class DataBundler:
     def __init__(self, device=None, to_device_fn=to_device):
         self.dataloaders = DataBundler.DataBundler()
         self.iter_mode = "chain"
-        self.device = device
         self._to_device_fn = to_device_fn
+        if device is not None:
+            self.to(device)
 
     def set_batch_size(self, batch_size):
         from torch.utils.data import DataLoader
@@ -126,14 +127,32 @@ class DataBundler:
 
         for batch_data in iter:
             # from .utils import to_device
-            if self.device is not None:
-                yield self._to_device_fn(batch_data, self.device)
+            if self.device_arg is not None:
+                yield self._to_device_fn(batch_data, self.device_arg)
             else:
                 yield batch_data
 
-    def to(self, device: torch.device):
-        assert isinstance(device, torch.device)
-        self.device = device
+    @overload
+    def to(self, dtype: torch.dtype, non_blocking: bool = False, copy: bool = False):
+        ...
+
+    @overload
+    def to(self, device: Optional[Union[torch.device, str]] = None, dtype: Optional[torch.dtype] = None,
+           non_blocking: bool = False, copy: bool = False):
+        ...
+
+    @overload
+    def to(self, other: torch.Tensor, non_blocking: bool = False, copy: bool = False):
+        ...
+
+    def to(self, *args, **kwargs):
+        if len(args) == 0:
+            assert 'device' in kwargs
+            device = kwargs['device']
+        else:
+            device = args[0]
+        assert isinstance(device, (torch.device, str))
+        self.device_arg = [args, kwargs]
         return self
 
     def choice_batch(self) -> tuple:
