@@ -197,9 +197,9 @@ class BaseTrainer(metaclass=Merge):
 
     def train(self):
         params = self.params
-        for eidx in range(params.eidx, params.epoch + 1):
+        while params.eidx < params.epoch + 1:
             self.train_epoch(params.eidx, params)
-            params.eidx = eidx + 1
+            params.eidx += 1
             if self.train_toggle:
                 self.train_toggle = False
                 break
