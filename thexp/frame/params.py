@@ -14,6 +14,7 @@ import fire
 import torch
 
 from ..base_classes.attr import attr
+from ..base_classes.defaults import default
 from ..base_classes.errors import BoundCheckError, NewParamWarning
 from ..base_classes.params_vars import ParamsFactory, OptimParams, OptimMixin
 from ..utils.environ import ENVIRON_
@@ -64,7 +65,7 @@ class BaseParams(OptimMixin):
                         warnings.warn(
                             "'{}' is a new param,please check your spelling. It's more recommended to define in advance.".format(
                                 name))
-                    self._param_dict[name] = value.default
+                    value = value.default
             else:
                 self._param_dict[name] = value
             if name in self._bind:
@@ -103,6 +104,8 @@ class BaseParams(OptimMixin):
         return False
 
     def _check(self, name, value):
+        if isinstance(value, default):
+            value = value.default
         if name in self._bound:
             self._bound[name](value)
 
@@ -341,6 +344,9 @@ class BaseParams(OptimMixin):
         self.update(kwargs)
         return self
 
+    def contains(self, key: str):
+        return key in self
+
 
 class Params(BaseParams):
     Attr = attr
@@ -356,6 +362,7 @@ class Params(BaseParams):
         self.architecture = None
         self.optim = None  # type:OptimParams
         self.git_commit = True
+        self.tmp_dir = None  # type:str # set TMPDIR environment
 
     def optimizer(self):
         return self.optim.args
