@@ -114,6 +114,10 @@ class BaseTrainer(metaclass=Merge):
                     self.regist_device(params.device)
                 else:
                     warnings.warn("Unknown type for params.device.")
+
+            if params.contains('tmp_dir'):
+                if params.tmp_dir is not None:
+                    os.environ['TMPDIR'] = params.tmp_dir
         else:
             self.params = Params()
         self.initial()
