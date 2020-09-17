@@ -32,28 +32,19 @@ class Schedule(attr):
 
     # __schdule_name__ = None
 
-    def __init__(self, start=0., end=1., left=0, right=1, *args, **kwargs):
-        super().__init__()
-        self.left = left
-        self.right = right
-        self.start = start
-        self.end = end
-        self.constant = False
-
     def toggle_constant(self, toggle=True):
         """fix the schedule as the first value"""
         self.constant = toggle
         return self
 
-    def ratio(self, cur):
-        if self.constant:
-            return 0
-        return (cur - self.left) / (self.right - self.left)
+    def __repr__(self):
+        content = ', '.join(["{}={}".format(k, v) for k, v in self.items()])
+        return "{}({})".format(self.__class__.__name__, content)
 
     def __call__(self, cur):
         raise NotImplementedError()
 
-    def plot(self, num=1000, left=None, right=None, show=True):
+    def plot(self, num=1000, left=0, right=1000, show=True):
         """
         Plot a curve of the schedule.
         Args:
@@ -68,15 +59,12 @@ class Schedule(attr):
             You may need to call `plt.show`() to show it.
         """
         from matplotlib import pyplot as plt
-        if left is None:
-            left = self.left
 
-        if right is None:
-            right = self.right
         x = np.linspace(left, right, num)
         y = [self(i) for i in x]
 
         res = plt.plot(x, y)
+        plt.title(str(self))
         if show:
             plt.show()
         return res
@@ -123,13 +111,37 @@ class Schedule(attr):
 
         return new_lr
 
+
+class ContinuousSche(Schedule):
+    def __init__(self, start=0., end=1., left=0, right=1, *args, **kwargs):
+        super().__init__()
+        self.left = left
+        self.right = right
+        self.start = start
+        self.end = end
+        self.constant = False
+
+    def ratio(self, cur):
+        if self.constant:
+            return 0
+        return (cur - self.left) / (self.right - self.left)
+
     @classmethod
     def get_val(cls, cur, start=0, end=1, left=0, right=1, *args, **kwargs):
         """get the current schedule value without create `schedule` instance. """
         return cls(start=0, end=1, left=0, right=1, *args, **kwargs)(cur)
 
+    def plot(self, num=1000, left=None, right=None, show=True):
+        if left is None:
+            left = self.left
 
-class CosSchedule(Schedule):
+        if right is None:
+            right = self.right
+
+        return super().plot(num, left, right, show)
+
+
+class CosSchedule(ContinuousSche):
     """one cycle cosine functoin"""
 
     def __call__(self, cur):
@@ -146,14 +158,14 @@ class CosSchedule(Schedule):
         return self.start * cos_ratio + self.end * (1 - cos_ratio)
 
 
-class ConstantSchedule(Schedule):
+class ConstantSchedule(ContinuousSche):
     def __init__(self, value=0.5, *args, **kwargs):
         super().__init__(start=value, end=value, *args, **kwargs)
 
         self.constant = True
 
 
-class PeriodCosSchedule(Schedule):
+class PeriodCosSchedule(ContinuousSche):
     """
     periodic cosine schedule
     """
@@ -165,7 +177,7 @@ class PeriodCosSchedule(Schedule):
         return self.start * cos_ratio + self.end * (1 - cos_ratio)
 
 
-class HalfPeriodCosSchedule(Schedule):
+class HalfPeriodCosSchedule(ContinuousSche):
     """
     half periodic cosine schedule
     """
@@ -177,7 +189,7 @@ class HalfPeriodCosSchedule(Schedule):
         return self.start * cos_ratio + self.end * (1 - cos_ratio)
 
 
-class LinearSchedule(Schedule):
+class LinearSchedule(ContinuousSche):
     """linear schedule"""
 
     def __call__(self, cur):
@@ -193,7 +205,7 @@ class LinearSchedule(Schedule):
         return self.start * (1 - linear_ratio) + self.end * linear_ratio
 
 
-class ExpSchedule(Schedule):
+class ExpSchedule(ContinuousSche):
     """slow to quick"""
 
     def __call__(self, cur):
@@ -212,7 +224,7 @@ class ExpSchedule(Schedule):
         return self.start * (1 - exp_ratio) + self.end * exp_ratio
 
 
-class LogSchedule(Schedule):
+class LogSchedule(ContinuousSche):
     """quick to slow"""
 
     def __call__(self, cur):
@@ -232,19 +244,33 @@ class LogSchedule(Schedule):
         return self.start * (1 - log_ratio) + self.end * log_ratio
 
 
-class ScheduleList(attr):
-    def __init__(self, schedules=None, bound='left'):
+class PowerDecay(Schedule):
+    """equal to tf.train.exponential_decay, decay every <decay_steps> with a base of <decay_rate> """
+
+    def __init__(self, start, decay_steps, decay_rate):
         super().__init__()
-        if schedules is None:
-            schedules = []
+        self.start = start
+        self.decay_steps = decay_steps
+        self.decay_rate = decay_rate
+
+    def __call__(self, cur):
+        rate = self.decay_rate ** (cur // self.decay_steps)
+        return self.start * rate
+
+
+class ScheduleList(Schedule):
+    def __init__(self, schedules: List[Schedule] = None, bound='left'):
+        super().__init__()
+        assert len(schedules) > 0
         self.bound = bound
-        # assert len(schedules) > 0
+
         if bound == 'left':
             self.schedules = sorted(schedules, key=lambda x: x.left)
         elif bound == 'right':
             self.schedules = sorted(schedules, key=lambda x: x.right)
         else:
             assert False
+
         self.left = self.schedules[0].left
         self.right = self.schedules[-1].right
         # super().__init__(None, None, left, right, *args, **kwargs)
@@ -260,9 +286,24 @@ class ScheduleList(attr):
                 else:
                     return schedule(cur)
         elif self.bound == 'right':
+            schedule = self.schedules[-1]
+
             for i, schedule in enumerate(self.schedules):
                 if cur < self.schedules[i].right:
                     return schedule(cur)
             return schedule(cur)
         else:
             assert False
+
+    def __repr__(self):
+        content = ', '.join([i.__class__.__name__ for i in self.schedules])
+        return '{}({})'.format(self.__class__.__name__, content)
+
+    def plot(self, num=1000, left=None, right=None, show=True):
+        if left is None:
+            left = self.left
+
+        if right is None:
+            right = self.right
+
+        return super().plot(num, left, right, show)
