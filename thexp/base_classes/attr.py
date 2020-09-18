@@ -16,7 +16,7 @@ _attr_clss = {}
 
 class attr(OrderedDict, metaclass=meta_attr):
     """
-    An ordered dict
+    An ordered defaultdict, the default class is attr itself.
     """
 
     def __new__(cls, *args: Any, **kwargs: Any):
@@ -33,7 +33,7 @@ class attr(OrderedDict, metaclass=meta_attr):
         return v
 
     def __getattr__(self, item):
-        if item not in self or self[item] is None:
+        if item not in self:
             self[item] = attr()
         return self[item]
 
