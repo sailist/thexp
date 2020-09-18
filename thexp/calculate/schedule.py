@@ -21,7 +21,7 @@ Except for the base `Schedule` class, some other subclasses of `Schedule`  which
 """
 import numpy as np
 from thexp.base_classes.attr import attr
-
+from functools import lru_cache
 from typing import List
 
 
@@ -254,7 +254,7 @@ class PowerDecay(Schedule):
         self.decay_rate = decay_rate
 
     def __call__(self, cur):
-        rate = self.decay_rate ** (cur // self.decay_steps)
+        rate = np.power(self.decay_rate, cur // self.decay_steps)
         return self.start * rate
 
 
