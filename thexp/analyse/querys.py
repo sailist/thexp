@@ -353,7 +353,7 @@ class BoardQuery():
             return BoardQuery(self.board_readers[items], self.test_viewers[items])  # do not have type error
 
     def __repr__(self):
-        return pformat(self.test_viewers)
+        return 'BoardQuery({})'.format(pformat(self.test_viewers))
 
     __str__ = __repr__
 
