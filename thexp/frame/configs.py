@@ -79,11 +79,10 @@ class Globals:
         }
 
     def __repr__(self):
-
         return "Globals({})".format(pformat({
-            _CONFIGL.globals: self._configs[0].items(),
+            _CONFIGL.globals: self._configs[2].items(),
             _CONFIGL.repository: self._configs[1].items(),
-            _CONFIGL.running: self._configs[2].items(),
+            _CONFIGL.running: self._configs[0].items(),
         }))
 
     @property
@@ -97,6 +96,11 @@ class Globals:
     @property
     def globals_config(self):
         return self._configs[2]
+
+    @property
+    def repo_root(self):
+        from ..utils.repository import git_root
+        return git_root()
 
 
 class Config:
@@ -165,7 +169,7 @@ class Config:
             repo = self.repo
             if repo is not None:
                 writer = repo.config_writer()
-                writer.add_config(_GITKEY.section_name, key, value)
+                writer.add_value(_GITKEY.section_name,key,value)
                 writer.write()
                 writer.release()
             self._config_dict[key] = value
@@ -199,7 +203,7 @@ class Config:
             return False
 
     def __repr__(self) -> str:
-        return "ExpConfig(level={}\nvalues={})".format(self._config_level, pformat(self.items()))
+        return pformat(self.items())
 
 
 globs = Globals()
