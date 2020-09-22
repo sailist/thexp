@@ -26,11 +26,17 @@ class BaseParams(OptimMixin):
 
     class SCHE:
         Cos = schedule.CosSchedule
-        PeriodCos = schedule.PeriodCosSchedule
         Linear = schedule.LinearSchedule
-        HalfPeriodCos = schedule.HalfPeriodCosSchedule
         Log = schedule.LogSchedule
         Exp = schedule.ExpSchedule
+        Power = schedule.PowerDecaySchedule
+        Const = schedule.ConstantSchedule
+
+        PeriodCos = schedule.PeriodCosSchedule
+        PeriodHalfCos = schedule.PeriodHalfCosSchedule
+        PeriodLinear = schedule.PeriodLinear
+        PeriodTriangle = schedule.PeriodTriangleSchedule
+
         List = schedule.ScheduleList
 
     def __init__(self):
