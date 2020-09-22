@@ -265,7 +265,7 @@ class PeriodCosSchedule(PeriodSchedule):
         return self.start * cos_ratio + self.end * (1 - cos_ratio)
 
 
-class HalfPeriodCosSchedule(PeriodSchedule):
+class PeriodHalfCosSchedule(PeriodSchedule):
     """
     half periodic cosine schedule, period is (right-left)
     """
@@ -309,7 +309,7 @@ class PeriodLinear(PeriodSchedule):
         return self.start * (1 - ratio) + self.end * ratio
 
 
-class PowerDecay(Schedule):
+class PowerDecaySchedule(Schedule):
     """equal to tf.train.exponential_decay, decay every <decay_steps> with a base of <decay_rate> """
 
     def __init__(self, start, decay_steps, decay_rate):
