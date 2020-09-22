@@ -116,3 +116,23 @@ def label_smoothing(onthot_labels, epsilon=0.1):
 
     """
     return ((1 - epsilon) * onthot_labels) + (epsilon / onthot_labels.shape[-1])
+
+
+def elementwise_mul(vec: torch.Tensor, mat: torch.Tensor) -> torch.Tensor:
+    """
+    Element-wise multiplication of a vector and a matrix
+
+    References:
+        https://discuss.pytorch.org/t/element-wise-multiplication-of-a-vector-and-a-matrix/56946
+
+    Args:
+        vec: tensor of shape (N, )
+        mat: matrix of shape (N, ...)
+
+    Returns:
+        A tensor
+
+    """
+    nshape = [-1] + [1] * (len(mat.shape) - 1)
+    nvec = vec.reshape(nshape).expand_as(mat)
+    return nvec * mat
