@@ -141,6 +141,40 @@ class ContinuousSche(Schedule):
         return super().plot(num, left, right, show)
 
 
+class PeriodSchedule(Schedule):
+    """
+    period
+    """
+
+    def __init__(self, start=0, end=1, left=0, period=1, *args, **kwargs):
+        super().__init__()
+        self.left = left
+        self.period = period
+        self.start = start
+        self.end = end
+        self.constant = False
+
+    def ratio(self, cur):
+        if self.constant:
+            return 0
+        in_period = float(cur - self.left) % (self.period - self.left)
+        return in_period / (self.period - self.left)
+
+    @classmethod
+    def get_val(cls, cur, start=0, end=1, left=0, right=1, *args, **kwargs):
+        """get the current schedule value without create `schedule` instance. """
+        return cls(start=start, end=end,
+                   left=left, right=right, *args, **kwargs)(cur)
+
+    def plot(self, num=1000, left=None, n_period=5, show=True):
+        if left is None:
+            left = self.left
+
+        right = self.period * n_period
+
+        return super().plot(num, left, right, show)
+
+
 class CosSchedule(ContinuousSche):
     """one cycle cosine functoin"""
 
@@ -163,30 +197,6 @@ class ConstantSchedule(ContinuousSche):
         super().__init__(start=value, end=value, *args, **kwargs)
 
         self.constant = True
-
-
-class PeriodCosSchedule(ContinuousSche):
-    """
-    periodic cosine schedule
-    """
-
-    def __call__(self, cur):
-        cur = float(cur - self.left) % (self.right - self.left)
-        ratio = self.ratio(cur + self.left)
-        cos_ratio = 0.5 * (1 + np.cos(ratio * np.pi * 2))
-        return self.start * cos_ratio + self.end * (1 - cos_ratio)
-
-
-class HalfPeriodCosSchedule(ContinuousSche):
-    """
-    half periodic cosine schedule
-    """
-
-    def __call__(self, cur):
-        cur = float(cur - self.left) % (self.right - self.left)
-        ratio = self.ratio(cur + self.left)
-        cos_ratio = 0.5 * (1 + np.cos(ratio * np.pi))
-        return self.start * cos_ratio + self.end * (1 - cos_ratio)
 
 
 class LinearSchedule(ContinuousSche):
@@ -242,6 +252,61 @@ class LogSchedule(ContinuousSche):
 
         log_ratio = 1 - np.exp(-ratio * 5) + residual * ratio
         return self.start * (1 - log_ratio) + self.end * log_ratio
+
+
+class PeriodCosSchedule(PeriodSchedule):
+    """
+    periodic cosine schedule
+    """
+
+    def __call__(self, cur):
+        ratio = self.ratio(cur)
+        cos_ratio = 0.5 * (1 + np.cos(ratio * np.pi * 2))
+        return self.start * cos_ratio + self.end * (1 - cos_ratio)
+
+
+class HalfPeriodCosSchedule(PeriodSchedule):
+    """
+    half periodic cosine schedule, period is (right-left)
+    """
+
+    def __call__(self, cur):
+        # cur = float(cur - self.left) % (self.right - self.left)
+        ratio = self.ratio(cur)
+        cos_ratio = 0.5 * (1 + np.cos(ratio * np.pi))
+        return self.start * cos_ratio + self.end * (1 - cos_ratio)
+
+
+class PeriodTriangleSchedule(PeriodSchedule):
+    def __init__(self, start=0, end=1, left=0, left_period=1, right_period=1, *args, **kwargs):
+        super().__init__(start=0, end=1, left=0,
+                         period=(left_period + right_period),
+                         *args, **kwargs)
+        assert left_period > 0 and right_period > 0
+        self.left_period = left_period
+        self.right_period = right_period
+
+    def __call__(self, cur):
+        ratio = self.ratio(cur)
+        mid_ratio = self.left_period / (self.right_period + self.left_period)
+        # if ratio < mid_ratio:
+        #     return self.
+        if ratio < mid_ratio:
+            ratio = ratio / mid_ratio
+            return self.start * (1 - ratio) + self.end * ratio
+        else:
+            ratio = (ratio - mid_ratio) / (1 - mid_ratio)
+            return self.end * (1 - ratio) + self.start * ratio
+
+
+class PeriodLinear(PeriodSchedule):
+    """
+    sawtooth wave, like a period line schedule
+    """
+
+    def __call__(self, cur):
+        ratio = self.ratio(cur)
+        return self.start * (1 - ratio) + self.end * ratio
 
 
 class PowerDecay(Schedule):
