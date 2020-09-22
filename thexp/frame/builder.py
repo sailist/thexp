@@ -241,7 +241,7 @@ class DatasetBuilder(Dataset):
                 items = [items]
             if isinstance(items, CIterable):
                 for item in items:
-                    assert isinstance(item, _Value)
+                    assert isinstance(item, _Value), 'want instance of _Value, but {}'.format(item)
                     if self._zip:
                         assert item.name is not None, 'value must have name in zip mode'
 
@@ -283,7 +283,8 @@ class DatasetBuilder(Dataset):
         if self._dataset_len is None:
             self._dataset_len = ilen
         else:
-            assert self._dataset_len == ilen
+            assert self._dataset_len == ilen, 'Current length of source is {}, but added length of {}'.format(
+                self._dataset_len, ilen)
 
     def _check_source_name(self, name):
         assert name not in self._source_names, 'source name "{}" duplicates'.format(name)
