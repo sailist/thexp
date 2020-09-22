@@ -238,6 +238,8 @@ class LoggerCallback(TrainCallback):
     def on_train_epoch_end(self, trainer: Trainer, func, params: Params, meter: Meter, *args, **kwargs):
         self.traintime.mark("epoch")
         self.epochtime.end()
+        if self.cur is None:
+            self.cur = params.eidx
 
         avg = self.traintime["use"] / (self.cur - self.start + 1)
         self.cur += 1
