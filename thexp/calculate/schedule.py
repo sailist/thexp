@@ -157,8 +157,11 @@ class PeriodSchedule(Schedule):
     def ratio(self, cur):
         if self.constant:
             return 0
-        in_period = float(cur - self.left) % (self.period - self.left)
-        return in_period / (self.period - self.left)
+        if cur < self.left:
+            in_period = (self.period - (self.left - cur) % self.period) % self.period
+        else:
+            in_period = float(cur - self.left) % self.period
+        return in_period / self.period
 
     @classmethod
     def get_val(cls, cur, start=0, end=1, left=0, right=1, *args, **kwargs):
