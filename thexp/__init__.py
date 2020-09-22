@@ -2,7 +2,7 @@
 
 """
 
-__VERSION__ = "1.5"
+__VERSION__ = "1.5.0.9"
 
 from .frame import (
     Logger,
