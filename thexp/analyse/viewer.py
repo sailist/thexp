@@ -293,13 +293,20 @@ class TestViewer(_Viewer):
         if self._json_info is None:
             if not os.path.exists(self.fn_global_info):
                 self._json_info = attr()
+                res = self._json_info
             with open(self.fn_global_info, encoding='utf-8') as r:
-                self._json_info = attr(json.load(r))
-        self._json_info["test_dir"] = self.root
-        self._json_info['visible'] = self.visible
-        self._json_info['fav'] = self.isfav
-        self._json_info['states'] = self.states
-        return self._json_info.jsonify()
+                try:
+                    self._json_info = attr(json.load(r))
+                    res = self._json_info
+                except json.JSONDecodeError as je:
+                    print('Error when decoding test {}, path = {}'.format(self.name, self.root))
+                    res = attr()
+
+        res["test_dir"] = self.root
+        res['visible'] = self.visible
+        res['fav'] = self.isfav
+        res['states'] = self.states
+        return res.jsonify()
 
     @property
     def argv(self):
