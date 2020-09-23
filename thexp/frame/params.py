@@ -19,6 +19,7 @@ from ..base_classes.errors import BoundCheckError, NewParamWarning
 from ..base_classes.params_vars import ParamsFactory, OptimParams, OptimMixin
 from ..utils.environ import ENVIRON_
 from ..calculate import schedule
+from ..decorators.deprecated import deprecated
 
 
 class BaseParams(OptimMixin):
@@ -57,6 +58,11 @@ class BaseParams(OptimMixin):
         return item in self._param_dict
 
     def __setattr__(self, name: str, value: Any) -> None:
+        """
+        1. check constrain
+        2. check if is default and not exists
+        3. check bind
+        """
         from ..base_classes.defaults import default
         if name.startswith("_"):
             super().__setattr__(name, value)
@@ -66,12 +72,14 @@ class BaseParams(OptimMixin):
                 raise BoundCheckError("param '{}' checked failed.".format(name))
 
             if isinstance(value, default):  # 设置默认值
+                # only set default value when name not exists
                 if name not in self._param_dict:
                     if value.warn:
                         warnings.warn(
                             "'{}' is a new param,please check your spelling. It's more recommended to define in advance.".format(
                                 name))
                     value = value.default
+                    self._param_dict[name] = value
             else:
                 self._param_dict[name] = value
             if name in self._bind:
@@ -170,6 +178,7 @@ class BaseParams(OptimMixin):
         self[k] = default
         return default
 
+    @deprecated('1.5.1', '1.6', 'Call initial() to create dynamic parameter is a better choice.')
     def bind(self, k, v, bind_k, bind_v):
         """
         Link the change in the value of one key with another.
@@ -177,6 +186,7 @@ class BaseParams(OptimMixin):
         """
         self._bind[k].append((v, bind_k, bind_v))
 
+    @deprecated('1.5.1', '1.6', 'Call initial() to create dynamic parameter is a better choice.')
     def dynamic_bind(self, k, bind_k, dynamic_func):
         self._bind[k].append((dynamic_func, bind_k, None))
 
