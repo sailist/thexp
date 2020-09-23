@@ -302,11 +302,12 @@ class TestViewer(_Viewer):
                     print('Error when decoding test {}, path = {}'.format(self.name, self.root))
                     res = attr()
 
-        res["test_dir"] = self.root
-        res['visible'] = self.visible
-        res['fav'] = self.isfav
-        res['states'] = self.states
-        return res.jsonify()
+            res["test_dir"] = self.root
+            res['visible'] = self.visible
+            res['fav'] = self.isfav
+            res['states'] = self.states
+            return res.jsonify()
+        return self._json_info.jsonify()
 
     @property
     def argv(self):
