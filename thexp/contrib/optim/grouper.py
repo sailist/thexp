@@ -4,7 +4,7 @@ from torch import nn
 from torch.nn.modules.batchnorm import _BatchNorm
 
 
-def walk_module(module: Union[Tuple[nn.Module,...], nn.Module]) -> Tuple[nn.Module, str, nn.Parameter]:
+def walk_module(module: Union[Tuple[nn.Module, ...], nn.Module]) -> Tuple[nn.Module, str, nn.Parameter]:
     if isinstance(module, (tuple, list)):
         for item in module:
             for ssubmodule, subname, subparam in walk_module(item):
@@ -76,6 +76,7 @@ class ParamGrouper:
         return [param for module, name, param in walk_module(self.module) if
                 isinstance(module, (_BatchNorm, nn.LayerNorm))]
 
-    def create_param_group(self, params, **kwargs):
+    @staticmethod
+    def create_param_group(params, **kwargs):
         kwargs['params'] = params
         return kwargs
