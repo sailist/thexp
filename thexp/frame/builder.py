@@ -388,4 +388,4 @@ class DatasetBuilder(Dataset):
 
     def DataLoader(self, *args, **kwargs):
         from thexp.contrib.data import DataLoader
-        return DataLoader(*args, **kwargs)
+        return DataLoader(self, *args, **kwargs)
