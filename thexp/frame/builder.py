@@ -1,7 +1,6 @@
 from collections.abc import Iterable as CIterable
 from itertools import chain
-from typing import Callable, List, Union, Iterable
-
+from typing import Callable, List, Union, Iterable, overload
 from torch.utils.data import Dataset
 
 
@@ -367,39 +366,26 @@ class DatasetBuilder(Dataset):
         self._re_indices = list(range(self.sample_num - self.real_num))
         return self
 
+    @overload
     @staticmethod
     def DataLoader_from_dataset(dataset: Dataset, batch_size=1, shuffle=False, sampler=None,
                                 batch_sampler=None, num_workers=0, collate_fn=None,
                                 pin_memory=False, drop_last=False, timeout=0,
                                 worker_init_fn=None, multiprocessing_context=None):
-        from thexp.contrib.data import DataLoader
-        return DataLoader(dataset=dataset,
-                          batch_size=batch_size,
-                          shuffle=shuffle,
-                          sampler=sampler,
-                          batch_sampler=batch_sampler,
-                          num_workers=num_workers,
-                          collate_fn=collate_fn,
-                          pin_memory=pin_memory,
-                          drop_last=drop_last,
-                          timeout=timeout,
-                          worker_init_fn=worker_init_fn,
-                          multiprocessing_context=multiprocessing_context)
+        pass
 
+    @staticmethod
+    def DataLoader_from_dataset(*args, **kwargs):
+        from thexp.contrib.data import DataLoader
+        return DataLoader(*args, **kwargs)
+
+    @overload
     def DataLoader(self, batch_size=1, shuffle=False, sampler=None,
                    batch_sampler=None, num_workers=0, collate_fn=None,
                    pin_memory=False, drop_last=False, timeout=0,
                    worker_init_fn=None, multiprocessing_context=None):
+        pass
+
+    def DataLoader(self, *args, **kwargs):
         from thexp.contrib.data import DataLoader
-        return DataLoader(dataset=self,
-                          batch_size=batch_size,
-                          shuffle=shuffle,
-                          sampler=sampler,
-                          batch_sampler=batch_sampler,
-                          num_workers=num_workers,
-                          collate_fn=collate_fn,
-                          pin_memory=pin_memory,
-                          drop_last=drop_last,
-                          timeout=timeout,
-                          worker_init_fn=worker_init_fn,
-                          multiprocessing_context=multiprocessing_context)
+        return DataLoader(*args, **kwargs)
