@@ -45,7 +45,7 @@ class BaseParams(OptimMixin):
         self._repeat = None
         self._bound = {}
         self._lock = False
-        self._bind = defaultdict(list)
+        # self._bind = defaultdict(list)
 
     def __getitem__(self, item):
         return self.__getattr__(item)
@@ -56,6 +56,22 @@ class BaseParams(OptimMixin):
 
     def __contains__(self, item):
         return item in self._param_dict
+
+    def __getstate__(self):
+        return {
+            '_param_dict': self._param_dict,
+            '_repeat': self._repeat,
+            # '_bound': self._bound,
+            '_lock': self._lock,
+            # '_bind': self._bind,
+        }
+
+    def __setstate__(self, d):
+        self._param_dict = d['_param_dict']
+        self._repeat = d['_repeat']
+        # self._bound = d['_bound']
+        self._lock = d['_lock']
+        # self._bind = d['_bind']
 
     def __setattr__(self, name: str, value: Any) -> None:
         """
@@ -82,19 +98,15 @@ class BaseParams(OptimMixin):
                     self._param_dict[name] = value
             else:
                 self._param_dict[name] = value
-            if name in self._bind:
-                for _v, _bind_k, _bind_v in self._bind[name]:
-                    if callable(_v):
-                        _bind_v = _v(value)
-                        self.__setattr__(_bind_k, _bind_v)
-                    elif _v == value:
-                        self.__setattr__(_bind_k, _bind_v)
+            # if name in self._bind:
+            # for _v, _bind_k, _bind_v in self._bind[name]:
+            #     if callable(_v):
+            #         _bind_v = _v(value)
+            #         self.__setattr__(_bind_k, _bind_v)
+            #     elif _v == value:
+            #         self.__setattr__(_bind_k, _bind_v)
 
     def __getattr__(self, item):
-        if self._lock:
-            if item not in self._param_dict:
-                raise AttributeError(item)
-
         return self._param_dict.__getattr__(item)
 
     def __repr__(self):
@@ -174,9 +186,10 @@ class BaseParams(OptimMixin):
 
     def lambda_bound(self, k, default, check_lmd):
         """"""
-        self._bound[k] = check_lmd
-        self[k] = default
-        return default
+        pass
+        # self._bound[k] = check_lmd
+        # self[k] = default
+        # return default
 
     @deprecated('1.5.1', '1.6', 'Call initial() to create dynamic parameter is a better choice.')
     def bind(self, k, v, bind_k, bind_v):
@@ -184,11 +197,13 @@ class BaseParams(OptimMixin):
         Link the change in the value of one key with another.
         When params[k] is set to v, params[bind_k] will be set to bind_v automatic
         """
-        self._bind[k].append((v, bind_k, bind_v))
+        # self._bind[k].append((v, bind_k, bind_v))
+        pass
 
     @deprecated('1.5.1', '1.6', 'Call initial() to create dynamic parameter is a better choice.')
     def dynamic_bind(self, k, bind_k, dynamic_func):
-        self._bind[k].append((dynamic_func, bind_k, None))
+        # self._bind[k].append((dynamic_func, bind_k, None))
+        pass
 
     def grid_search(self, key, iterable: Iterable):
         """"""
@@ -201,9 +216,9 @@ class BaseParams(OptimMixin):
         res = BaseParams()
         res._param_dict = copy.copy(self._param_dict)
         res._repeat = copy.copy(self._repeat)
-        res._bound = copy.copy(self._bound)
+        # res._bound = copy.copy(self._bound)
         res._lock = copy.copy(self._lock)
-        res._bind = copy.copy(self._bind)
+        # res._bind = copy.copy(self._bind)
         return res
 
     def grid_range(self, count):
@@ -379,6 +394,4 @@ class Params(BaseParams):
         self.optim = None  # type:OptimParams
         self.git_commit = True
         self.tmp_dir = None  # type:str # set TMPDIR environment
-
-    def optimizer(self):
-        return self.optim.args
+        self.local_rank = -1  # if not -1, means will use
