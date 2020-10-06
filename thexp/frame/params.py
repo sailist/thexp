@@ -394,4 +394,9 @@ class Params(BaseParams):
         self.optim = None  # type:OptimParams
         self.git_commit = True
         self.tmp_dir = None  # type:str # set TMPDIR environment
+
+        self.distributed = False
         self.local_rank = -1  # if not -1, means will use
+
+    def enable_distribution(self):
+        pass

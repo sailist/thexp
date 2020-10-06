@@ -100,6 +100,7 @@ class BaseTrainer(metaclass=Merge):
         self._databundler_dict = {}  # type:Dict[str,DataBundler]
         self.train_epoch_toggle = False
         self.train_toggle = False
+        self.experiment = None
         if params is not None:
             self.params = params
             if isinstance(params.device, str):
@@ -118,9 +119,17 @@ class BaseTrainer(metaclass=Merge):
             if params.contains('tmp_dir'):
                 if params.tmp_dir is not None:
                     os.environ['TMPDIR'] = params.tmp_dir
+
+            if params.local_rank >= 1:
+                from thexp import globs
+                globs['rank'] = params.local_rank
         else:
             self.params = Params()
         self.initial()
+
+    @property
+    def in_main_process(self) -> bool:
+        return self.params.local_rank <= 0
 
     def initial(self):
         """initial the trainer"""
@@ -128,28 +137,28 @@ class BaseTrainer(metaclass=Merge):
         from .experiment import Experiment
         # build experiment
         self.params.initial()
+        if self.experiment is None and self.params.local_rank <= 0:
+            file = inspect.getfile(self.__class__)
+            dirname = os.path.basename(os.path.dirname(file))
 
-        file = inspect.getfile(self.__class__)
-        dirname = os.path.basename(os.path.dirname(file))
+            pre = os.path.splitext(os.path.basename(file))[0]
 
-        pre = os.path.splitext(os.path.basename(file))[0]
+            if not self.params.get('git_commit', True):
+                os.environ[_OS_ENV.THEXP_COMMIT_DISABLE] = '1'
 
-        if not self.params.get('git_commit', True):
-            os.environ[_OS_ENV.THEXP_COMMIT_DISABLE] = '1'
+            self.experiment = Experiment("{}.{}".format(pre, dirname))
 
-        self.experiment = Experiment("{}.{}".format(pre, dirname))
+            # rigist and save params of this training procedure
+            self.experiment.add_params(self.params)
 
-        # rigist and save params of this training procedure
-        self.experiment.add_params(self.params)
-
-        # regist trainer info
-        trainer_kwargs = {
-            _PLUGIN_KEY.TRAINER.path: inspect.getfile(self.__class__),
-            _PLUGIN_KEY.TRAINER.doc: self.__class__.__doc__,
-            _PLUGIN_KEY.TRAINER.fn: pre,
-            _PLUGIN_KEY.TRAINER.class_name: self.__class__.__name__
-        }
-        self.experiment.add_plugin(_BUILTIN_PLUGIN.trainer, trainer_kwargs)
+            # regist trainer info
+            trainer_kwargs = {
+                _PLUGIN_KEY.TRAINER.path: inspect.getfile(self.__class__),
+                _PLUGIN_KEY.TRAINER.doc: self.__class__.__doc__,
+                _PLUGIN_KEY.TRAINER.fn: pre,
+                _PLUGIN_KEY.TRAINER.class_name: self.__class__.__name__
+            }
+            self.experiment.add_plugin(_BUILTIN_PLUGIN.trainer, trainer_kwargs)
 
         # initial model data and callbacks
 
@@ -214,6 +223,7 @@ class BaseTrainer(metaclass=Merge):
         for idx, batch_data in enumerate(self.train_dataloader):  # 复现多线程下 Keyboard Interupt，尝试通过Try解决
             meter = self.train_batch(eidx, idx, self.params.global_step, batch_data, params, self.device)
             avg.update(meter)
+            # del meter
 
             params.global_step += 1
             params.idx = idx
