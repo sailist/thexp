@@ -24,6 +24,8 @@ class BaseCallback():
     for simpler using, see TrainCallback.
     """
     priority = 0  # type:int # All callbacks in thexp will have priority in range 0-100
+    only_single_gpu = False  # only hooked in single gpu mode
+    only_main_process = False  # whether can be hooked in children process( local_rank > 0)
 
     def __new__(cls, *_, **__):
         self = super().__new__(cls)
@@ -90,7 +92,12 @@ class BaseCallback():
     def hook(self, trainer: Trainer):
         """自动将自己已有的on_func_begin/on_func_end方法绑定"""
         # trainer.add_callback(self)
-        trainer.reload_callback(self)
+        if self.only_main_process and trainer.params.local_rank > 0:
+            pass
+        elif self.only_single_gpu and trainer.params.distributed:
+            pass
+        else:
+            trainer.reload_callback(self)
 
     def unhook(self):
         self._trainer.remove_callback(self)
@@ -168,6 +175,7 @@ class EvalCallback(TrainCallback):
     """
     决定在训练过程中，eval 和 test 的频率，当 Trainer 中没有注册训练集或测试集时，相应的过程会被跳过
     """
+    only_main_process = True
 
     def __init__(self, eval_per_epoch=1, test_per_epoch=10):
         self.eval_in_per_epoch = eval_per_epoch
@@ -198,6 +206,7 @@ class LoggerCallback(TrainCallback):
 
     一般情况下 Logger 支持所有类型输出，但如果使用 Meter 类进行包装，会有更好的输出形式
     """
+    only_main_process = True
 
     def __init__(self, avg=True):
         self.avg = avg
@@ -288,6 +297,7 @@ class ModelCheckpoint(TrainCallback):
     用于检视训练过程中模型的某个指标，并根据其提升进行 checkpoint 类型的保存
     该类参考了 Keras 中相应的实现。
     """
+    only_main_process = True
 
     def __init__(self, monitor, mode="train", lower=True, start_epoch=0):
         self.monitor = monitor
@@ -334,6 +344,7 @@ class TimingCheckpoint(TrainCallback):
     """
     在 Trainer 训练过程中定时保存模型
     """
+    only_main_process = True
 
     def __init__(self, per_epoch=50):
         self.per_epoch = per_epoch
@@ -347,6 +358,8 @@ class TimingCheckpoint(TrainCallback):
 
 
 class KeyErrorSave(TrainCallback):
+    only_main_process = True
+    only_single_gpu = True
     priority = -1
 
     def __init__(self, wait_input=False):
@@ -372,6 +385,7 @@ class CUDAErrorHold(TrainCallback):
     一般而言，程序运行过程中 CUDA 会分配到最大显存，程序的显存占用一般会比较稳定，
     但仍然存在一些例外情况，显存的占用会飘忽不定，此时可以使用该 Callback 解决这一问题。
     """
+    only_single_gpu = True
     priority = -1
 
     def __init__(self, wait_input=False):
@@ -391,6 +405,7 @@ class AutoRecord(TrainCallback):
     """
     自动记录训练过程中的所有变量到 tensorboard 中（epoch 级）
     """
+    only_main_process = True
 
     def __init__(self) -> None:
         super().__init__()
@@ -433,6 +448,8 @@ class AutoRecord(TrainCallback):
 
 
 class EMAUpdate(TrainCallback):
+    only_main_process = True
+
     def on_train_batch_end(self, trainer: Trainer, func, params: Params, meter: Meter, *args, **kwargs):
         super().on_train_batch_end(trainer, func, params, meter, *args, **kwargs)
         for k, v in trainer.model_dict.items():
@@ -470,6 +487,7 @@ class LRSchedule(TrainCallback):
 
 class SuccessQuery(TrainCallback):
     """allow you exit by type KeyboardInterupt in success mode"""
+    only_single_gpu = True
 
     def on_first_exception(self, trainer: Trainer, func, params: Params, e: BaseException, *args, **kwargs):
         super().on_first_exception(trainer, func, params, e, *args, **kwargs)
@@ -489,6 +507,7 @@ class ReportSche(TrainCallback):
     log `schedule` in every epoch end
     `schedule` means `Schedule` in Params and have `sche` in the name, which will have different value in every epoch
     """
+    only_main_process = True
 
     def on_hooked(self, trainer: Trainer, params: Params):
         self.sche_lis = []
