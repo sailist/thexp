@@ -18,6 +18,8 @@ exception = namedtuple('exception_status', ['exc_type', 'exc_value', 'exc_tb'])
 class Experiment:
     """
     用于目录管理和常量配置管理
+
+    目前分布式训练下对多进程暂时没有太好的支持，因此请尽可能避免在多进程的非主进程下调用方法或获取回调，否则或许会生成附加
     """
     user_level = _CONFIGL.running
     exp_level = _CONFIGL.globals
@@ -33,7 +35,6 @@ class Experiment:
         self._end_state = False  # 是否试验已结束
         self._test_dir = None
         self._project_dir = None
-
         self._repo = None
         self._tags = {}
         self._config = globs
@@ -41,7 +42,28 @@ class Experiment:
         self._time_fmt = "%Y-%m-%d %H:%M:%S"
         self._plugins = {}
         self._exc_dict = None  # type:exception
+        self._in_main = True
         self._initial()
+
+    def __getstate__(self):
+        return {
+            '_exp_name': self._exp_name,
+            '_exp_dir': self._exp_dir,
+            '_start_time': self._start_time,
+            '_end_state': self._end_state,
+            '_test_dir': self._test_dir,
+            '_project_dir': self._project_dir,
+            '_repo': self._repo,
+            '_tags': self._tags,
+            '_config': self._config,
+            '_hold_dirs': self._hold_dirs,
+            '_time_fmt': self._time_fmt,
+            '_plugins': self._plugins,
+            '_exc_dict': self._exc_dict,
+        }
+
+    def disable_write(self):
+        self._in_main = False
 
     def __getitem__(self, item):
         return self._config[item]
@@ -50,7 +72,15 @@ class Experiment:
         self._config[key] = value
 
     def _initial(self):
-        """初始化，会在实例被创建完成后调用"""
+        """
+        初始化，会在实例被创建完成后调用
+
+        操作：
+            注册 系统退出 回调
+            注册 repository
+            注册 实验
+            提交
+        """
         from thexp.utils.repository import commit as git_commit
         if self._start_time is None:
             self._start_time = curent_date(self._time_fmt)
@@ -124,7 +154,8 @@ class Experiment:
         """将试验状态写入试验目录中的 info.json """
         if self._end_state:
             return
-
+        if not self._in_main:
+            return
         res = dict(
             repo=self.repo.working_dir,
             argv=sys.argv,
