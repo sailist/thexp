@@ -406,6 +406,7 @@ class AutoRecord(TrainCallback):
     自动记录训练过程中的所有变量到 tensorboard 中（epoch 级）
     """
     only_main_process = True
+    priority = 100
 
     def __init__(self) -> None:
         super().__init__()
@@ -466,8 +467,11 @@ class LRSchedule(TrainCallback):
     def on_hooked(self, trainer: Trainer, params: Params):
         super().on_hooked(trainer, params)
         if self.schedule is None:
-            assert 'lr_sche' in params
-            self.schedule = params.lr_sche
+            if 'lr_sche' not in params:
+                trainer.logger.warn('lr_sche not exists in params and be assigned, {} will be unhooked after.')
+                self.unhook()
+            else:
+                self.schedule = params.lr_sche
 
     def on_train_epoch_end(self, trainer: Trainer, func, params: Params, meter: Meter, *args, **kwargs):
         super().on_train_epoch_end(trainer, func, params, meter, *args, **kwargs)
@@ -508,6 +512,7 @@ class ReportSche(TrainCallback):
     `schedule` means `Schedule` in Params and have `sche` in the name, which will have different value in every epoch
     """
     only_main_process = True
+    priority = 100
 
     def on_hooked(self, trainer: Trainer, params: Params):
         self.sche_lis = []
