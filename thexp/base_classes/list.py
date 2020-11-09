@@ -34,7 +34,11 @@ class llist(list):
     def __getitem__(self, i: [int, slice, Iterable]) -> Any:
         if isinstance(i, (slice, numbers.Integral)):
             # numpy.int64 is not an instance of built-in type int
-            res = super().__getitem__(i)
+            try:
+                res = super().__getitem__(i)
+            except IndexError:
+                raise IndexError('list index out of range, got {}, but max is {}'.format(i, len(self) - 1))
+
             if isinstance(res, list):
                 return llist(res)
             else:
@@ -47,6 +51,9 @@ class llist(list):
                 else:
                     i = i.tolist()
             if isinstance(i, np.ndarray):
+                if i.dtype == np.bool:
+                    i = np.where(i)[0]
+
                 if len(i.shape) == 0:
                     i = i.tolist()
                     return self.__getitem__(i)
