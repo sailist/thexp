@@ -147,19 +147,19 @@ def cprint(*args, fore=None, back=None, sep=" ", end="", handle="stdout", flush=
     return cprint
 
 
-def eprint(*args, fore=None, back=None, mode=None, sep=" ", end="", handle="stdout", flush=True):
-    value = sep.join(*args)
-
-    if mode is None:
-        mode = MODE_NORMAL
-    if fore is None and back is None:
-        print(f"\033[{mode}m{value}\033[0m", end=end, file=_handle_dict[handle], flush=flush)
-    elif back is None:
-        print(f"\033[{mode};{fore}m{value}\033[0m", end=end, file=_handle_dict[handle], flush=flush)
-    elif fore is None:
-        print(f"\033[{mode};;{back}m{value}\033[0m", end=end, file=_handle_dict[handle], flush=flush)
-    else:
-        print(f"\033[{mode};{fore};{back}m{value}\033[0m", end=end, file=_handle_dict[handle], flush=flush)
+# def eprint(*args, fore=None, back=None, mode=None, sep=" ", end="", handle="stdout", flush=True):
+#     value = sep.join(*args)
+#
+#     if mode is None:
+#         mode = MODE_NORMAL
+#     if fore is None and back is None:
+#         print(f"\033[{mode}m{value}\033[0m", end=end, file=_handle_dict[handle], flush=flush)
+#     elif back is None:
+#         print(f"\033[{mode};{fore}m{value}\033[0m", end=end, file=_handle_dict[handle], flush=flush)
+#     elif fore is None:
+#         print(f"\033[{mode};;{back}m{value}\033[0m", end=end, file=_handle_dict[handle], flush=flush)
+#     else:
+#         print(f"\033[{mode};{fore};{back}m{value}\033[0m", end=end, file=_handle_dict[handle], flush=flush)
 
 
 def uprint(*args,
@@ -169,7 +169,7 @@ def uprint(*args,
            sep=" ",
            end="",
            handle="stdout",
-           flush=True, ):
+           flush=True):
     '''
     Prints the colored values to sys.stdout or sys.stderr.
     :param fore:
@@ -189,7 +189,8 @@ def uprint(*args,
     if in_win() and in_terminal():
         cprint(args, fore=fore, back=back, sep=sep, end=end, handle=handle, flush=flush)
     else:
-        eprint(args, fore=fore, back=back, mode=mode, sep=sep, end=end, handle=handle, flush=flush)
+        pass
+        # eprint(args, fore=fore, back=back, mode=mode, sep=sep, end=end, handle=handle, flush=flush)
 
     def extendprint(*args,
                     fore=fore,
