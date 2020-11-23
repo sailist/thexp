@@ -8,6 +8,7 @@ import pprint as pp
 import warnings
 from collections import defaultdict
 from collections.abc import Iterable
+from datetime import timedelta
 from typing import Any, overload
 
 import fire
@@ -379,6 +380,16 @@ class BaseParams(OptimMixin):
         return key in self
 
 
+class DistributionParams(BaseParams):
+    def __init__(self):
+        super().__init__()
+        self.backend = 'nccl'
+        self.distributed = False
+        self.world_size = -1
+        self.local_rank = -1  # if not -1, means will use
+        self.init_method = 'env://'
+
+
 class Params(BaseParams):
     Attr = attr
 
@@ -389,6 +400,7 @@ class Params(BaseParams):
         self.idx = 0
         self.global_step = 0
         self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
+        self.device_ids = []
         self.dataset = None
         self.architecture = None
         self.optim = None  # type:OptimParams
@@ -396,7 +408,23 @@ class Params(BaseParams):
         self.tmp_dir = None  # type:str # set TMPDIR environment
 
         self.distributed = False
+        self.world_size = -1
         self.local_rank = -1  # if not -1, means will use
+        self.init_method = 'env://'
 
     def enable_distribution(self):
         pass
+
+    @overload
+    def init_process_group(self, backend,
+                           init_method=None,
+                           timeout=timedelta(minutes=30),
+                           world_size=-1,
+                           rank=-1,
+                           store=None,
+                           group_name=''):
+        pass
+
+    def init_process_group(self, *args, **kwargs):
+        self.init_process_group_args = (args, kwargs)
+        return self.init_process_group_args
