@@ -120,6 +120,7 @@ class ContinuousSche(Schedule):
         self.start = start
         self.end = end
         self.constant = False
+        assert left != right
 
     def ratio(self, cur):
         if self.constant:
@@ -327,21 +328,23 @@ class PowerDecaySchedule(Schedule):
 
 
 class ScheduleList(Schedule):
-    def __init__(self, schedules: List[Schedule] = None, bound='left'):
+    def __init__(self, schedules: List[Schedule], bound='left'):
         super().__init__()
-        assert len(schedules) > 0
-        self.bound = bound
+        if len(schedules) > 0:
+            self.bound = bound
+            if bound == 'left':
+                self.schedules = sorted(schedules, key=lambda x: x.left)
+            elif bound == 'right':
+                self.schedules = sorted(schedules, key=lambda x: x.right)
+            else:
+                assert False
 
-        if bound == 'left':
-            self.schedules = sorted(schedules, key=lambda x: x.left)
-        elif bound == 'right':
-            self.schedules = sorted(schedules, key=lambda x: x.right)
-        else:
-            assert False
-
-        self.left = self.schedules[0].left
-        self.right = self.schedules[-1].right
+            self.left = self.schedules[0].left
+            self.right = self.schedules[-1].right
         # super().__init__(None, None, left, right, *args, **kwargs)
+
+    def __reduce__(self):
+        return (self.__class__, (self.schedules, self.bound))
 
     def __call__(self, cur):
         if self.bound == 'left':

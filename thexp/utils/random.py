@@ -5,6 +5,16 @@ import torch
 
 
 def fix_seed(seed=10):
+    """
+
+    Args:
+        seed:
+
+    Returns:
+
+    Notes:
+        When use dataloader and its num_workers is bigger than one, the final results may can't be the same cased by multithread.
+    """
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)

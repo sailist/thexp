@@ -21,7 +21,7 @@ def listdir_by_time(dir_path):
 
 def _default_config():
     return {
-        'expsdir': os.path.expanduser("~/.thexp/experiments")
+        _GITKEY.expsdir: os.path.expanduser("~/.thexp/experiments")
     }
 
 
