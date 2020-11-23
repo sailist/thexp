@@ -91,6 +91,7 @@ class Meter:
             assert False
         else:
             value = self._convert(value)
+
             if isinstance(value, int) and name not in self._format_dict:
                 self.int(name)
             elif isinstance(value, float) and name not in self._format_dict:
@@ -216,6 +217,8 @@ class AvgMeter(Meter):
 
     def __getitem__(self, item) -> AvgItem:
         return super().__getitem__(item)
+
+    # def __delitem__(self, key):
 
     def update(self, meter):
         if meter is None:

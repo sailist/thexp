@@ -28,39 +28,78 @@ class Experiment:
     whole_tests = []
 
     def __init__(self, exp_name):
+        self._start_time = None
+        self._time_fmt = "%Y-%m-%d %H:%M:%S"
 
         self._exp_name = exp_name
         self._exp_dir = None
-        self._start_time = None
-        self._end_state = False  # 是否试验已结束
         self._test_dir = None
         self._project_dir = None
+
         self._repo = None
-        self._tags = {}
-        self._config = globs
-        self._hold_dirs = []
-        self._time_fmt = "%Y-%m-%d %H:%M:%S"
-        self._plugins = {}
+        self._commit = None
+
+        self._end_state = False  # 是否试验已结束
         self._exc_dict = None  # type:exception
+
+        self._config = globs
+
+        self._hold_dirs = []
+        self._tags = {}
+        self._plugins = {}
+
         self._in_main = True
         self._initial()
 
     def __getstate__(self):
-        return {
-            '_exp_name': self._exp_name,
-            '_exp_dir': self._exp_dir,
+        res = {
             '_start_time': self._start_time,
-            '_end_state': self._end_state,
-            '_test_dir': self._test_dir,
-            '_project_dir': self._project_dir,
-            '_repo': self._repo,
-            '_tags': self._tags,
-            '_config': self._config,
-            '_hold_dirs': self._hold_dirs,
             '_time_fmt': self._time_fmt,
+
+            '_exp_name': self._exp_name,
+            '_exp_dir': self.exp_dir,
+            '_test_dir': self.test_dir,
+            '_project_dir': self.project_dir,
+
+            '_hold_dirs': self._hold_dirs,
+            '_tags': self._tags,
             '_plugins': self._plugins,
+
+            '_commit': self.commit.hexsha,
+
             '_exc_dict': self._exc_dict,
+            '_end_state': self._end_state,
+
+            '_in_main': self._in_main,
         }
+        emp_ks = [k for k in res if res[k] is None]
+        for k in emp_ks:
+            res.pop(k)
+        return res
+
+    def __setstate__(self, state: dict):
+        from gitdb.util import hex_to_bin
+        from git import Commit
+        self._start_time = state['_start_time']
+        self._time_fmt = state['_time_fmt']
+
+        self._exp_name = state['_exp_name']
+        self._exp_dir = state['_exp_dir']
+        self._test_dir = state['_test_dir']
+        self._project_dir = state['_project_dir']
+
+        self._hold_dirs = state['_hold_dirs']
+        self._plugins = state['_plugins']
+        self._tags = state['_tags']
+
+        self._exc_dict = state.get('_exc_dict', None)
+        self._end_state = state['_end_state']
+
+        self._in_main = state['_in_main']
+
+        self._repo = None
+        self._commit = Commit(self.repo, hex_to_bin(state['_commit']))
+        self._config = globs
 
     def disable_write(self):
         self._in_main = False
@@ -189,7 +228,9 @@ class Experiment:
     @property
     def commit(self):
         from thexp.utils.repository import commit as git_commit
-        return git_commit(self.repo, _GITKEY.commit_key, branch_name=_GITKEY.thexp_branch)
+        if self._commit is None:
+            self._commit = git_commit(self.repo, _GITKEY.commit_key, branch_name=_GITKEY.thexp_branch)
+        return self._commit
 
     @property
     def test_hash(self) -> str:
