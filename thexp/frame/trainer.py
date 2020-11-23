@@ -23,9 +23,27 @@ from ..base_classes.metaclasses import Merge
 from ..globals import _BUILTIN_PLUGIN, _FNAME, _PLUGIN_DIRNAME, _PLUGIN_KEY, _OS_ENV
 
 
+def mp_agent(rank, self, op):
+    import torch.distributed as dist
+    self.params.local_rank = rank
+    dist.init_process_group(backend='nccl', init_method=self.params.init_method,
+                            rank=rank,
+                            world_size=self.params.world_size)
+
+    self.params.device = 'cuda:{}'.format(rank)
+    self.regist_device(torch.device(self.params.device))
+    torch.cuda.set_device(self.params.local_rank)
+    print('in rank {}'.format(rank))
+    self.models(self.params)
+    self.datasets(self.params)
+    self.callbacks(self.params)
+    op(self)
+
+
 class BaseTrainer(metaclass=Merge):
     __exp_name__ = None
     _call_backs = {
+        "initial",
         "train", "train_epoch", "train_step", "test", "eval", "train_on_batch",
         "regist_databundler", "train_batch", "test_eval_logic", "predict",
         "load_keypoint", "load_checkpoint", "load_model", "save_keypoint", "save_checkpoint", "save_model",
@@ -48,12 +66,12 @@ class BaseTrainer(metaclass=Merge):
             """
 
             @wraps(func)
-            def _newfunc(*args, **kwargs):
+            def _newfunc(*aargs, **kkwargs):
                 """执行前回调 on_begin() 、执行后回调 on_end()、执行异常则回调 on_exception() """
                 for callback in _call_set:
-                    callback.on_begin(self, func, self.params, *args, **kwargs)
+                    callback.on_begin(self, func, self.params, *aargs, **kkwargs)
                 try:
-                    _meter = func(*args, **kwargs)
+                    _meter = func(*aargs, **kkwargs)
                     # 如果返回迭代器，那么会消耗掉迭代器，并只返回最后一次运行的结果（如果有）
                     if isinstance(_meter, Iterator):
                         _m = Meter()
@@ -61,7 +79,7 @@ class BaseTrainer(metaclass=Merge):
                             pass
                         _meter = _m
                 except BaseException as e:
-                    _handles = [callback.on_exception(self, func, self.params, e, *args, **kwargs)
+                    _handles = [callback.on_exception(self, func, self.params, e, *aargs, **kkwargs)
                                 for callback in _call_set]
 
                     if any(_handles):
@@ -70,7 +88,7 @@ class BaseTrainer(metaclass=Merge):
                         raise e
 
                 for callback in _call_set:
-                    callback.on_end(self, func, self.params, _meter, *args, **kwargs)
+                    callback.on_end(self, func, self.params, _meter, *aargs, **kkwargs)
                 return _meter
 
             return _newfunc
@@ -104,17 +122,21 @@ class BaseTrainer(metaclass=Merge):
         if params is not None:
             self.params = params
             if isinstance(params.device, str):
-                self.regist_device(torch.device(params.device))
-            elif isinstance(params.device, (list, dict)):
-                if isinstance(params.device, list):
-                    self.regist_devices([torch.device(i) for i in params.device])
-                elif isinstance(params.device, dict):
-                    self.regist_devices({k: torch.device(v) for k, v in params.device.items()})
-                elif isinstance(params.device, torch.device):
-                    warnings.warn("define torch.device in params is not recommanded, allocate a string is better.")
-                    self.regist_device(params.device)
-                else:
-                    warnings.warn("Unknown type for params.device.")
+                _device = torch.device(params.device)
+                self.regist_device(_device)
+                torch.cuda.set_device(_device)
+            else:
+                assert False
+            # elif isinstance(params.device, (list, dict)):
+            #     if isinstance(params.device, list):
+            #         self.regist_devices([torch.device(i) for i in params.device])
+            #     elif isinstance(params.device, dict):
+            #         self.regist_devices({k: torch.device(v) for k, v in params.device.items()})
+            #     elif isinstance(params.device, torch.device):
+            #         warnings.warn("define torch.device in params is not recommanded, allocate a string is better.")
+            #         self.regist_device(params.device)
+            #     else:
+            #         warnings.warn("Unknown type for params.device.")
 
             if params.contains('tmp_dir'):
                 if params.tmp_dir is not None:
@@ -127,9 +149,35 @@ class BaseTrainer(metaclass=Merge):
             self.params = Params()
         self.initial()
 
-    @property
-    def in_main_process(self) -> bool:
-        return self.params.local_rank <= 0
+    def __setstate__(self, state):
+        self._model_dict = state['_model_dict']
+        self._optim_dict = state['_optim_dict']
+        self._other_state_dict = state['_other_state_dict']
+        self._vector_dict = state['_vector_dict']
+        self._checkpoint_plug = state['_checkpoint_plug']
+        self._databundler_dict = state['_databundler_dict']
+        self.train_epoch_toggle = state['train_epoch_toggle']
+        self.train_toggle = state['train_toggle']
+        self.params = state['params']
+        self.experiment = state.get('experiment', None)
+
+    def __getstate__(self):
+        res = {
+            '_model_dict': self._model_dict,
+            '_optim_dict': self._optim_dict,
+            '_other_state_dict': self._other_state_dict,
+            '_vector_dict': self._vector_dict,
+            '_checkpoint_plug': self._checkpoint_plug,
+            '_databundler_dict': self._databundler_dict,
+            'train_epoch_toggle': self.train_epoch_toggle,
+            'train_toggle': self.train_toggle,
+            'experiment': self.experiment,
+            'params': self.params,
+        }
+        empk = [k for k in res if res[k] is None]
+        for k in empk:
+            res.pop(k)
+        return res
 
     def initial(self):
         """initial the trainer"""
@@ -137,34 +185,31 @@ class BaseTrainer(metaclass=Merge):
         from .experiment import Experiment
         # build experiment
         self.params.initial()
-        if self.experiment is None and self.params.local_rank <= 0:
-            file = inspect.getfile(self.__class__)
-            dirname = os.path.basename(os.path.dirname(file))
+        file = inspect.getfile(self.__class__)
+        dirname = os.path.basename(os.path.dirname(file))
 
-            pre = os.path.splitext(os.path.basename(file))[0]
+        pre = os.path.splitext(os.path.basename(file))[0]
 
-            if not self.params.get('git_commit', True):
-                os.environ[_OS_ENV.THEXP_COMMIT_DISABLE] = '1'
+        if not self.params.get('git_commit', True):
+            os.environ[_OS_ENV.THEXP_COMMIT_DISABLE] = '1'
 
-            self.experiment = Experiment("{}.{}".format(pre, dirname))
+        self.experiment = Experiment("{}.{}".format(pre, dirname))
 
-            # rigist and save params of this training procedure
-            self.experiment.add_params(self.params)
+        # rigist and save params of this training procedure
+        self.experiment.add_params(self.params)
 
-            # regist trainer info
-            trainer_kwargs = {
-                _PLUGIN_KEY.TRAINER.path: inspect.getfile(self.__class__),
-                _PLUGIN_KEY.TRAINER.doc: self.__class__.__doc__,
-                _PLUGIN_KEY.TRAINER.fn: pre,
-                _PLUGIN_KEY.TRAINER.class_name: self.__class__.__name__
-            }
-            self.experiment.add_plugin(_BUILTIN_PLUGIN.trainer, trainer_kwargs)
+        # regist trainer info
+        trainer_kwargs = {
+            _PLUGIN_KEY.TRAINER.path: inspect.getfile(self.__class__),
+            _PLUGIN_KEY.TRAINER.doc: self.__class__.__doc__,
+            _PLUGIN_KEY.TRAINER.fn: pre,
+            _PLUGIN_KEY.TRAINER.class_name: self.__class__.__name__
+        }
+        self.experiment.add_plugin(_BUILTIN_PLUGIN.trainer, trainer_kwargs)
 
-        # initial model data and callbacks
-
+        self.callbacks(self.params)
         self.models(self.params)
         self.datasets(self.params)
-        self.callbacks(self.params)
 
     def _regist_databundler(self, key, val):
         assert isinstance(val, (DataBundler, DataLoader))
@@ -174,9 +219,6 @@ class BaseTrainer(metaclass=Merge):
 
     def regist_device(self, device: torch.device):
         self.device = device
-
-    def regist_devices(self, devices: Union[List[torch.device], Dict[Union[int, str], torch.device]]):
-        self.devices = devices
 
     def regist_databundler(self,
                            train: Union[DataBundler, DataLoader] = None,
@@ -291,6 +333,10 @@ class BaseTrainer(metaclass=Merge):
             self.logger.info("Have no eval dataset, ignored eval.")
             return None
         return self.test_eval_logic(loader, self.params)
+
+    @property
+    def in_main_process(self):
+        return self.params.local_rank <= 0
 
     @property
     def safe_writer(self):
@@ -772,3 +818,75 @@ class WrapTrainer(Trainer):
 
     def train_batch(self, eidx, idx, global_step, batch_data, params: Params, device: torch.device):
         super().train_batch(eidx, idx, global_step, batch_data, params, device)
+
+
+class DistributedTrainer():
+    def __init__(self, trainer_cls, params: Params, op):
+        self.trainer_cls = trainer_cls
+        self.params = params
+        self.op = op
+
+    def run(self):
+        trainer = self.trainer_cls.__new__(self.trainer_cls)  # type:Trainer
+        trainer._model_dict = {}  # type:Dict[str,torch.nn.Module]
+        trainer._optim_dict = {}  # type:Dict[str,Optimizer]
+        trainer._other_state_dict = {}
+        trainer._vector_dict = {}
+        trainer._checkpoint_plug = {}
+        trainer._databundler_dict = {}  # type:Dict[str,DataBundler]
+        trainer.train_epoch_toggle = False
+        trainer.train_toggle = False
+        trainer.experiment = None
+
+        params = self.params
+        if self.params is not None:
+            trainer.params = params
+            if isinstance(params.device, str):
+                trainer.regist_device(torch.device(params.device))
+            else:
+                assert False
+
+            if params.contains('tmp_dir'):
+                if params.tmp_dir is not None:
+                    os.environ['TMPDIR'] = params.tmp_dir
+
+            if params.local_rank >= 1:
+                from thexp import globs
+                globs['rank'] = params.local_rank
+        else:
+            trainer.params = Params()
+
+        import inspect
+        from .experiment import Experiment
+        # build experiment
+        trainer.params.initial()
+        file = inspect.getfile(trainer.__class__)
+        dirname = os.path.basename(os.path.dirname(file))
+
+        pre = os.path.splitext(os.path.basename(file))[0]
+
+        if not trainer.params.get('git_commit', True):
+            os.environ[_OS_ENV.THEXP_COMMIT_DISABLE] = '1'
+
+        trainer.experiment = Experiment("{}.{}".format(pre, dirname))
+
+        # rigist and save params of this training procedure
+        trainer.experiment.add_params(params)
+
+        # regist trainer info
+        trainer_kwargs = {
+            _PLUGIN_KEY.TRAINER.path: inspect.getfile(trainer.__class__),
+            _PLUGIN_KEY.TRAINER.doc: trainer.__class__.__doc__,
+            _PLUGIN_KEY.TRAINER.fn: pre,
+            _PLUGIN_KEY.TRAINER.class_name: trainer.__class__.__name__
+        }
+        trainer.experiment.add_plugin(_BUILTIN_PLUGIN.trainer, trainer_kwargs)
+
+        params.distributed = True
+        import torch.multiprocessing as mp
+        if params.world_size == -1:
+            params.world_size = torch.cuda.device_count()
+
+        mp.spawn(mp_agent,
+                 args=(trainer, self.op),
+                 nprocs=trainer.params.world_size)
