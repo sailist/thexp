@@ -2,7 +2,7 @@
 
 """
 
-import os
+import os, sys
 from functools import wraps
 
 from ..calculate.schedule import Schedule, ScheduleList
@@ -128,6 +128,9 @@ class TrainCallback(BaseCallback):
             self.on_eval_begin(trainer, func, params, *args, **kwargs)
         # elif func.__name__ in ""
 
+    def on_initial_end(self, trainer: Trainer, func, params: Params, meter: Meter, *args, **kwargs):
+        pass
+
     def on_train_begin(self, trainer: Trainer, func, params: Params, *args, **kwargs):
         pass
 
@@ -207,15 +210,18 @@ class LoggerCallback(TrainCallback):
     一般情况下 Logger 支持所有类型输出，但如果使用 Meter 类进行包装，会有更好的输出形式
     """
     only_main_process = True
+    priority = 100
 
     def __init__(self, avg=True):
         self.avg = avg
 
     def on_hooked(self, trainer: Trainer, params: Params):
         super().on_hooked(trainer, params)
+        trainer.logger.raw(' '.join(sys.argv))
         trainer.logger.info("Exp BaseDir", os.path.abspath(trainer.experiment.exp_dir))
         trainer.logger.info("Exp Trainer", trainer.__class__.__name__)
-        trainer.logger.info("Exp Params", params)
+        trainer.logger.info("Exp Params")
+        trainer.logger.raw(params)
         self.start = 0
         self.cur = None
 
