@@ -45,7 +45,7 @@ class BaseTrainer(metaclass=Merge):
     _call_backs = {
         "initial",
         "train", "train_epoch", "train_step", "test", "eval", "train_on_batch",
-        "regist_databundler", "train_batch", "test_eval_logic", "predict",
+        "regist_databundler", "train_batch", "test_eval_logic", "test_eval_logic_v2", "predict",
         "load_keypoint", "load_checkpoint", "load_model", "save_keypoint", "save_checkpoint", "save_model",
     }
 
@@ -124,7 +124,8 @@ class BaseTrainer(metaclass=Merge):
             if isinstance(params.device, str):
                 _device = torch.device(params.device)
                 self.regist_device(_device)
-                torch.cuda.set_device(_device)
+                if 'cuda' in params.device:
+                    torch.cuda.set_device(_device)
             else:
                 assert False
             # elif isinstance(params.device, (list, dict)):
@@ -212,9 +213,15 @@ class BaseTrainer(metaclass=Merge):
         self.datasets(self.params)
 
     def _regist_databundler(self, key, val):
+        from torch.utils.data import DataLoader
         assert isinstance(val, (DataBundler, DataLoader))
         if isinstance(val, DataLoader):
             val = DataBundler().add(val)
+
+        # To ensure that children threads(dataloader workers)  will be killed
+        if key in self._databundler_dict:
+            del self._databundler_dict[key]
+
         self._databundler_dict[key] = val
 
     def regist_device(self, device: torch.device):
@@ -320,11 +327,12 @@ class BaseTrainer(metaclass=Merge):
 
     def test(self):
         """test via test_dataloader"""
+
         loader = self.test_dataloader
         if loader is None:
             self.logger.info("Have no test dataset, ignored test.")
             return None
-        return self.test_eval_logic(loader, self.params)
+        return self.test_eval_logic_v2(loader, self.params, True)
 
     def eval(self):
         """eval via eval_dataloader"""
@@ -332,7 +340,7 @@ class BaseTrainer(metaclass=Merge):
         if loader is None:
             self.logger.info("Have no eval dataset, ignored eval.")
             return None
-        return self.test_eval_logic(loader, self.params)
+        return self.test_eval_logic_v2(loader, self.params, False)
 
     @property
     def in_main_process(self):
@@ -772,6 +780,9 @@ class BaseTrainer(metaclass=Merge):
 
     def test_eval_logic(self, dataloader, param: Params):
         raise NotImplementedError()
+
+    def test_eval_logic_v2(self, dataloader, param: Params, is_test: bool):
+        return self.test_eval_logic(dataloader, param)
 
     def predict(self, xs):
         raise NotImplementedError()
