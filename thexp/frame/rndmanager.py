@@ -64,7 +64,9 @@ class RndManager:
         if not os.path.exists(self.save_dir):
             os.makedirs(self.save_dir)
 
-        stt = random.get_state()
+        seed = random.hashseed(name)
+        stt = random.fix_seed(seed)
+
         with open(self._build_state_name(name), "wb") as f:
             pickle.dump(stt, f)
 

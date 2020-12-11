@@ -1,7 +1,18 @@
 import random
-
+from typing import Union
+import hashlib
 import numpy as np
 import torch
+
+
+def hashseed(hashitem: Union[int, str]):
+    assert isinstance(hashitem, (int, str))
+
+    if isinstance(hashitem, str):
+        digest = hashlib.md5(hashitem.encode(encoding='utf-8')).digest()
+        return sum([int(i) for i in digest])
+
+    return hashitem
 
 
 def fix_seed(seed=10):
