@@ -186,19 +186,28 @@ class EvalCallback(TrainCallback):
         self.eval_in_per_epoch = eval_per_epoch
         self.test_in_per_epoch = test_per_epoch
 
+        # 在训练结束后会进行一次
+        self._last_eval = -1
+        self._last_test = -1
+
     def _test_or_eval(self, params: Params, trainer: Trainer):
         if self.eval_in_per_epoch is not None and self.eval_in_per_epoch > 0:
             if params.eidx % self.eval_in_per_epoch == self.eval_in_per_epoch - 1:
+                self._last_eval = params.eidx
                 trainer.eval()
         if self.test_in_per_epoch is not None and self.test_in_per_epoch > 0:
             if params.eidx % self.test_in_per_epoch == self.test_in_per_epoch - 1:
+                self._last_test = params.eidx
                 trainer.test()
 
     def on_train_epoch_end(self, trainer: Trainer, func, params: Params, meter: Meter, *args, **kwargs):
         self._test_or_eval(params, trainer)
 
     def on_train_end(self, trainer: Trainer, func, params: Params, meter: Meter, *args, **kwargs):
-        self._test_or_eval(params, trainer)
+        if self._last_eval != params.eidx:
+            trainer.eval()
+        if self._last_test != params.eidx:
+            trainer.test()
 
     def __repr__(self):
         return self._repr_by_val("eval_in_per_epoch", "test_per_epoch")
