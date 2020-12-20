@@ -198,7 +198,7 @@ class memory(object):
     def _malloc(self, size, init=False):
         """ unit: mb """
         try:
-            tmp = torch.ones(size, 1048576, device=self.device, dtype=torch.int8)
+            tmp = torch.rand(size, 1048576 // 4, device=self.device)
             if not init:
                 self.mem.append(tmp)
             return True
@@ -208,7 +208,14 @@ class memory(object):
     def end(self):
         print()
         if self.hold:
-            input('any input...')
+            print('press keyboardinterrupt to end')
+            try:
+                while True:
+                    # do some Fake thing
+                    self.mem[-1].random_()
+                    time.sleep(0.1)
+            except KeyboardInterrupt:
+                print('continue')
 
     def start(self, immediately=True):
         if immediately:
