@@ -7,6 +7,7 @@ from typing import Optional, overload, Union
 import torch
 
 from thexp.contrib.device import to_device
+from ..utils.iters import safe_cycle
 
 
 class DataBundler:
@@ -128,7 +129,7 @@ class DataBundler:
         :return:
         """
         """一般在zip中保证数据量少的数据集不会成为拖累"""
-        self._append(loader, cycle, name)
+        self._append(loader, safe_cycle, name)
         return self
 
     def add(self, loader, name=None):
