@@ -157,6 +157,8 @@ class TrainCallback(BaseCallback):
             self.on_test_end(trainer, func, params, meter, *args, **kwargs)
         elif func.__name__ == "eval":
             self.on_eval_end(trainer, func, params, meter, *args, **kwargs)
+        elif func.__name__ == 'initial':
+            self.on_initial_end(trainer, func, params, meter, *args, **kwargs)
 
     def on_train_end(self, trainer: Trainer, func, params: Params, meter: Meter, *args, **kwargs):
         pass
@@ -184,7 +186,7 @@ class EvalCallback(TrainCallback):
         self.eval_in_per_epoch = eval_per_epoch
         self.test_in_per_epoch = test_per_epoch
 
-    def on_train_epoch_end(self, trainer: Trainer, func, params: Params, meter: Meter, *args, **kwargs):
+    def _test_or_eval(self, params: Params, trainer: Trainer):
         if self.eval_in_per_epoch is not None and self.eval_in_per_epoch > 0:
             if params.eidx % self.eval_in_per_epoch == self.eval_in_per_epoch - 1:
                 trainer.eval()
@@ -192,11 +194,11 @@ class EvalCallback(TrainCallback):
             if params.eidx % self.test_in_per_epoch == self.test_in_per_epoch - 1:
                 trainer.test()
 
+    def on_train_epoch_end(self, trainer: Trainer, func, params: Params, meter: Meter, *args, **kwargs):
+        self._test_or_eval(params, trainer)
+
     def on_train_end(self, trainer: Trainer, func, params: Params, meter: Meter, *args, **kwargs):
-        if params.eidx % self.eval_in_per_epoch != self.eval_in_per_epoch - 1:
-            trainer.eval()
-        if params.eidx % self.test_in_per_epoch != self.test_in_per_epoch - 1:
-            trainer.test()
+        self._test_or_eval(params, trainer)
 
     def __repr__(self):
         return self._repr_by_val("eval_in_per_epoch", "test_per_epoch")
