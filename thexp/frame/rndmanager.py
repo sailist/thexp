@@ -53,8 +53,6 @@ class RndManager:
         else:
             random.fix_seed(seed)
 
-        self._save_rnd_state(name)
-
     def list(self):
         """列出当前保存的所有种子"""
         return [os.path.join(self.save_dir, f) for f in os.listdir(self.save_dir) if f.endswith('rnd')]
