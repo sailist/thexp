@@ -90,6 +90,9 @@ class attr(OrderedDict, metaclass=meta_attr):
         # res = attr()
         return self.from_dict(self)
 
+    def __deepcopy__(self, memodict={}):
+        return self.copy()
+
     def walk(self):
         for k, v in self.items():
             if isinstance(v, attr):
@@ -122,20 +125,27 @@ class attr(OrderedDict, metaclass=meta_attr):
                 v = v.jsonify()
                 res[k] = v
             elif isinstance(v, (Iterable)):
-                nv = []
-                for vv in v:
-                    if isinstance(vv, (numbers.Number, str)):
-                        nv.append(vv)
-                    elif isinstance(vv, dict):
-                        if isinstance(vv, attr):
-                            nv.append(vv.jsonify())
-                        else:
-                            nv.append(attr.from_dict(vv).jsonify())
-                    else:  # set,list
-                        _tmp = attr()
-                        _tmp['tmp'] = vv
-                        nv.append(_tmp.jsonify()['tmp'])
+                if isinstance(v, (torch.Tensor, np.ndarray)):
+                    nv = _tpttr(v).jsonify()
+                else:
+                    nv = []
+                    for vv in v:
+                        if isinstance(vv, (numbers.Number, str)):
+                            nv.append(vv)
+                        elif isinstance(vv, dict):
+                            if isinstance(vv, attr):
+                                nv.append(vv.jsonify())
+                            else:
+                                nv.append(attr.from_dict(vv).jsonify())
+                        elif vv is None:
+                            nv.append(_nattr().jsonify())
+                        else:  # set,list
+                            _tmp = attr()
+                            _tmp['tmp'] = vv
+                            nv.append(_tmp.jsonify()['tmp'])
                 res[k] = nv
+            elif v is None:
+                res[k] = _nattr().jsonify()
 
         return res
 
@@ -166,9 +176,17 @@ class attr(OrderedDict, metaclass=meta_attr):
         if '_class_name' in dic:
             dic.pop('_class_name')
 
+        if isinstance(res, _nattr):
+            return None
+        elif isinstance(res, _tpttr):
+            if dic['torch']:
+                return torch.tensor(dic['arr'])
+            else:
+                return np.array(dic['arr'])
+
         for k, v in dic.items():
-            if isinstance(v, attr):
-                v = v.from_dict(v)
+            if isinstance(v, dict):
+                v = attr.from_dict(v)
             elif isinstance(v, (list, tuple, torch.Tensor, np.ndarray)):
                 v = cls._copy_iters(v)
 
@@ -190,3 +208,14 @@ class attr(OrderedDict, metaclass=meta_attr):
         elif isinstance(item, dict):
             return attr.from_dict(item)
         return copy.copy(item)
+
+
+class _nattr(attr):
+    pass
+
+
+class _tpttr(attr):  # pytorch/numpy wrapper
+    def __init__(self, arr):
+        super().__init__()
+        self.arr = arr.tolist()
+        self.torch = isinstance(arr, torch.Tensor)

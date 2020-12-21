@@ -4,10 +4,6 @@ from thexp.frame import callbacks
 from .. import GlobalParams
 
 
-class __CB(callbacks.TrainCallback):
-    pass
-
-
 class BaseCBMixin(Trainer):
     def callbacks(self, params: GlobalParams):
         from thexp import callbacks
@@ -15,6 +11,6 @@ class BaseCBMixin(Trainer):
         callbacks.EvalCallback(5, 10).hook(self)  # auto eval/test per 5/10 epoch
         callbacks.AutoRecord().hook(self)  # auto record meter by SummaryWritter
 
-        callbacks.LRSchedule()  # auto get params.lr_sche to apply lr rate
+        callbacks.LRSchedule().hook(self)  # auto get params.lr_sche to apply lr rate
         if params.ema:
-            callbacks.EMAUpdate()  # auto update module named with prefix `ema`
+            callbacks.EMAUpdate().hook(self)  # auto update module named with prefix `ema`

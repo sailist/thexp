@@ -27,6 +27,10 @@ thexp log <test_name>
 thexp params <test_name>
 
 # <test_name>/--test=<test_name>/--test_name=<test_name>
+
+# TODO
+thexp config user --k=v
+thexp config repo --k=v
 """
 import sys
 from thexp import __VERSION__
@@ -182,6 +186,7 @@ def params(*args, **kwargs):
 
 
 def main(*args, **kwargs):
+    # print(args, kwargs)
     if len(args) == 0 or 'help' in kwargs:
         print(doc)
         return
@@ -192,7 +197,6 @@ def main(*args, **kwargs):
     else:
         print(doc)
 
-
+# Fire 不能嵌套在 __main__ 判断里，否则 sys.argv 识别会出问题，目前原因未知
 fire.Fire(main)
-
 exit(0)

@@ -1,16 +1,32 @@
 """
 
-viewer = GlobalViewer()
+Q = Query()
 
-viewer.repos()['SemiEnhance'].exps()['some_exp'].tests()[0,1,2]...
-viewer.repos()['SemiEnhance'].exps()['some_exp'].tests('0001','0002')...
-viewer.exps()[:2].tests()
-viewer.tests().first() -> TestViewer
-viewer.tests().last() -> TestViewer
-viewer.tests().last() -> TestViewer
+Q.repos()['SemiEnhance'].exps()['some_exp'].tests()[0,1,2]...
+Q.repos()['SemiEnhance'].exps()['some_exp'].tests('0001','0002')...
+Q.exps()[:2].tests()
+Q.tests().first() -> TestViewer
+Q.tests().last() -> TestViewer
+Q.tests().last() -> TestViewer
 
     ... list all repos
 
+blur search:
+Q.rfind/efind/tfind/
+Q.rfind('th')
+Q.tfind('')
+
+compare params:
+Q.tests('xxx').compare_params()
+
+
+compare files:
+Q.tests('xxx').compare_files(include_current=True)
+
+    output a table
+
+Q.tests('xxx').compare().files()
+Q.tests('xxx').compare().file(a='...',b=None,skip=0) #
 
 
 """

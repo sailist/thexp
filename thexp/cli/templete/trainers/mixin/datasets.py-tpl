@@ -29,7 +29,8 @@ class TempleteDatasetMixin(DatasetMixin):
         test_dataloader = (
             DatasetBuilder(test_x, testy)
                 .add_x(transform=toTensor).add_y()
-                .DataLoader(batch_size=params.batch_size, num_workers=4)
+                .DataLoader(batch_size=params.batch_size,
+                            num_workers=params.num_workers)
         )
 
         train_dataloader = (
@@ -43,7 +44,8 @@ class TempleteDatasetMixin(DatasetMixin):
         val_datalaoder = (
             DatasetBuilder(train_x[val_idx], train_y[val_idx])
                 .add_x(transform=toTensor).add_y()
-                .DataLoader(batch_size=params.batch_size, num_workers=4)
+                .DataLoader(batch_size=params.batch_size,
+                            num_workers=params.num_workers)
         )
 
         self.regist_databundler(train=train_dataloader,

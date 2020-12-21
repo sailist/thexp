@@ -5,7 +5,11 @@ import torch
 from thexp import Meter, Params
 
 
-class UnsupervisedAccMixin:
+class AccMixin():
+    pass
+
+
+class UnsupervisedAccMixin(AccMixin):
     def acc_assigned_(self):
         pass  # TODO
 
@@ -80,7 +84,7 @@ class UnsupervisedAccMixin:
         return meter
 
 
-class ClassifyAccMixin:
+class ClassifyAccMixin(AccMixin):
     def acc_precise_(self, pred_labels: torch.Tensor, labels, meter: Meter = None, name='acc'):
         """train batch accuracy"""
         with torch.no_grad():

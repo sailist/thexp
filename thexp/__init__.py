@@ -1,8 +1,7 @@
 """
 
 """
-
-__VERSION__ = "1.5.0.9"
+__VERSION__ = "1.5.0.33"
 
 from .frame import (
     Logger,
@@ -23,3 +22,4 @@ from .analyse import Q, C
 from .utils.environ import ENVIRON_ as ENV
 
 import thexp.calculate  # initialize schedule attr classes
+from .utils.memory import memory
