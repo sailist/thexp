@@ -145,3 +145,4 @@ repo.v1.json
 *.npy
 *.ckpt
 *.thexp.*
+*.pkl
