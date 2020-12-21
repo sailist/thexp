@@ -18,8 +18,6 @@ exception = namedtuple('exception_status', ['exc_type', 'exc_value', 'exc_tb'])
 class Experiment:
     """
     用于目录管理和常量配置管理
-
-    目前分布式训练下对多进程暂时没有太好的支持，因此请尽可能避免在多进程的非主进程下调用方法或获取回调，否则或许会生成附加
     """
     user_level = _CONFIGL.running
     exp_level = _CONFIGL.globals
