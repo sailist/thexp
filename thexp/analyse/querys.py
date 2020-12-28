@@ -52,6 +52,7 @@ from .viewer import TestViewer
 from ..utils.iters import is_same_type
 from ..globals import _BUILTIN_PLUGIN
 from .constrain import Constrain, ParamConstrain, MeterConstrain
+from ..utils import re
 
 # 虽然好像没什么用但还是设置上了
 pd.set_option('display.max_colwidth', 160)
@@ -558,10 +559,28 @@ class BoardQuery():
 
 
 class TestsQuery:
+    """
+    支持模糊匹配
+    排序
+    ts.sort_by_start_time(...)
 
+    切片
+    ts[:4]
+
+    查找
+    ts.INT[32]
+    ts["0032"]
+    ts.has_board()
+    ts.success()
+
+    标记
+    ts.mark("mark")
+    ts.unmark("mark")
+    """
     def __init__(self, test_dirs: List[str]):
         self.test_dirs = llist(test_dirs)
         self.test_names = [os.path.basename(i) for i in self.test_dirs]
+        self._int_match = False
 
     def __and__(self, other):
         if isinstance(other, TestsQuery):
@@ -592,19 +611,26 @@ class TestsQuery:
         if isinstance(items, (Iterator, list, tuple)):
             assert is_same_type(items)
             for item in items:
+                if self._int_match:
+                    item = str(item)
+
                 if isinstance(item, str):
-                    try:
-                        idx = self.test_names.index(item)
-                        res.append(idx)
-                    except:
-                        raise IndexError(item)
+
+                    if len(item) < 13:  # not a specific test name
+                        match = re.compile(item)
+                        for idx, _name in enumerate(self.test_names):
+                            if re.search(match, _name) is not None:
+                                res.append(idx)
+                    else:
+                        try:
+                            idx = self.test_names.index(item)
+                            res.append(idx)
+                        except:
+                            raise IndexError(item)
                 elif isinstance(item, int):
                     res.append(item)
             return TestsQuery(self.test_dirs[res])  # do not have type error
-        elif isinstance(items, int):
-            res.append(items)
-            return TestsQuery(self.test_dirs[res])  # do not have type error
-        elif isinstance(items, str):
+        elif isinstance(items, (int, str)):
             return self.__getitem__([items])
         elif isinstance(items, slice):
             return TestsQuery(self.test_dirs[items])  # do not have type error
@@ -623,6 +649,60 @@ class TestsQuery:
 
     def __len__(self):
         return len(self.test_names)
+
+    def __iter__(self):
+        for dir in self.test_dirs:
+            yield self[dir]
+
+    def _copy(self):
+        return TestsQuery(self.test_dirs)
+
+    """链式调用糖"""
+
+    @property
+    def INT(self):
+        """int 切片不是按顺序，而是找实验编号"""
+        res = self._copy()
+        res._int_match = True
+        return res
+
+    @property
+    def TIME(self):
+        """
+        ts.TIME.left().right().sorted().done()
+        Returns:
+            TODO
+        """
+        raise NotImplementedError()
+
+    @property
+    def SORTED(self):
+        """
+        ts.SORTED.runtime(descending=True)
+        ts.SORTED.starttime()
+        ts.SORTED.endtime()
+        Returns:
+            TODO
+        """
+        raise NotImplementedError()
+
+    @property
+    def empty(self):
+        return len(self.test_dirs) == 0
+
+    @property
+    def isitem(self):
+        return len(self.test_dirs) == 1
+
+    def sort_by_start_time(self, descending=False):
+        _, test_dirs = zip(
+            *sorted(
+                zip(self.to_viewers(), self.test_dirs),
+                key=lambda x: x.to_viewer().start_time,
+                reverse=descending
+            )
+        )
+        return self[test_dirs]
 
     def df(self):
         df = pd.DataFrame([viewer.df_info() for viewer in self.to_viewers()],
@@ -653,14 +733,6 @@ class TestsQuery:
             viewers.append(vw)
             boards.append(vw.board_reader)
         return BoardQuery(boards, viewers)
-
-    @property
-    def empty(self):
-        return len(self.test_dirs) == 0
-
-    @property
-    def isitem(self):
-        return len(self.test_dirs) == 1
 
     def to_viewers(self):
         """convert testquery to  testviewer list"""
