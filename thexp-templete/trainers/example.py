@@ -17,13 +17,12 @@ from trainers import GlobalParams
 from trainers.mixin import *
 
 
-class TempleteTrainer(callbacks.BaseCBMixin,
-                      datasets.TempleteDatasetMixin,
-                      models.TempleteModelMixin,
-                      acc.ClassifyAccMixin,
-                      losses.CELoss,
-                      tricks.TrickMixin,
-                      Trainer):
+class BaseTrainer(callbacks.BaseCBMixin,
+                  datasets.BaseSupDatasetMixin,
+                  models.BaseModelMixin,
+                  acc.ClassifyAccMixin,
+                  losses.CELoss,
+                  Trainer):
 
     def train_batch(self, eidx, idx, global_step, batch_data, params: GlobalParams, device: torch.device):
         super().train_batch(eidx, idx, global_step, batch_data, params, device)
@@ -33,8 +32,6 @@ class TempleteTrainer(callbacks.BaseCBMixin,
         logits = self.to_logits(xs)
 
         meter.Lall = meter.Lall + self.loss_ce_(logits, ys, meter=meter, name='Lce')
-
-        self.any_()
 
         self.optim.zero_grad()
         meter.Lall.backward()
@@ -53,6 +50,6 @@ if __name__ == '__main__':
     # params.device = 'cuda:0'
     params.from_args()
 
-    trainer = TempleteTrainer(params)
+    trainer = BaseTrainer(params)
     trainer.train()
     trainer.save_model()
