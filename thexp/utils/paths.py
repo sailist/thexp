@@ -1,6 +1,7 @@
 """
 Methods about files/paths/hash
 """
+from thexp.utils import re
 import hashlib
 import json
 import os
@@ -97,7 +98,6 @@ def file_hash(file: str) -> str:
 
 def filter_filename(title: str, substr='-'):
     """replace invalid string of given file path by `substr`"""
-    import re
     title = re.sub('[\/:*?"<>|]', substr, title)  # 去掉非法字符
     return title
 

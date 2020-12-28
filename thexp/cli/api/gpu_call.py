@@ -1,6 +1,6 @@
 import torch
 from typing import List, Union
-import re
+from thexp.utils import re
 import subprocess
 
 

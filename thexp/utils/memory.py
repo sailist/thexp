@@ -3,7 +3,7 @@ import time
 import torch
 import os
 import subprocess
-import re
+from . import re
 from thexp.base_classes.tree import tree
 from functools import partial
 
